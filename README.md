@@ -4,7 +4,7 @@
 
 # TwoUX
 
-TwoUX is an engineering-first design system for complex apps that makes UX decisions explicit<br>
+TwoUX is an engineering-first design system for complex apps that makes UI and UX decisions explicit<br>
 for engineers and AI agents, and enforces quality before inconsistent experiences reach production.
 
 **Currently in Beta** · Built on [shadcn/ui](https://ui.shadcn.com) and [Radix](https://www.radix-ui.com), for [React 19+](https://react.dev) and [Tailwind CSS v4](https://tailwindcss.com)

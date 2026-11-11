@@ -1,0 +1,2921 @@
+{
+	"components": [
+		{
+			"id": "assistant-panel",
+			"name": "Assistant side panel",
+			"group": "AI and agents",
+			"summary": "A side panel, opened with ⌘J, where people ask about the records on screen and get answers grounded in the current selection and filters.",
+			"structure": [
+				"Panel bar (Assistant, conversation title, Open as a full page, Previous conversations, Share, New, Close)",
+				"Thread (questions, thinking row, answers)",
+				"Clarifying question card (docked above the message box when needed)",
+				"Message box with context chips",
+				"Caveat line"
+			],
+			"whenToUse": [
+				{
+					"t": "Quick questions about the listings or candidates on screen, where the answer needs the data beside it. ⌘J opens the panel with the current selection and filters already attached.",
+					"s": []
+				},
+				{
+					"t": "When people need to invoke help without leaving the table they are working through. HAX G7 asks for efficient invocation and G8 for efficient dismissal, so the panel opens and closes with one shortcut.",
+					"s": []
+				},
+				{
+					"t": "When an answer may lead to a change. The panel can hold a proposal next to the rows it affects, so the person can compare before applying.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "Long research answers that need room for sources and a records list. Use the Assistant page (assistant-page) instead, which keeps the same conversation.",
+					"s": []
+				},
+				{
+					"t": "Repeated tasks with the same shape every week. Use the Task builder (task-builder) so the inputs are slots, not free text.",
+					"s": []
+				},
+				{
+					"t": "Filling one value per row across a table. Use the AI column (ai-column), which writes into a generated column and cites each row.",
+					"s": []
+				},
+				{
+					"t": "Do not add a floating chat bubble to every page. The panel opens from ⌘J or Ask in the bulk bar, where the context is.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Open in the same side panel as row details, in push mode by default, so the table stays readable. Opening the assistant closes the row detail panel and the other way round.",
+					"s": []
+				},
+				{
+					"t": "Turn the selection and active filters into context chips automatically. Removing a chip narrows what the assistant reads.",
+					"s": []
+				},
+				{
+					"t": "Lead each answer with the figure, then a small table, then the reason. Every claim about a record carries its record ID as a citation.",
+					"s": []
+				},
+				{
+					"t": "Changes never apply from the thread. They arrive as Suggested changes with checkboxes and one Apply button, and nothing changes until the person applies.",
+					"s": []
+				},
+				{
+					"t": "While a response is running, the send button becomes Stop in the same place. Stopping keeps what was written and says it is incomplete.",
+					"s": []
+				},
+				{
+					"t": "Keep the message box pinned and let only the thread scroll. Do not jump the thread to the bottom while someone is reading an older message.",
+					"s": []
+				},
+				{
+					"t": "Show the caveat under the message box at all times: what data it uses and what to check.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Call it Assistant. Do not use \"AI-powered\", \"smart\" or \"magic\". Say what it read and what it did.",
+					"s": []
+				},
+				{
+					"t": "Empty state: say what it will use (\"Ask about 2 listings. Uses what you have selected and filtered. Nothing changes until you apply it.\").",
+					"s": []
+				},
+				{
+					"t": "Caveat copy is specific: \"Uses your workspace data only. Check figures before you act on them.\"",
+					"s": []
+				},
+				{
+					"t": "Answers open with the answer. No greeting, no \"Great question\", no disclaimer about being an AI before the content.",
+					"s": []
+				},
+				{
+					"t": "Name the conversation from the first question and show it in the panel bar, so it can be found later.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Render the panel as an aside with aria-label=\"Assistant\" (complementary landmark). Label it because the row details panel is a second complementary landmark.",
+					"s": []
+				},
+				{
+					"t": "The thread is a log (role=\"log\", implicit aria-live polite) with an accessible name, so new answers are announced without moving focus (SC 4.1.3).",
+					"s": []
+				},
+				{
+					"t": "Do not announce every streamed token. Announce the thinking step titles and the finished answer; Stop satisfies SC 2.2.2 for content that auto-updates in parallel with the table.",
+					"s": []
+				},
+				{
+					"t": "When the panel opens, focus moves to the message box; Esc closes the innermost open layer first (menu, history, then panel) and focus returns to the trigger, as the dialog pattern does (SC 2.4.3).",
+					"s": []
+				},
+				{
+					"t": "The send button changes its accessible name from \"Send (Enter)\" to \"Stop\" while running, which the button pattern allows when the label itself changes.",
+					"s": []
+				},
+				{
+					"t": "The panel must not cover the focused row in push mode (SC 2.4.11).",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "⌘J / Ctrl+J",
+					"action": "Open or close the assistant with the current selection as context"
+				},
+				{
+					"keys": "Enter",
+					"action": "Send the message"
+				},
+				{
+					"keys": "Shift+Enter",
+					"action": "New line"
+				},
+				{
+					"keys": "Esc",
+					"action": "Close the open menu, then history, then the panel"
+				},
+				{
+					"keys": "⌘↵",
+					"action": "Apply the suggested changes in focus"
+				}
+			],
+			"related": [
+				"assistant-page",
+				"message-composer",
+				"thinking-steps",
+				"suggested-changes",
+				"citations-sources",
+				"conversation-history",
+				"side-panel"
+			],
+			"references": []
+		},
+		{
+			"id": "assistant-page",
+			"name": "Assistant page",
+			"group": "AI and agents",
+			"summary": "The same conversation opened as a full page, with Answer and Records tabs and a Sources panel listing every record the answer used.",
+			"structure": [
+				"Top bar (Answer and Records tabs, Share, Open in side panel)",
+				"Centred reading column (thread)",
+				"Records tab (the rows the answer used, as a table)",
+				"Sources panel (every cited record)",
+				"Message box"
+			],
+			"whenToUse": [
+				{
+					"t": "Answers that rely on many records and need checking. The Sources panel lists every record so people can verify without hunting.",
+					"s": []
+				},
+				{
+					"t": "Research-style questions across the whole workspace, such as Thorough answers that also read candidates and past listings.",
+					"s": []
+				},
+				{
+					"t": "When the person wants to keep the answer as the main task, not as help beside a table.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "A quick question about the rows on screen. Use the Assistant side panel (assistant-panel) so the table stays visible.",
+					"s": []
+				},
+				{
+					"t": "Watching an agent work through steps over time. Use the Agent run timeline (agent-run).",
+					"s": []
+				},
+				{
+					"t": "Browsing past conversations. Use Previous conversations (conversation-history).",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Expand opens the same conversation; \"Open in side panel\" goes back without losing the thread, context or scroll position.",
+					"s": []
+				},
+				{
+					"t": "Use a centred reading column and align messages user to the end, assistant to the start, on full, dedicated surfaces.",
+					"s": []
+				},
+				{
+					"t": "The Sources panel lists every record the answer used. Selecting a citation highlights its source in the panel.",
+					"s": []
+				},
+				{
+					"t": "The Records tab shows the rows behind the answer as a table that can open as a filtered view, so the claim and the data sit one click apart.",
+					"s": []
+				},
+				{
+					"t": "Say when there are no sources rather than showing filler: empty states keep trust.",
+					"s": []
+				},
+				{
+					"t": "Long task conversations get an outline: a list of key moments (question asked, values given, changes applied) that jumps to each message.",
+					"s": []
+				},
+				{
+					"t": "Long drafts open here beside the conversation rather than in a second panel.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Tabs are nouns: Answer and Records (with a count). Avoid branded names for modes or tabs.",
+					"s": []
+				},
+				{
+					"t": "Source rows show the record ID, title and what was used (for example \"Views and applies, last 30 days\").",
+					"s": []
+				},
+				{
+					"t": "Keep the same caveat and origin label as in the panel so the two surfaces read as one product.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Answer and Records use the tabs pattern: role=\"tablist\", role=\"tab\" with aria-selected and aria-controls, arrow keys move between tabs.",
+					"s": []
+				},
+				{
+					"t": "The Sources panel is an aside labelled \"Sources\" so it is reachable as a landmark.",
+					"s": []
+				},
+				{
+					"t": "Highlighting a source after a citation is selected must not rely on colour alone; add an outline or marker (SC 1.4.1).",
+					"s": []
+				},
+				{
+					"t": "New answers are announced through the thread's log region without moving focus (SC 4.1.3).",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Left / Right arrow",
+					"action": "Move between Answer and Records tabs"
+				},
+				{
+					"keys": "Tab",
+					"action": "Move from the tabs into the panel content"
+				},
+				{
+					"keys": "⌘J / Ctrl+J",
+					"action": "Focus the message box"
+				},
+				{
+					"keys": "Enter",
+					"action": "Send"
+				},
+				{
+					"keys": "Esc",
+					"action": "Close an open menu"
+				}
+			],
+			"related": [
+				"assistant-panel",
+				"citations-sources",
+				"message-composer",
+				"follow-ups-starters",
+				"tabs"
+			],
+			"references": []
+		},
+		{
+			"id": "message-composer",
+			"name": "Message composer",
+			"group": "AI and agents",
+			"summary": "The message box with context chips, a + menu, @ mentions, / saved tasks, typeahead completions and the Quick or Thorough answer mode.",
+			"structure": [
+				"Context chips (selection, filters, mentions)",
+				"Text area",
+				"Typeahead list",
+				"+ menu (Mention a listing, Run a saved task, Attach a file, toggles, Writing style submenu, Connected tools submenu)",
+				"Answer mode button (Quick or Thorough)",
+				"Send or Stop button"
+			],
+			"whenToUse": [
+				{
+					"t": "Any free question or instruction to the assistant, in the panel or on the full page.",
+					"s": []
+				},
+				{
+					"t": "When people need to add or narrow context: @ adds a record as a chip, the + menu attaches files and tools.",
+					"s": []
+				},
+				{
+					"t": "When the trade-off between speed and depth matters: Quick reads what is on screen, Thorough also reads candidates and past listings and says what it costs.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "A task that repeats with the same inputs. Use the Task builder (task-builder) with slots.",
+					"s": []
+				},
+				{
+					"t": "A prompt that runs on every row. Use the Prompt editor (prompt-editor), which lists inputs and outputs with types.",
+					"s": []
+				},
+				{
+					"t": "Searching records by name. Use the table filters (filters), not the assistant.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "The box stays clean. Everything that changes context or output lives in the + menu, grouped: inserts, toggles, writing style, connected tools.",
+					"s": []
+				},
+				{
+					"t": "@ and / work without opening the menu. @ suggests listings and adds the chosen one as a removable chip; / suggests saved tasks.",
+					"s": []
+				},
+				{
+					"t": "Typeahead suggests whole questions from your own records and saved tasks. What you typed stays regular and the completion is bold. Enter still sends what you typed unless you moved into the list.",
+					"s": []
+				},
+				{
+					"t": "Answer mode is a stable contract: Quick or Thorough, each with one line on what it does and what it costs. The model name is shown but set by an admin.",
+					"s": []
+				},
+				{
+					"t": "Allow attachments at any point, including follow-ups, and cite files when an answer relies on them.",
+					"s": []
+				},
+				{
+					"t": "While running, Send becomes Stop in the same place. People can still draft the next message.",
+					"s": []
+				},
+				{
+					"t": "One symbol per menu: / for saved tasks and actions, @ for records and files. Each also has a button in the composer bar with the same symbol.",
+					"s": []
+				},
+				{
+					"t": "Only one menu is open at a time; group items under labels such as \"Saved tasks\" and \"Actions\".",
+					"s": []
+				},
+				{
+					"t": "A hint under the composer says what the symbols do: \"/ for tasks, @ to add a record\".",
+					"s": []
+				},
+				{
+					"t": "The Quick or Thorough setting stays visible as a chip and carries over to the next message until changed.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Placeholder says what to do: \"Ask, or type @ for a listing and / for a saved task\".",
+					"s": []
+				},
+				{
+					"t": "Menu items are verbs with the shortcut shown: \"Mention a listing @\", \"Run a saved task /\".",
+					"s": []
+				},
+				{
+					"t": "Mode descriptions state the trade-off in plain words: \"Answers from what's on screen, in seconds\" and \"Also reads candidates and past listings. About 5 credits.\"",
+					"s": []
+				},
+				{
+					"t": "Never name controls with branded or vague words such as \"Magic\" or \"Boost\".",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "The text area is an editable combobox: aria-autocomplete=\"list\", aria-controls pointing at the suggestions listbox, aria-expanded reflecting whether it is shown, and aria-activedescendant on the highlighted option.",
+					"s": []
+				},
+				{
+					"t": "Down Arrow moves into suggestions, Enter or Tab accepts the highlighted one, Esc closes the list and keeps focus in the box.",
+					"s": []
+				},
+				{
+					"t": "The + and mode buttons are menu buttons (aria-haspopup=\"menu\", aria-expanded). Toggles are menuitemcheckbox and writing styles are menuitemradio with aria-checked.",
+					"s": []
+				},
+				{
+					"t": "The text area has a programmatic label (\"Message\") even though the label is visually hidden (SC 3.3.2, 4.1.2).",
+					"s": []
+				},
+				{
+					"t": "@ and / only trigger while the text area has focus, so they are not global character key shortcuts (SC 2.1.4).",
+					"s": []
+				},
+				{
+					"t": "Each context chip's remove button names what it removes, for example \"Remove 2 listings from context\".",
+					"s": []
+				},
+				{
+					"t": "Typing / or @ opens a combobox list; arrows move, Enter inserts, Esc closes and leaves the typed symbol.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Enter",
+					"action": "Send, or accept the highlighted suggestion"
+				},
+				{
+					"keys": "Shift+Enter",
+					"action": "New line"
+				},
+				{
+					"keys": "Down / Up arrow",
+					"action": "Move through suggestions"
+				},
+				{
+					"keys": "Tab",
+					"action": "Accept the highlighted suggestion"
+				},
+				{
+					"keys": "Esc",
+					"action": "Close suggestions or the open menu"
+				},
+				{
+					"keys": "@",
+					"action": "Suggest listings to add as context"
+				},
+				{
+					"keys": "/",
+					"action": "Suggest saved tasks"
+				},
+				{
+					"keys": "Right arrow / Left arrow",
+					"action": "Open or close a submenu in the + menu"
+				}
+			],
+			"related": [
+				"assistant-panel",
+				"assistant-page",
+				"task-builder",
+				"connected-tools",
+				"team-instructions"
+			],
+			"references": []
+		},
+		{
+			"id": "thinking-steps",
+			"name": "Thinking and steps",
+			"group": "AI and agents",
+			"summary": "A row that shows what the assistant is doing in words with a running timer, then collapses to \"Thought for 2.1s · 4 steps\" and expands on request.",
+			"structure": [
+				"Header (status mark, \"Thinking\", timer)",
+				"Step list (short title and one line of detail each)",
+				"Collapsed summary button (\"Thought for Xs · N steps\")"
+			],
+			"whenToUse": [
+				{
+					"t": "Any response that takes more than about a second, so people know what is happening instead of watching a bare spinner.",
+					"s": []
+				},
+				{
+					"t": "When the answer depends on what was read: steps say \"Read 2 listings and 3,000 views\" so people can judge scope.",
+					"s": []
+				},
+				{
+					"t": "Keeping the reasoning in the history after the answer arrives, so it can be checked later.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "Responses under a second. Stream the answer directly; short loading states flicker.",
+					"s": []
+				},
+				{
+					"t": "Multi-step agent work that changes records. Use the Agent run timeline (agent-run) with states and Stop.",
+					"s": []
+				},
+				{
+					"t": "Progress of applying approved changes. Use the Step card (step-card).",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Say the current step in words (\"Reading 9 listings\"), never only an animation.",
+					"s": []
+				},
+				{
+					"t": "Show a running timer while thinking. When the answer starts, collapse to \"Thought for 2.1s · 4 steps\" with a check.",
+					"s": []
+				},
+				{
+					"t": "Each step has a short title and one line of detail. Keep plan, execution and evidence apart.",
+					"s": []
+				},
+				{
+					"t": "If the person answered clarifying questions, add a step \"Using your answers\" with their choices.",
+					"s": []
+				},
+				{
+					"t": "Stopping during thinking marks the header \"Stopped\" and removes unfinished steps; nothing is changed.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Use present participles for running steps (\"Reading listings\", \"Comparing with the board median\") and past tense once done.",
+					"s": []
+				},
+				{
+					"t": "Include counts and time: \"Read 2 listings and 3,000 views · 4s\".",
+					"s": []
+				},
+				{
+					"t": "Do not write \"Thinking deeply\" or anything that implies a person or magic.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "The thinking row is a polite live region; announce each step title, not the timer ticks (SC 4.1.3).",
+					"s": []
+				},
+				{
+					"t": "The running timer updates in parallel with other content, so Stop must be available (SC 2.2.2); the pulse animation is decorative and stops when done.",
+					"s": []
+				},
+				{
+					"t": "The collapsed summary is a disclosure button with aria-expanded; Enter or Space toggles the steps.",
+					"s": []
+				},
+				{
+					"t": "Step states use an icon shape as well as colour (SC 1.4.1).",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Enter / Space",
+					"action": "Expand or collapse finished steps"
+				},
+				{
+					"keys": "Tab",
+					"action": "Move to the summary button"
+				}
+			],
+			"related": [
+				"assistant-panel",
+				"agent-run",
+				"step-card",
+				"clarifying-question"
+			],
+			"references": []
+		},
+		{
+			"id": "clarifying-question",
+			"name": "Clarifying question card",
+			"group": "AI and agents",
+			"summary": "A card docked above the message box that asks up to three questions with recommended defaults when the answer would change the result.",
+			"structure": [
+				"Counter (\"1 / 2\") and question",
+				"Options (title and one line each, recommended first, number key)",
+				"Other (free text, last)",
+				"Footer (Previous, Skip, Next ↵)",
+				"Thread line \"Waiting for your answer\" with timer"
+			],
+			"whenToUse": [
+				{
+					"t": "When the request is ambiguous and the answer changes the result, for example which listings to rewrite.",
+					"s": []
+				},
+				{
+					"t": "Before high-impact changes or when confidence is low, collect details first.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "Information already in context or retrievable from the data. Do not re-ask; use the context chips (message-composer).",
+					"s": []
+				},
+				{
+					"t": "Suggesting what to ask next after an answer. Use Follow-ups (follow-ups-starters).",
+					"s": []
+				},
+				{
+					"t": "Approving a change. Use Suggested changes (suggested-changes).",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Ask only when the answer changes the result, at most three questions, one at a time.",
+					"s": []
+				},
+				{
+					"t": "Every question has a default, shown first and marked \"(Recommended)\". Skip uses the defaults for the rest.",
+					"s": []
+				},
+				{
+					"t": "Options first, free text last. Structured choices beat free text.",
+					"s": []
+				},
+				{
+					"t": "Dock the card above the message box so the thread does not fill with back and forth.",
+					"s": []
+				},
+				{
+					"t": "Stop ends the questions and says \"Stopped. Nothing was changed.\"",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Questions are short and specific: \"Which titles should I rewrite?\"",
+					"s": []
+				},
+				{
+					"t": "Each option has a title and one line of consequence (\"Leaves listings that are doing well alone\").",
+					"s": []
+				},
+				{
+					"t": "Use \"choose\" or \"select\", not \"click\".",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Options are a radiogroup labelled by the question; each option is role=\"radio\" with aria-checked.",
+					"s": []
+				},
+				{
+					"t": "Arrow keys move and select within the group; Tab moves to Other and the footer buttons in order (SC 2.4.3).",
+					"s": []
+				},
+				{
+					"t": "Number keys 1 to 4 are single character shortcuts, so they must be active only while the card is open and focus is not in a text field, and must respect the setting that turns single-key shortcuts off (SC 2.1.4). The mock listens while the card is open but ignores that setting, which needs fixing.",
+					"s": []
+				},
+				{
+					"t": "The waiting timer must not limit time to answer (SC 2.2.1); it only shows elapsed time.",
+					"s": []
+				},
+				{
+					"t": "Announce the new question when Next is pressed (SC 4.1.3).",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "1 to 3",
+					"action": "Choose an option"
+				},
+				{
+					"keys": "4",
+					"action": "Move focus to Other"
+				},
+				{
+					"keys": "Arrow keys",
+					"action": "Move between options"
+				},
+				{
+					"keys": "Enter",
+					"action": "Next question, or run when it is the last"
+				},
+				{
+					"keys": "Esc",
+					"action": "Close the panel (Stop ends the questions)"
+				}
+			],
+			"related": [
+				"assistant-panel",
+				"message-composer",
+				"thinking-steps",
+				"agent-run",
+				"plan-card",
+				"confidence-note"
+			],
+			"references": []
+		},
+		{
+			"id": "suggested-changes",
+			"name": "Suggested changes",
+			"group": "AI and agents",
+			"summary": "A proposal card listing each change with a checkbox and before and after, applied with one button and undoable afterwards.",
+			"structure": [
+				"Header (\"Suggested changes · 2\")",
+				"Change rows (checkbox, change, detail line, inline diff)",
+				"Footer (note \"Nothing changes until you apply.\", Dismiss, Edit, Apply N changes ⌘↵)",
+				"Undo toast after applying"
+			],
+			"whenToUse": [
+				{
+					"t": "Any time the assistant or an agent would change records: extend, rename, close, email.",
+					"s": []
+				},
+				{
+					"t": "When several changes are proposed and people may want only some of them.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "Read-only answers. Show the figure and table without a proposal (assistant-panel).",
+					"s": []
+				},
+				{
+					"t": "Actions set to Allow in Agent permissions; those run and appear in the Agent run timeline (agent-run) with Undo.",
+					"s": []
+				},
+				{
+					"t": "Generated values that fill a new column. Use the AI column (ai-column), which never overwrites real data.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Nothing runs until the person applies. Say so in the footer.",
+					"s": []
+				},
+				{
+					"t": "Each change has a checkbox, ticked by default, and shows the before and after (strikethrough and inserted text).",
+					"s": []
+				},
+				{
+					"t": "The Apply button counts what it will change (\"Apply 2 changes\") and updates as boxes are unticked.",
+					"s": []
+				},
+				{
+					"t": "Edit opens the changes for adjustment; Dismiss removes the card without changing anything.",
+					"s": []
+				},
+				{
+					"t": "After applying, show a toast with Undo (⌘Z) that restores the previous values.",
+					"s": []
+				},
+				{
+					"t": "Match friction to risk: changes that reach people outside the workspace need a stronger confirmation.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Write each change as a plain action: \"Extend Operations Coordinator by 30 days\", with the consequence on the next line (\"New closing date 6 Dec\").",
+					"s": []
+				},
+				{
+					"t": "State what does not change (\"Title only. Description stays the same.\").",
+					"s": []
+				},
+				{
+					"t": "After Undo: \"Undone. Nothing was changed.\"",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Each change is a native checkbox with its label, so the change and its detail are read together (SC 1.3.1, 4.1.2).",
+					"s": []
+				},
+				{
+					"t": "Before and after use del and ins elements and text, not colour alone (SC 1.4.1).",
+					"s": []
+				},
+				{
+					"t": "Applying changes records data, so it must be reversible or confirmed (SC 3.3.4): this card is the review step and Undo makes it reversible.",
+					"s": []
+				},
+				{
+					"t": "The applied and undone messages are status messages in a role=\"status\" toast (SC 4.1.3).",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Space",
+					"action": "Tick or untick the focused change"
+				},
+				{
+					"keys": "⌘↵ / Ctrl+Enter",
+					"action": "Apply the ticked changes"
+				},
+				{
+					"keys": "⌘Z / Ctrl+Z",
+					"action": "Undo from the toast"
+				}
+			],
+			"related": [
+				"step-card",
+				"agent-permissions",
+				"assistant-panel",
+				"toast",
+				"change-request"
+			],
+			"references": []
+		},
+		{
+			"id": "step-card",
+			"name": "Step card",
+			"group": "AI and agents",
+			"summary": "The proposal turns into a step card while changes apply: each change shows a spinner then a check, with an \"N / M\" counter, and the table updates row by row.",
+			"structure": [
+				"Header (\"Applying 2 changes\" and counter)",
+				"Step rows (spinner or check, change label)",
+				"Footer note (\"Working…\" then \"Applied 2 changes.\")"
+			],
+			"whenToUse": [
+				{
+					"t": "Applying approved changes that take more than an instant, so people can see each one land.",
+					"s": []
+				},
+				{
+					"t": "When the table should update as each step finishes, so the result can be checked in place.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "Scheduled or long agent runs with waiting steps. Use the Agent run timeline (agent-run).",
+					"s": []
+				},
+				{
+					"t": "Reasoning before an answer. Use Thinking and steps (thinking-steps).",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Each step has a visible state: pending with spinner, then done with a check. A failed step says why and keeps the others.",
+					"s": []
+				},
+				{
+					"t": "Show the counter (\"1 / 2\") so progress reads without counting icons.",
+					"s": []
+				},
+				{
+					"t": "Finish with a summary and an Undo toast.",
+					"s": []
+				},
+				{
+					"t": "Keep the step card in the thread as a record of what was done.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Use the same label as the proposal row so people recognise each change.",
+					"s": []
+				},
+				{
+					"t": "Finish in past tense with a count: \"Applied 2 changes.\"",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Announce the counter and the final summary through a status region (SC 4.1.3); do not announce every spinner.",
+					"s": []
+				},
+				{
+					"t": "Spinners are aria-hidden and the state is also given in text (SC 1.3.1, 1.4.1).",
+					"s": []
+				},
+				{
+					"t": "Spinner motion stops when the step ends; runs over five seconds need Stop (SC 2.2.2).",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "⌘Z / Ctrl+Z",
+					"action": "Undo the applied changes from the toast"
+				}
+			],
+			"related": [
+				"suggested-changes",
+				"agent-run",
+				"toast",
+				"plan-card"
+			],
+			"references": []
+		},
+		{
+			"id": "follow-ups-starters",
+			"name": "Follow-ups and starters",
+			"group": "AI and agents",
+			"summary": "Follow-ups continue an answer as muted rows under a \"Follow-ups\" label; starters appear only in the empty state as suggested tasks based on what is on screen.",
+			"structure": [
+				"Starters: \"Try asking\" label, bulb icon, two or three chips, Hide",
+				"Follow-ups: \"Follow-ups\" label, rows with a ↳ icon, muted text, full width"
+			],
+			"whenToUse": [
+				{
+					"t": "In the empty state, to show two or three tasks based on the selection, instead of a blank \"How can I help?\".",
+					"s": []
+				},
+				{
+					"t": "After an answer, to offer one or two ways to go deeper and one to widen.",
+					"s": []
+				},
+				{
+					"t": "To prompt checking, such as \"Show who viewed these but didn't apply\", not only moving on.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "Asking for missing details. Use the Clarifying question card (clarifying-question).",
+					"s": []
+				},
+				{
+					"t": "Reusable workflows. Use the Templates gallery (templates-gallery) or saved tasks via / (message-composer).",
+					"s": []
+				},
+				{
+					"t": "Inside an answer's body. Follow-ups sit after the answer actions, never inside the answer.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Starters are based on what is selected (\"Why are these 2 doing badly?\") or, with nothing selected, on common tasks.",
+					"s": []
+				},
+				{
+					"t": "Show three or fewer. Too many options cause scanning fatigue.",
+					"s": []
+				},
+				{
+					"t": "Anchor follow-ups in the last answer and keep them visually apart from it.",
+					"s": []
+				},
+				{
+					"t": "Selecting a follow-up sends it; selecting a starter that needs editing fills the box instead.",
+					"s": []
+				},
+				{
+					"t": "Starters can be hidden. Do not show them everywhere.",
+					"s": []
+				},
+				{
+					"t": "Starters fill the composer for editing and show an edit icon; slots in them are dashed until filled. Follow-ups send at once.",
+					"s": []
+				},
+				{
+					"t": "A prompt has no state: picking it inserts or sends once, and it doesn't stay selected.",
+					"s": []
+				},
+				{
+					"t": "Follow-ups that narrow an answer offer up to five options, most likely first, each under 72 characters.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Write them as the person would ask, specific to the data: \"Which of these close this week?\"",
+					"s": []
+				},
+				{
+					"t": "Sentence case, no exclamation marks, no trailing arrow.",
+					"s": []
+				},
+				{
+					"t": "Include at least one prompt that helps check the answer, not only extend it.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Each follow-up and starter is a button with its full text as the name (SC 4.1.2).",
+					"s": []
+				},
+				{
+					"t": "Group them under a visible label (\"Follow-ups\", \"Try asking\") that is programmatically associated (SC 1.3.1).",
+					"s": []
+				},
+				{
+					"t": "Rows are full width and at least 24 by 24 px targets (SC 2.5.8).",
+					"s": []
+				},
+				{
+					"t": "Starters and follow-ups are buttons whose names say what happens: \"Insert: Which listings close this week?\" or \"Ask: Compare with last month\".",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Move to the next suggestion"
+				},
+				{
+					"keys": "Enter / Space",
+					"action": "Send the follow-up, or fill the box with the starter"
+				}
+			],
+			"related": [
+				"assistant-panel",
+				"message-composer",
+				"templates-gallery",
+				"clarifying-question"
+			],
+			"references": []
+		},
+		{
+			"id": "citations-sources",
+			"name": "Citations and sources",
+			"group": "AI and agents",
+			"summary": "Record IDs inline in answers that open the record, plus a Sources panel on the full page listing every record and file the answer used.",
+			"structure": [
+				"Inline citation (record ID, for example LST-1044)",
+				"Sources panel (record rows, files)",
+				"Highlight state on the cited source"
+			],
+			"whenToUse": [
+				{
+					"t": "Every claim about a record or figure in an answer or an AI column cell.",
+					"s": []
+				},
+				{
+					"t": "When an answer relies on a team file, cite the file.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "Generic wording with no factual claim. Do not add filler citations.",
+					"s": []
+				},
+				{
+					"t": "To label content as generated. Use the AI origin label (ai-origin-label).",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Citations are record IDs that open the record, so checking takes one click.",
+					"s": []
+				},
+				{
+					"t": "In the panel, a citation focuses the row in the table; on the full page it highlights the source in the Sources panel.",
+					"s": []
+				},
+				{
+					"t": "Place citations at the end of the claim they support, consistently.",
+					"s": []
+				},
+				{
+					"t": "Say when a source is missing or stale rather than showing an empty state that implies success.",
+					"s": []
+				},
+				{
+					"t": "Point to the exact data used where possible (views, applies, period).",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Use the record's own ID format (LST-1044), not numbers like [1], so the citation is meaningful on its own.",
+					"s": []
+				},
+				{
+					"t": "Sources list title, ID and what was read.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Citations are links with an accessible name that includes the record, for example \"LST-1044, Operations Coordinator\" (SC 2.4.6, 4.1.2).",
+					"s": []
+				},
+				{
+					"t": "Do not signal citations by colour alone; use the chip shape (SC 1.4.1).",
+					"s": []
+				},
+				{
+					"t": "Moving focus to the cited row must keep that row visible (SC 2.4.11).",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Move to the next citation"
+				},
+				{
+					"keys": "Enter",
+					"action": "Open or highlight the cited record"
+				}
+			],
+			"related": [
+				"assistant-page",
+				"ai-column",
+				"team-instructions",
+				"ai-origin-label",
+				"confidence-note",
+				"why-choice"
+			],
+			"references": []
+		},
+		{
+			"id": "ai-origin-label",
+			"name": "AI origin label",
+			"group": "AI and agents",
+			"summary": "One small mark and short text on generated content, such as \"Assistant · from your workspace data\". No sparkle on every button and no separate AI colour.",
+			"structure": [
+				"Assistant mark (icon)",
+				"Text (who and from what)",
+				"Optional time (\"2 min ago\")"
+			],
+			"whenToUse": [
+				{
+					"t": "Under every assistant answer, with the feedback actions.",
+					"s": []
+				},
+				{
+					"t": "On a generated column header, once for the group, not on every cell.",
+					"s": []
+				},
+				{
+					"t": "Where generated and human content sit together, so people can tell them apart.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "On buttons that start an action. Name the action instead (\"Draft titles\"), and keep the mark for content.",
+					"s": []
+				},
+				{
+					"t": "As decoration or branding across the product.",
+					"s": []
+				},
+				{
+					"t": "To say where a value came from. Use Citations and sources (citations-sources).",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Label the origin, not the feature. Say what produced it and from what.",
+					"s": []
+				},
+				{
+					"t": "One mark per group of generated content: a column header, an answer.",
+					"s": []
+				},
+				{
+					"t": "No separate AI colour. TwoUX uses its neutral palette plus a faint tint on generated columns, always with the mark and text.",
+					"s": []
+				},
+				{
+					"t": "Do not use the sparkle as the universal AI sign; it loses meaning when it is everywhere.",
+					"s": []
+				},
+				{
+					"t": "Generated output must also be machine-detectable as generated, for example a data attribute or metadata on the record.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "\"Assistant · from your workspace data\". Never \"AI-powered\", \"smart\" or \"magic\".",
+					"s": []
+				},
+				{
+					"t": "When a person edits generated text, the label goes; the history keeps the original.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "The mark is decorative (aria-hidden) and the text carries the meaning (SC 1.3.1, 1.4.1).",
+					"s": []
+				},
+				{
+					"t": "The tint on generated columns must keep text contrast; the column header text identifies it (SC 1.4.11 for the mark).",
+					"s": []
+				},
+				{
+					"t": "Use the same wording everywhere (SC 3.2.4).",
+					"s": []
+				}
+			],
+			"keyboard": [],
+			"related": [
+				"assistant-panel",
+				"ai-column",
+				"citations-sources",
+				"confidence-note",
+				"why-choice"
+			],
+			"references": []
+		},
+		{
+			"id": "ai-column",
+			"name": "AI column",
+			"group": "AI and agents",
+			"summary": "A generated table column that fills one row at a time, cites each row, shows when it was written and never overwrites real data.",
+			"structure": [
+				"Header (assistant mark, name, \"2 min ago\", Refresh)",
+				"Cells (value and citation, writing state, failed state with Try again)",
+				"Add a column menu (suggested columns, Describe your own…)"
+			],
+			"whenToUse": [
+				{
+					"t": "Adding a judgement or summary per row, such as \"Likely reason\" for a low apply rate.",
+					"s": []
+				},
+				{
+					"t": "When people need to compare many rows on the same question.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "Changing real fields such as title or closing date. Use Suggested changes (suggested-changes).",
+					"s": []
+				},
+				{
+					"t": "One-off questions. Use the Assistant side panel (assistant-panel).",
+					"s": []
+				},
+				{
+					"t": "Decisions about candidates that would filter or rank them for hiring. These are high-risk; keep them as human decisions with the assistant as a reference only.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Mark the header once and show when the column was written.",
+					"s": []
+				},
+				{
+					"t": "Never overwrite real data; the column is separate and can be removed.",
+					"s": []
+				},
+				{
+					"t": "Cells fill one by one with a visible state and a Stop. A failed cell says why (\"The listing has no description\") and offers Try again.",
+					"s": []
+				},
+				{
+					"t": "Each cell cites its record.",
+					"s": []
+				},
+				{
+					"t": "When source data changes, mark the column out of date instead of silently rewriting.",
+					"s": []
+				},
+				{
+					"t": "Show the cost per row before running on the whole table, and test on a few rows first.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Name columns by the question they answer (\"Likely reason\", \"Risk of closing empty\").",
+					"s": []
+				},
+				{
+					"t": "Cell text is short and leads with the judgement: \"Many views, few applies.\"",
+					"s": []
+				},
+				{
+					"t": "Failed cells explain in plain words and say what to do.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Follow the grid pattern: arrow keys move between cells, Enter or F2 to act, Esc to return (APG grid).",
+					"s": []
+				},
+				{
+					"t": "Header is a columnheader; the Refresh button has a name (\"Refresh column\") (SC 4.1.2).",
+					"s": []
+				},
+				{
+					"t": "Announce progress and completion (\"12 of 24 written\") as a status message (SC 4.1.3); filling cells is auto-updating content that needs Stop (SC 2.2.2).",
+					"s": []
+				},
+				{
+					"t": "Writing, failed and out-of-date states use text, not colour alone (SC 1.4.1).",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Arrow keys",
+					"action": "Move between cells"
+				},
+				{
+					"keys": "Enter / F2",
+					"action": "Act on the cell, for example Try again"
+				},
+				{
+					"keys": "Esc",
+					"action": "Return to grid navigation"
+				}
+			],
+			"related": [
+				"prompt-editor",
+				"citations-sources",
+				"ai-origin-label"
+			],
+			"references": []
+		},
+		{
+			"id": "task-builder",
+			"name": "Task builder",
+			"group": "AI and agents",
+			"summary": "Repeated tasks written as a sentence with editable slots that reuse filter values, with Run blocked until every required slot is filled.",
+			"structure": [
+				"Sentence with slots (dashed when empty, filled when set)",
+				"Actions (Schedule, Save as task, Run ⌘↵)",
+				"Inline error naming the empty slot"
+			],
+			"whenToUse": [
+				{
+					"t": "Tasks people run often with the same shape, such as \"Find Live listings under 3% and draft new titles for hiring managers\".",
+					"s": []
+				},
+				{
+					"t": "When the inputs map to filters already in TwoUX, so slots reuse those values.",
+					"s": []
+				},
+				{
+					"t": "When an answer should be saved and rerun on a schedule.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "A one-off question. Use the Message composer (message-composer).",
+					"s": []
+				},
+				{
+					"t": "A prompt that runs per row with typed outputs. Use the Prompt editor (prompt-editor).",
+					"s": []
+				},
+				{
+					"t": "Browsing ready-made tasks. Use the Templates gallery (templates-gallery).",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Make the critical slots prominent and say which can be left empty.",
+					"s": []
+				},
+				{
+					"t": "An empty slot is dashed and blocks Run; the message says which slot.",
+					"s": []
+				},
+				{
+					"t": "Filled slots show as regular text; empty ones as placeholders.",
+					"s": []
+				},
+				{
+					"t": "Do not overload the sentence with slots.",
+					"s": []
+				},
+				{
+					"t": "Scheduled runs notify before they act and land in the Inbox when they need approval.",
+					"s": []
+				},
+				{
+					"t": "An empty slot shows its field name in italics in a dashed box; once filled it shows the value as normal text.",
+					"s": []
+				},
+				{
+					"t": "The popover field label matches the slot name exactly, so people know which slot they are editing.",
+					"s": []
+				},
+				{
+					"t": "Slots hold one value each. Status belongs in a badge and several related values in a key-value list, not in slots.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Write the sentence as an instruction in plain words; slot placeholders match the filter field names.",
+					"s": []
+				},
+				{
+					"t": "Error: \"Choose who gets the titles before you run this.\"",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Each slot is a button whose name includes the slot and value (\"Status: Live\") (SC 4.1.2).",
+					"s": []
+				},
+				{
+					"t": "Slots open a menu or listbox following the menu button pattern.",
+					"s": []
+				},
+				{
+					"t": "The disabled Run has its reason in text next to it (SC 3.3.1, 3.3.2).",
+					"s": []
+				},
+				{
+					"t": "Dashed versus solid is not the only cue; empty slots show placeholder text (SC 1.4.1).",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Move between slots"
+				},
+				{
+					"keys": "Enter / Space",
+					"action": "Open a slot's options"
+				},
+				{
+					"keys": "⌘↵ / Ctrl+Enter",
+					"action": "Run when all required slots are filled"
+				}
+			],
+			"related": [
+				"templates-gallery",
+				"prompt-editor",
+				"agent-run"
+			],
+			"references": []
+		},
+		{
+			"id": "agent-permissions",
+			"name": "Agent permissions",
+			"group": "AI and agents",
+			"summary": "Per-action access set in plain words with three levels, Off, Ask first and Allow, grouped into Read and Change.",
+			"structure": [
+				"Group header (Read, Change) with summary level",
+				"Permission rows (action, what it covers, Off / Ask first / Allow segmented control)"
+			],
+			"whenToUse": [
+				{
+					"t": "Setting what an agent may read and change before it runs.",
+					"s": []
+				},
+				{
+					"t": "Adjusting automation per action as trust grows.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "Approving one specific change. Use Suggested changes (suggested-changes).",
+					"s": []
+				},
+				{
+					"t": "Connecting an outside account. Use Connected tools (connected-tools).",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Three levels per action: Off, Ask first, Allow.",
+					"s": []
+				},
+				{
+					"t": "Defaults: reading Allow, changes Ask first, anything that reaches people outside the workspace Off.",
+					"s": []
+				},
+				{
+					"t": "Group by Read and Change and describe each in plain words (\"Sends from your address\").",
+					"s": []
+				},
+				{
+					"t": "Ask first is just-in-time consent: the agent pauses with a proposal. Set up front only the default, not a one-off decision.",
+					"s": []
+				},
+				{
+					"t": "Remind people of the setting when it blocks a step (\"Email is Off in permissions\") with a link to change it.",
+					"s": []
+				},
+				{
+					"t": "Candidate data is personal data; keep it Ask first so a person reviews each use.",
+					"s": []
+				},
+				{
+					"t": "Per-run choices (\"Allow once\", \"Allow in this conversation\") never change the saved level; only \"Always allow\" does, and it shows here as Allow with who set it and when.",
+					"s": []
+				},
+				{
+					"t": "Allow is never preselected or focused when a level is offered for a risky action.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Name actions, not systems: \"Edit, extend or close listings\", \"Email candidates\".",
+					"s": []
+				},
+				{
+					"t": "Detail line says what it covers or what happens (\"Shows a proposal before each change\").",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Each segmented control is a group labelled by its row, with toggle buttons using aria-pressed (APG button).",
+					"s": []
+				},
+				{
+					"t": "Alternatively use a radiogroup with arrow keys; pick one and use it consistently (SC 3.2.4).",
+					"s": []
+				},
+				{
+					"t": "Changing a level must not change context (SC 3.2.2).",
+					"s": []
+				},
+				{
+					"t": "The selected state is shown with more than colour (SC 1.4.1, 1.4.11).",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Move between permission rows"
+				},
+				{
+					"keys": "Enter / Space",
+					"action": "Set the focused level"
+				}
+			],
+			"related": [
+				"agent-run",
+				"suggested-changes",
+				"connected-tools",
+				"segmented-control",
+				"plan-card",
+				"change-request",
+				"connector-picker"
+			],
+			"references": []
+		},
+		{
+			"id": "agent-run",
+			"name": "Agent run timeline",
+			"group": "AI and agents",
+			"summary": "The steps of an agent run with state in shape and colour, the filter each step used, a highlighted waiting step and Stop always visible.",
+			"structure": [
+				"Header (task name, status badge, Stop)",
+				"Step rows (state icon, title, detail, action)",
+				"Footer (started by, when, schedule)"
+			],
+			"whenToUse": [
+				{
+					"t": "Watching or reviewing an agent run, scheduled or started from a task.",
+					"s": []
+				},
+				{
+					"t": "When a run is waiting for approval, to show what it needs.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "A single answer. Use Thinking and steps (thinking-steps).",
+					"s": []
+				},
+				{
+					"t": "Applying a proposal you just approved. Use the Step card (step-card).",
+					"s": []
+				},
+				{
+					"t": "Listing everything that needs you across runs. Use the Inbox (inbox).",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Every step has a state: done, running, waiting for you, skipped, failed.",
+					"s": []
+				},
+				{
+					"t": "Steps that pick rows show the filter used and open it as a view.",
+					"s": []
+				},
+				{
+					"t": "A waiting step is highlighted and holds its action (Review).",
+					"s": []
+				},
+				{
+					"t": "Stop is always visible and in the same place.",
+					"s": []
+				},
+				{
+					"t": "Skipped steps say why and link to the setting.",
+					"s": []
+				},
+				{
+					"t": "Record who started it, when and on what schedule, and keep the log.",
+					"s": []
+				},
+				{
+					"t": "In parallel steps, a failed step shows its own error and Retry on its row while the rest keep running; the run isn't shown as blocked.",
+					"s": []
+				},
+				{
+					"t": "Failed and stopped steps are never counted as done; the counts add up to the steps shown.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Step titles say what happened in past tense with counts (\"Found 2 live listings under 3%\").",
+					"s": []
+				},
+				{
+					"t": "Badge text is a state, not a mood: \"Needs you\", \"Done\", \"Failed\".",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "States combine an icon shape, colour and text (SC 1.4.1, 1.4.11).",
+					"s": []
+				},
+				{
+					"t": "Use a list with each step as a list item so the order is exposed (SC 1.3.1).",
+					"s": []
+				},
+				{
+					"t": "Announce new steps and a change to \"Needs you\" as status messages (SC 4.1.3).",
+					"s": []
+				},
+				{
+					"t": "Running runs are auto-updating content in parallel with the page; Stop meets SC 2.2.2.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Move through step actions"
+				},
+				{
+					"keys": "Enter",
+					"action": "Open the step's view or Review"
+				},
+				{
+					"keys": "Enter on Stop",
+					"action": "Stop the run"
+				}
+			],
+			"related": [
+				"agent-permissions",
+				"task-builder",
+				"step-card",
+				"inbox",
+				"plan-card",
+				"change-request"
+			],
+			"references": []
+		},
+		{
+			"id": "connected-tools",
+			"name": "Connected tools",
+			"group": "AI and agents",
+			"summary": "Outside tools listed in the + menu and settings, each with a detail card saying what it can read and change, where data is stored and who connected it.",
+			"structure": [
+				"Tools menu (tool, status, Connect, Browse tools)",
+				"Detail card (name, type, status badge, description, Can read, Can change, Data stored, Connected by, Privacy policy, Disconnect, Permissions)"
+			],
+			"whenToUse": [
+				{
+					"t": "Connecting a tool at the moment it is needed, from the + menu.",
+					"s": []
+				},
+				{
+					"t": "Reviewing what a connected tool can access.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "Setting what the agent may do with TwoUX data. Use Agent permissions (agent-permissions).",
+					"s": []
+				},
+				{
+					"t": "Adding a single file. Use Attach a file in the Message composer (message-composer).",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Before and after connecting, say in plain words what it can read and change, where data is stored and who connected it.",
+					"s": []
+				},
+				{
+					"t": "Let people scope a tool to what it needs.",
+					"s": []
+				},
+				{
+					"t": "Give each tool a consistent icon and name across menus and answers.",
+					"s": []
+				},
+				{
+					"t": "When a tool fails or is partly loaded, say so inline and offer reconnect or retry; avoid blank states that imply success.",
+					"s": []
+				},
+				{
+					"t": "Show when data was last synced.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "\"Brings candidates and pipeline stages into TwoUX so the assistant can compare them with your listings.\"",
+					"s": []
+				},
+				{
+					"t": "Use \"Nothing\" rather than leaving Can change empty.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "The tools list is a menu; each tool is a menuitemcheckbox when it toggles use, or a menuitem when it connects (APG menu).",
+					"s": []
+				},
+				{
+					"t": "The detail card uses a description list for its fields (SC 1.3.1).",
+					"s": []
+				},
+				{
+					"t": "Disconnect is a destructive action; confirm with the consequence and keep focus order (SC 2.4.3, 3.3.4).",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Right arrow",
+					"action": "Open the tools submenu from the + menu"
+				},
+				{
+					"keys": "Space",
+					"action": "Turn a connected tool on or off for this conversation"
+				},
+				{
+					"keys": "Enter",
+					"action": "Connect or open the tool"
+				},
+				{
+					"keys": "Esc",
+					"action": "Close the menu"
+				}
+			],
+			"related": [
+				"agent-permissions",
+				"message-composer",
+				"team-instructions",
+				"connector-picker",
+				"provider-logo"
+			],
+			"references": []
+		},
+		{
+			"id": "team-instructions",
+			"name": "Team instructions and files",
+			"group": "AI and agents",
+			"summary": "Shared instructions and files set once for the workspace, visible and editable, and named in the assistant's empty state and citations when used.",
+			"structure": [
+				"Instructions card (text, Edit, set by and scope)",
+				"Files card (file list, Add a file)",
+				"Privacy note"
+			],
+			"whenToUse": [
+				{
+					"t": "Rules the assistant should always follow for the team, such as UK English or never contacting candidates without asking.",
+					"s": []
+				},
+				{
+					"t": "Reference files such as salary bands or hiring policy that answers should cite.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "Personal preferences for one person. Use writing style in the Message composer (message-composer).",
+					"s": []
+				},
+				{
+					"t": "Rules that grant or block actions. Use Agent permissions (agent-permissions).",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Shared context is visible and editable, not hidden in a system prompt.",
+					"s": []
+				},
+				{
+					"t": "Show who set it and that it applies to everyone in the workspace.",
+					"s": []
+				},
+				{
+					"t": "The empty state says it is in use (\"Using team instructions and 3 files\").",
+					"s": []
+				},
+				{
+					"t": "Answers cite the file when they rely on it.",
+					"s": []
+				},
+				{
+					"t": "Keep conversations private unless shared.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Instructions are short imperatives in plain English.",
+					"s": []
+				},
+				{
+					"t": "Scope line: \"Set by Rahul S. · applies to everyone in TwoUX\".",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Edit and Add a file are icon buttons with names (SC 4.1.2).",
+					"s": []
+				},
+				{
+					"t": "Card headings label each section (SC 2.4.6, 1.3.1).",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Move to Edit or Add a file"
+				},
+				{
+					"keys": "Enter",
+					"action": "Edit instructions or add a file"
+				}
+			],
+			"related": [
+				"assistant-panel",
+				"citations-sources",
+				"connected-tools"
+			],
+			"references": []
+		},
+		{
+			"id": "conversation-history",
+			"name": "Previous conversations",
+			"group": "AI and agents",
+			"summary": "A searchable list opened from the clock in the panel bar: scheduled tasks first, then recent conversations, with a dot for a new answer and \"Needs you\" for one waiting.",
+			"structure": [
+				"Search field",
+				"Scheduled tasks",
+				"Recent conversations (title, status dot or Needs you badge, date)"
+			],
+			"whenToUse": [
+				{
+					"t": "Returning to an earlier answer or a run waiting for you.",
+					"s": []
+				},
+				{
+					"t": "Finding conversations by their title, named from the first question.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "Handling everything that needs you across the product. Use the Inbox (inbox).",
+					"s": []
+				},
+				{
+					"t": "Auditing agent actions. Use the Agent run timeline (agent-run) log.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Name conversations from the first question so they are findable.",
+					"s": []
+				},
+				{
+					"t": "Mark a new answer with a dot and a waiting run with \"Needs you\".",
+					"s": []
+				},
+				{
+					"t": "Selecting a past conversation lets people continue it or start from it.",
+					"s": []
+				},
+				{
+					"t": "Offer deletion and keep history private by default.",
+					"s": []
+				},
+				{
+					"t": "Title each conversation from its first question or a short summary, never \"New conversation\".",
+					"s": []
+				},
+				{
+					"t": "Group by Today, Yesterday, Previous 7 days, then month; show local time with the full date and time on hover.",
+					"s": []
+				},
+				{
+					"t": "Delete has Undo. Conversations are never removed automatically without notice; the retention period is stated at the top of the list.",
+					"s": []
+				},
+				{
+					"t": "History is the person's record of conversations; what the assistant keeps between conversations lives in Team instructions, where it can be seen and edited.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Dates are short and relative where recent (\"Yesterday\", \"Mon\", \"2 Nov\").",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "The search field filters the list; announce the result count (SC 4.1.3).",
+					"s": []
+				},
+				{
+					"t": "The new-answer dot has a text equivalent (\"New answer\") (SC 1.4.1, 1.3.1).",
+					"s": []
+				},
+				{
+					"t": "Esc closes the history and returns focus to the clock button (SC 2.4.3).",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Esc",
+					"action": "Close the list"
+				},
+				{
+					"keys": "Tab / Shift+Tab",
+					"action": "Move through conversations"
+				},
+				{
+					"keys": "Enter",
+					"action": "Open a conversation"
+				}
+			],
+			"related": [
+				"assistant-panel",
+				"inbox",
+				"agent-run"
+			],
+			"references": []
+		},
+		{
+			"id": "templates-gallery",
+			"name": "Templates gallery",
+			"group": "AI and agents",
+			"summary": "A dialog with categories on the left, search on top and cards that say what each template does and which tools it uses; picking one opens it as a draft task.",
+			"structure": [
+				"Category nav with search",
+				"Heading and Close",
+				"Template cards (name, what it does, tools used)"
+			],
+			"whenToUse": [
+				{
+					"t": "Starting a new task from a proven pattern, such as sourcing or reporting.",
+					"s": []
+				},
+				{
+					"t": "Showing what agents can do to people who have not used them.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "Running a saved task you already use. Use / in the Message composer (message-composer).",
+					"s": []
+				},
+				{
+					"t": "Quick prompts in the empty state. Use starters (follow-ups-starters).",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Picking a template opens it as a draft task, never runs it.",
+					"s": []
+				},
+				{
+					"t": "Cards say what the template does and which tools it uses.",
+					"s": []
+				},
+				{
+					"t": "Search and categories make browsing easy.",
+					"s": []
+				},
+				{
+					"t": "Expose the inputs the template needs before running.",
+					"s": []
+				},
+				{
+					"t": "Curate and retire templates so the gallery stays current.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Names are tasks (\"Find hiring managers for open roles\").",
+					"s": []
+				},
+				{
+					"t": "Descriptions say the outcome in one line.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "The gallery is a dialog labelled \"Start from a template\"; focus moves in on open, Esc closes and focus returns (APG dialog).",
+					"s": []
+				},
+				{
+					"t": "The category nav marks the current item with aria-current (SC 4.1.2, 1.3.1).",
+					"s": []
+				},
+				{
+					"t": "Search announces the number of matching templates (SC 4.1.3).",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Move between search, categories and cards"
+				},
+				{
+					"keys": "Enter",
+					"action": "Open the template as a draft"
+				},
+				{
+					"keys": "Esc",
+					"action": "Close the gallery"
+				}
+			],
+			"related": [
+				"task-builder",
+				"prompt-editor",
+				"follow-ups-starters"
+			],
+			"references": []
+		},
+		{
+			"id": "prompt-editor",
+			"name": "Prompt editor with fields",
+			"group": "AI and agents",
+			"summary": "An editor where row fields and team files are removable chips, inputs and outputs are listed with types, and the prompt is tested on a few rows before running on the whole table.",
+			"structure": [
+				"Hint line ({{ for a field, @ for a team file, ⌘K to rewrite)",
+				"Prompt text with field chips",
+				"Inputs list with types",
+				"Output (one field or several) with types",
+				"Suggest outputs from prompt",
+				"Test on 3 rows"
+			],
+			"whenToUse": [
+				{
+					"t": "Defining the prompt behind an AI column or a per-row agent.",
+					"s": []
+				},
+				{
+					"t": "When the output must have a type (text, person, link) to land in the table.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "Asking a question once. Use the Message composer (message-composer).",
+					"s": []
+				},
+				{
+					"t": "Repeated tasks with filter inputs. Use the Task builder (task-builder).",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Fields are chips you can remove, not hidden syntax.",
+					"s": []
+				},
+				{
+					"t": "List inputs and outputs with their type.",
+					"s": []
+				},
+				{
+					"t": "Test on a few rows before running on the whole table; show the per-row cost.",
+					"s": []
+				},
+				{
+					"t": "Let the prompt return \"Not found\" when it is unsure, rather than forcing an answer.",
+					"s": []
+				},
+				{
+					"t": "⌘K rewrites selected text as a suggestion, not an overwrite.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Use plain headings in the prompt (\"Your task\", \"Rules\").",
+					"s": []
+				},
+				{
+					"t": "Field names match the column names people see.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Each chip's remove button is named (\"Remove field listing.title\") (SC 4.1.2).",
+					"s": []
+				},
+				{
+					"t": "{{ and @ open a combobox list of fields or files, with arrow keys and Enter (APG combobox).",
+					"s": []
+				},
+				{
+					"t": "Output type is a radiogroup with a label (APG radio).",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "{{",
+					"action": "Add a field from the row"
+				},
+				{
+					"keys": "@",
+					"action": "Add a team file"
+				},
+				{
+					"keys": "⌘K / Ctrl+K",
+					"action": "Rewrite the selected text"
+				},
+				{
+					"keys": "Enter",
+					"action": "Insert the highlighted field"
+				},
+				{
+					"keys": "Esc",
+					"action": "Close the field list"
+				}
+			],
+			"related": [
+				"ai-column",
+				"task-builder",
+				"templates-gallery",
+				"change-request"
+			],
+			"references": []
+		},
+		{
+			"id": "answer-actions",
+			"name": "Answer actions",
+			"kind": "component",
+			"group": "AI and agents",
+			"summary": "The row under every answer: origin label on the left, then Copy, Helpful, Not helpful, Regenerate and a More menu. Always visible, never only on hover.",
+			"structure": [
+				"Origin label: \"Assistant · from your workspace data\" (see AI origin label)",
+				"Copy: copies the answer as plain text with record IDs",
+				"Helpful and Not helpful: feedback toggles with submitting and sent states",
+				"Regenerate: latest answer only",
+				"More (⋯): Save as task, Open as page, Copy link",
+				"Not helpful form (optional): a short dismissible form under the answer"
+			],
+			"whenToUse": [
+				{
+					"t": "Under every answer the assistant gives in the side panel or on the assistant page.",
+					"s": []
+				},
+				{
+					"t": "Under a stacked group of answer parts once, after the last part, not after each one.",
+					"s": []
+				},
+				{
+					"t": "Under an answer that was stopped, so Regenerate and feedback are still reachable.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "For actions on a generated file, such as Download. Those belong in the file's own card.",
+					"s": []
+				},
+				{
+					"t": "For feedback about the page or product. Use the product feedback route, not answer feedback.",
+					"s": []
+				},
+				{
+					"t": "Under approval results, notices or the clarifying question card.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Show at most four icon buttons; anything else goes in More.",
+					"s": []
+				},
+				{
+					"t": "Keep the row visible at all times. Hover-only actions are invisible to keyboard and touch users.",
+					"s": []
+				},
+				{
+					"t": "Feedback has three states: default, sending (spinner in the pressed button) and sent. Once sent, the chosen button stays pressed and the other is disabled with a reason.",
+					"s": []
+				},
+				{
+					"t": "Not helpful opens an optional form under the answer: reasons as checkboxes (Wrong figures, Missed records, Too long, Other) and a note. It can be closed without sending.",
+					"s": []
+				},
+				{
+					"t": "Same order everywhere: label, Copy, Helpful, Not helpful, Regenerate, More.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Tooltips: \"Copy\", \"Helpful\", \"Not helpful\", \"Regenerate answer\", \"More actions\".",
+					"s": []
+				},
+				{
+					"t": "After feedback: \"Feedback sent\". Disabled reason on the other button: \"You marked this as helpful\".",
+					"s": []
+				},
+				{
+					"t": "Copy confirmation is a short tooltip, \"Copied\", not a toast.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Feedback buttons are toggle buttons with aria-pressed, named \"Helpful\" and \"Not helpful\".",
+					"s": []
+				},
+				{
+					"t": "\"Feedback sent\" and \"Copied\" are announced as status messages without moving focus.",
+					"s": []
+				},
+				{
+					"t": "Disabled buttons stay focusable so their reason can be read.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Move through the actions after reading the answer"
+				},
+				{
+					"keys": "Enter / Space",
+					"action": "Press the focused action"
+				},
+				{
+					"keys": "Esc",
+					"action": "Close the More menu or the Not helpful form"
+				}
+			],
+			"related": [
+				"regenerating-answers",
+				"labelling-ai-output",
+				"ai-origin-label",
+				"assistant-panel"
+			],
+			"references": []
+		},
+		{
+			"id": "artifact-card",
+			"name": "Generated file card",
+			"kind": "component",
+			"group": "AI and agents",
+			"summary": "A compact card under an answer for one thing the assistant made: name, type and size, origin label, and up to two actions with the rest in a More menu.",
+			"structure": [
+				"Icon for the type (document, table, chart, code)",
+				"Title: file name or what it is",
+				"Metadata: type, size in KB or MB, rows or words",
+				"Origin label with sources on hover",
+				"Actions: up to two buttons (Open, Download, Copy, Suggest for record) and More (⋯)",
+				"Inline preview (optional): first lines of a snippet, or the chart image"
+			],
+			"whenToUse": [
+				{
+					"t": "For each draft or file the assistant produced in an answer.",
+					"s": []
+				},
+				{
+					"t": "In agent run results when a step produced a file.",
+					"s": []
+				},
+				{
+					"t": "For a short command or snippet a person will copy into another tool.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "For records that already exist. Cite them by ID instead.",
+					"s": []
+				},
+				{
+					"t": "For files people attached. Those are context chips in the composer.",
+					"s": []
+				},
+				{
+					"t": "For a figure or short table that answers the question. Keep it in the answer text.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "One card per output, stacked under the answer in the order they were made.",
+					"s": []
+				},
+				{
+					"t": "Code and commands preview in the Code block style with Copy; long previews cut at about eight lines with Open for the rest.",
+					"s": []
+				},
+				{
+					"t": "While a file is being made, the card shows a skeleton line and \"Writing job description\"; text around it may stream, the card does not.",
+					"s": []
+				},
+				{
+					"t": "If making the file failed, the card says why and offers Try again; other cards in the answer stay.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Sizes in KB, MB or GB with one decimal at most: \"1.2 MB\".",
+					"s": []
+				},
+				{
+					"t": "Loading text names the thing: \"Writing job description\", \"Loading 38 listings\".",
+					"s": []
+				},
+				{
+					"t": "Title is the file name or a plain description, never \"Artifact\" or \"Output 1\".",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "The card is a group with an accessible name from its title.",
+					"s": []
+				},
+				{
+					"t": "Action names include the file: \"Open job description\".",
+					"s": []
+				},
+				{
+					"t": "The More menu follows the menu button pattern.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Reach the card's actions in order"
+				},
+				{
+					"keys": "Enter",
+					"action": "Run the focused action"
+				},
+				{
+					"keys": "↓ / ↑",
+					"action": "Move through the More menu"
+				},
+				{
+					"keys": "Esc",
+					"action": "Close the More menu"
+				}
+			],
+			"related": [
+				"generated-drafts-files",
+				"code-block",
+				"ai-origin-label",
+				"answer-actions"
+			],
+			"references": []
+		},
+		{
+			"id": "plan-card",
+			"name": "Plan preview",
+			"group": "AI and agents",
+			"summary": "The plan an agent shows before a multi-step or costly run: numbered steps people can remove, risky steps marked in words, and nothing running until it is approved.",
+			"structure": [
+				"Header (plan title, origin label with what it is based on)",
+				"Step rows (number, step, optional detail, risk line, Remove or Put back)",
+				"Footer (count \"3 of 4 steps\", note \"nothing runs until you approve\", Cancel, Approve plan)",
+				"Plan change line (PlanChange) in the run if the plan changes later"
+			],
+			"whenToUse": [
+				{
+					"t": "Before any run with several steps, or one that costs time or money, so people can see it first.",
+					"s": []
+				},
+				{
+					"t": "When a step reaches people outside the workspace (an email, a message to a candidate) or cannot be undone (a close, a delete).",
+					"s": []
+				},
+				{
+					"t": "When the agent was started by a schedule or a request people did not write step by step.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "A single, small change. Use Suggested changes (suggested-changes), which is the review step for one proposal.",
+					"s": []
+				},
+				{
+					"t": "Questions whose answer would change the plan. Ask first with a Clarifying question (clarifying-question); show the plan once the answer is known.",
+					"s": []
+				},
+				{
+					"t": "Work that has already started. Show progress in the Agent run (agent-run) and use PlanChange only if the plan itself changes.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Show the plan before any multi-step or costly run. Nothing runs until the person approves, and never on a timeout.",
+					"s": []
+				},
+				{
+					"t": "Each step is a plain action with its detail underneath. People can remove a step, and put it back, before approving.",
+					"s": []
+				},
+				{
+					"t": "Mark steps that reach people outside the workspace or cannot be undone, with an icon and words, not colour alone.",
+					"s": []
+				},
+				{
+					"t": "The footer counts what will run (\"3 of 4 steps\") and updates as steps are removed. Approve is disabled when no steps are left.",
+					"s": []
+				},
+				{
+					"t": "When any step is high-stakes, Approve and Cancel carry equal weight. This is the one exception to one primary action: both are outline buttons, so neither is nudged.",
+					"s": []
+				},
+				{
+					"t": "If the plan changes mid-run, add a PlanChange line saying what changed and why. Never reroute silently.",
+					"s": []
+				},
+				{
+					"t": "Ask clarifying questions first only if the answer changes the plan. Otherwise show the plan and let people adjust it.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Title the plan by its outcome (\"Close three expired listings and tell applicants\"), not by the agent's method.",
+					"s": []
+				},
+				{
+					"t": "Write steps as actions in the order they happen. Put the consequence in the detail line: \"Sends an email to 14 applicants\".",
+					"s": []
+				},
+				{
+					"t": "Name the risk in words: \"Reaches people outside the workspace\" or \"Can't be undone\". Do not soften it.",
+					"s": []
+				},
+				{
+					"t": "PlanChange reads as what changed, then why: \"Plan changed: skipped the email step. The listing has no applicants.\"",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "The plan is an ordered list, so the number of steps and each position are announced (SC 1.3.1).",
+					"s": []
+				},
+				{
+					"t": "Risk is shown by an icon and a line of text, not colour alone (SC 1.4.1).",
+					"s": []
+				},
+				{
+					"t": "Remove and Put back are real buttons with the step number in their hidden label, and a removed step carries the hidden word \"removed\" (SC 4.1.2).",
+					"s": []
+				},
+				{
+					"t": "Nothing starts on a timer, so there is no time limit to adjust (SC 2.2.1). Approving is the review step for work that records data (SC 3.3.4).",
+					"s": []
+				},
+				{
+					"t": "PlanChange is a role=\"status\" line, so a plan change is announced without moving focus (SC 4.1.3).",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Move through Remove buttons, then Cancel and Approve plan"
+				},
+				{
+					"keys": "Enter / Space",
+					"action": "Remove or put back the focused step, or press the focused button"
+				}
+			],
+			"related": [
+				"agent-run",
+				"clarifying-question",
+				"agent-permissions",
+				"suggested-changes",
+				"step-card"
+			],
+			"references": []
+		},
+		{
+			"id": "change-request",
+			"name": "Change review",
+			"group": "AI and agents",
+			"summary": "The review queue for changes an agent proposes to records, procedures, prompts, tools or another agent: the reason, the diff, and test results, approved or rejected by a person.",
+			"structure": [
+				"Header (title, status badge, origin label, reason in plain words)",
+				"Diff view (files changed, +/− counts, unified diff)",
+				"Simulation results (\"228 of 240 pass\", failures first, newly failing called out)",
+				"Footer (note, Reject, Approve change) or the Reject reason field",
+				"Resolved line (who decided and when)"
+			],
+			"whenToUse": [
+				{
+					"t": "When an agent proposes to change how something works: a procedure, a prompt, a tool, a rule, or another agent's instructions.",
+					"s": []
+				},
+				{
+					"t": "When a change can be tested against a set of known cases (a regression set) before it goes live.",
+					"s": []
+				},
+				{
+					"t": "When many agent changes arrive together and a person has to work through them in order.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "Changes to a few records a person asked for. Use Suggested changes (suggested-changes).",
+					"s": []
+				},
+				{
+					"t": "Plans for work that has not started. Use the Plan preview (plan-card).",
+					"s": []
+				},
+				{
+					"t": "Actions set to Allow in Agent permissions (agent-permissions). Those run and appear in the Activity log with Undo.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Nothing goes live until a person approves. Say so in the footer.",
+					"s": []
+				},
+				{
+					"t": "State the reason in plain words and what the proposal is based on (the origin label), for example \"14 conversations this week\".",
+					"s": []
+				},
+				{
+					"t": "Show the diff and the simulation results in the same card, so the person can decide without opening anything else.",
+					"s": []
+				},
+				{
+					"t": "Run the change against a regression set. Failures come first, and a case that passed before and fails now is called out in words (\"Newly failing\"), with a count in the footer.",
+					"s": []
+				},
+				{
+					"t": "Rejecting needs a reason the agent can learn from. If the box is empty, say why it is needed, next to the field.",
+					"s": []
+				},
+				{
+					"t": "Every decision leaves a resolved line with who decided and when. Changes are logged and attributable to the agent that proposed them and the person who approved.",
+					"s": []
+				},
+				{
+					"t": "A change one agent proposes to another agent's procedures is reviewed in the same way, with the proposing agent named as the origin.",
+					"s": []
+				},
+				{
+					"t": "Group many changes by batch, each batch with a stated rationale. Stage risky ones with a traffic split or a gradual ramp, not all at once.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Title the change by what it does: \"Reply in the applicant's language\", not \"Update prompt v14\".",
+					"s": []
+				},
+				{
+					"t": "Write the reason as cause and effect: \"Applicants wrote in Welsh in 6 of 14 conversations and the assistant replied in English.\"",
+					"s": []
+				},
+				{
+					"t": "Name failures in words: \"2 conversations that passed before now fail.\" Do not rely on a coloured count.",
+					"s": []
+				},
+				{
+					"t": "Resolved line: \"Approved by Imogen Hart · 10:42\" or \"Rejected by Imogen Hart · 10:42\", with the reason kept in the log.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Each card is an article labelled with the change title, so people can move through a queue of changes by heading (SC 1.3.1).",
+					"s": []
+				},
+				{
+					"t": "Added and removed lines carry a + or − marker and a hidden word (\"Added\", \"Removed\"), not colour alone (SC 1.4.1).",
+					"s": []
+				},
+				{
+					"t": "File rows are disclosure buttons with aria-expanded (SC 4.1.2).",
+					"s": []
+				},
+				{
+					"t": "The Reject reason field has a visible label, and a missing reason is an error shown beside it as text (SC 3.3.1, 3.3.2).",
+					"s": []
+				},
+				{
+					"t": "Approving puts a change live, so the review step, the simulation results and the logged decision satisfy error prevention (SC 3.3.4). The resolved line is a role=\"status\" message (SC 4.1.3).",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Move through file rows, then Reject and Approve change"
+				},
+				{
+					"keys": "Enter / Space",
+					"action": "Open or close a file's diff, or press the focused button"
+				},
+				{
+					"keys": "Enter (in Reject)",
+					"action": "New line in the reason field; Tab to Reject change to send it"
+				}
+			],
+			"related": [
+				"suggested-changes",
+				"agent-permissions",
+				"agent-run",
+				"confidence-note",
+				"plan-card",
+				"prompt-editor"
+			],
+			"references": []
+		},
+		{
+			"id": "confidence-note",
+			"name": "Confidence note",
+			"group": "AI and agents",
+			"summary": "A short note beside agent output that says, in words, what the agent is unsure about, why, and the safer option or the way to check.",
+			"structure": [
+				"Lead line (\"Not sure:\" and the cause)",
+				"Safer option or what to check",
+				"Optional actions (for example Check the source, Use the safer option)"
+			],
+			"whenToUse": [
+				{
+					"t": "When the output affects other people, shared records or money and the agent has a real reason to be unsure.",
+					"s": []
+				},
+				{
+					"t": "When the cause is specific: missing data, out-of-date data, or an ambiguous request.",
+					"s": []
+				},
+				{
+					"t": "When the agent is unsure whether a change applies to one item, all items or future items. Ask before acting.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "As a standing disclaimer on every answer. Use the caveat line under the message box (assistant-panel).",
+					"s": []
+				},
+				{
+					"t": "To report an error. Use an error message (error-messages) with the fix.",
+					"s": []
+				},
+				{
+					"t": "Low-stakes output the person can see and change in a second. A note there is noise people learn to skip.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Say uncertainty in words, never as a percentage. A figure like 72% looks exact and gives people nothing to do.",
+					"s": []
+				},
+				{
+					"t": "Say what caused it: missing data, out of date, or an ambiguous request.",
+					"s": []
+				},
+				{
+					"t": "Offer a safer alternative or a concrete way to check, such as the record to open or the filter to apply.",
+					"s": []
+				},
+				{
+					"t": "Scale to the stakes: use it when the output affects other people, shared records or money, and leave it off elsewhere.",
+					"s": []
+				},
+				{
+					"t": "When unsure whether a change applies to one item, all items or future items, ask before acting. Do not pick the widest.",
+					"s": []
+				},
+				{
+					"t": "Place the note next to the output it is about, not in a corner, so it is read together with it.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Start with \"Not sure:\" and the cause: \"Not sure: the connection is 35 minutes, and the last export was in March.\"",
+					"s": []
+				},
+				{
+					"t": "Follow with what to do, as an instruction: \"Check the rail times before sending this to applicants.\"",
+					"s": []
+				},
+				{
+					"t": "Avoid \"might\", \"may\" and \"possibly\" on their own. Say which part, and why.",
+					"s": []
+				},
+				{
+					"t": "Do not apologise. State the cause and the next step.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "The cause is text with an icon that is hidden from assistive technology, so meaning does not rely on colour or the icon (SC 1.4.1).",
+					"s": []
+				},
+				{
+					"t": "The note sits next to the output in reading order so it is read with it (SC 1.3.1).",
+					"s": []
+				},
+				{
+					"t": "Any action in the note is a real button with a visible name (SC 4.1.2).",
+					"s": []
+				},
+				{
+					"t": "If a note appears after the output has loaded, put it in a role=\"status\" region so it is announced (SC 4.1.3).",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Move to the note's actions, if it has any"
+				},
+				{
+					"keys": "Enter / Space",
+					"action": "Press the focused action"
+				}
+			],
+			"related": [
+				"citations-sources",
+				"clarifying-question",
+				"ai-origin-label",
+				"suggested-changes",
+				"change-request"
+			],
+			"references": []
+		},
+		{
+			"id": "why-choice",
+			"name": "Why this choice",
+			"group": "AI and agents",
+			"summary": "A small Why? control beside a choice an agent made. On demand, it names the deciding factors and the options that lost, then offers Change this or Keep it.",
+			"structure": [
+				"Why? link beside the choice",
+				"Popover (\"Why <choice>\", deciding factors)",
+				"Not chosen (each option and why it lost)",
+				"Couldn't meet (a requirement that was dropped, if any)",
+				"Footer (Change this, Keep it)"
+			],
+			"whenToUse": [
+				{
+					"t": "When an agent picked between options for the person: a time, a supplier, a template, a route, a recipient list.",
+					"s": []
+				},
+				{
+					"t": "When a requirement could not be met and the person should know.",
+					"s": []
+				},
+				{
+					"t": "When the choice is easy to change and people may want to change it after seeing why.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "By default, on every output. Explanations on demand keep the screen quiet; use the origin label (ai-origin-label) to say where something came from.",
+					"s": []
+				},
+				{
+					"t": "Sources for a claim. Use Citations and sources (citations-sources).",
+					"s": []
+				},
+				{
+					"t": "Risks or doubt about the output. Use a Confidence note (confidence-note).",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Show the reasoning on demand, from a Why? link. Do not show it by default.",
+					"s": []
+				},
+				{
+					"t": "Name the deciding factors in plain language, with the most important first.",
+					"s": []
+				},
+				{
+					"t": "Name the options that lost and why, so the person can see the alternatives were considered.",
+					"s": []
+				},
+				{
+					"t": "Say if a requirement could not be met (\"Couldn't meet: no room free before 10:00\"), not only what was satisfied.",
+					"s": []
+				},
+				{
+					"t": "End with Change this and Keep it, so the explanation leads to control.",
+					"s": []
+				},
+				{
+					"t": "Store the reasoning with the choice when it is made. Do not rebuild it later, or the explanation can drift from what actually happened.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Title the popover \"Why <the choice>\": \"Why Thursday at 14:00\".",
+					"s": []
+				},
+				{
+					"t": "Write each factor as a fact the person could check: \"Everyone invited is free\", not \"Best fit\".",
+					"s": []
+				},
+				{
+					"t": "Write each lost option as its name, then the reason: \"Wednesday 10:00: Imogen is out until 11:00\".",
+					"s": []
+				},
+				{
+					"t": "Keep buttons as verbs: \"Change this\" opens the choice for editing; \"Keep it\" closes the popover.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "The control is a button with the hidden text \"Why <choice>\", so it is not just \"Why?\" out of context (SC 2.4.6, 4.1.2).",
+					"s": []
+				},
+				{
+					"t": "The popover is a non-modal dialog opened by the button; Escape closes it and focus returns to the button (APG dialog).",
+					"s": []
+				},
+				{
+					"t": "Deciding factors use a check icon and text, and the icon is hidden from assistive technology (SC 1.4.1).",
+					"s": []
+				},
+				{
+					"t": "The target is padded to at least 24 by 24 CSS pixels (SC 2.5.8).",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Enter / Space",
+					"action": "Open the Why? popover"
+				},
+				{
+					"keys": "Tab",
+					"action": "Move through Change this and Keep it"
+				},
+				{
+					"keys": "Esc",
+					"action": "Close the popover and return focus to Why?"
+				}
+			],
+			"related": [
+				"citations-sources",
+				"confidence-note",
+				"ai-origin-label",
+				"agent-run",
+				"change-request"
+			],
+			"references": []
+		}
+	]
+}

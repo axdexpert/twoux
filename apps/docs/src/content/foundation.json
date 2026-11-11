@@ -1,0 +1,2294 @@
+{
+	"components": [
+		{
+			"id": "colours",
+			"name": "Colours",
+			"kind": "foundation",
+			"group": "Visual foundation",
+			"summary": "TwoUX is a mostly neutral interface, light by default with a dark theme people can choose. Colour is spent on two things only: the one accent that marks the main action and current selection, and three reserved status families. Every colour is applied through a role token, never a hex value.",
+			"principles": [
+				{
+					"t": "Neutral first. Surfaces, text and lines are cool greys with a slight violet bias, so data and status carry the colour. Most of the UI stays white and greyscale, and colour is kept for calls to action and status.",
+					"s": []
+				},
+				{
+					"t": "Light by default, dark by choice. Every role token holds a light and a dark value (CSS light-dark()), so components are written once and switch together when <html> gets data-theme=\"dark\", or \"system\" to follow the device. Dark values are chosen for dark, not inverted: surfaces step lighter as they rise (page, surface, popover), status text moves to the 400 steps, status fills are mixed into the surface, and chart colours are a separate validated selection. Each pair is contrast-checked against its own theme's surface.",
+					"s": []
+				},
+				{
+					"t": "One accent with one job. --accent marks the primary action, the current selection and focus. It never means good, bad or anything else.",
+					"s": []
+				},
+				{
+					"t": "Status colours mean status. --ok, --warn and --bad (and --mute for neutral) describe the state of a record, such as a listing that is live, expiring or closed. They are never decoration and never a chart series.",
+					"s": []
+				},
+				{
+					"t": "Choose by role, not by look. Pick the token whose name matches the job, even when another token happens to render the same hex.",
+					"s": []
+				},
+				{
+					"t": "Colour is never the only cue. Every state that uses colour also has text, an icon or a shape change.",
+					"s": []
+				}
+			],
+			"whenToUse": [
+				{
+					"t": "Use --accent for the single primary button in a view, the selected nav item, links and the focus ring.",
+					"s": []
+				},
+				{
+					"t": "Use a status family (text, -bg, -line together) for badges, banners, inline validation and row state.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "Do not use status colours to make something look important; use type weight or position instead.",
+					"s": []
+				},
+				{
+					"t": "Do not use --c1 to --c8 or --q1 to --q5 in UI chrome; those belong to charts only.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Text: --ink (17.8:1 on white) for primary text, --ink-2 (9.1:1) for secondary text and labels, --ink-3 (5.7:1) for metadata and placeholders. All three pass the 4.5:1 text minimum on both --surface and --bg.",
+					"s": []
+				},
+				{
+					"t": "Ground: --bg (#F5F5F8) is the app chrome; --surface (#FFFFFF) is the inset canvas where work happens; --surface-2 is a quiet well inside a surface. --hover and --selected are row and item states.",
+					"s": []
+				},
+				{
+					"t": "Lines: --line and --line-strong are separators for grouping. At 1.24:1 and 1.44:1 on white they are too faint to be the only thing that identifies a control, so inputs and buttons must also have a fill, label or text that meets 3:1 or 4.5:1.",
+					"s": []
+				},
+				{
+					"t": "Status families come in threes: text (--ok #1E7F47), background (--ok-bg) and border (--ok-line). Use the three together so the pairing is always the tested one: --ok on --ok-bg is 4.51:1, --warn on --warn-bg 5.30:1, --bad on --bad-bg 4.79:1.",
+					"s": []
+				},
+				{
+					"t": "Selected and active states pair colour with a second cue: a check, a filled background, a weight change or an underline.",
+					"s": []
+				},
+				{
+					"t": "--progress (#D9A118) is 2.32:1 on white. It may only fill a bar or dot that sits next to a text value; it must never carry meaning alone.",
+					"s": []
+				},
+				{
+					"t": "AI has no colour of its own. The origin mark and its text use the muted text colour; generated cells use the neutral generated tint.",
+					"s": []
+				},
+				{
+					"t": "No gradients, glows or animated fills on AI surfaces, avatars or loading. Progress is shown with words, a timer and the standard spinner or progress bar.",
+					"s": []
+				},
+				{
+					"t": "Form controls, links and the accent keep their usual colours inside the assistant.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Body text must reach 4.5:1 and large text 3:1 against its actual background; ratios are not rounded up, so 4.49:1 fails.",
+					"s": []
+				},
+				{
+					"t": "Control boundaries, icons that carry meaning and the focus ring must reach 3:1 against adjacent colours.",
+					"s": []
+				},
+				{
+					"t": "Disabled controls are exempt from contrast, but they must still be identifiable by label.",
+					"s": []
+				},
+				{
+					"t": "Never convey status by colour alone. A red row also says 'Closed'; a green dot also says 'Live'.",
+					"s": []
+				}
+			],
+			"tokens": [
+				{
+					"name": "--bg",
+					"value": "#F5F5F8",
+					"use": "App chrome behind the canvas"
+				},
+				{
+					"name": "--surface",
+					"value": "#FFFFFF",
+					"use": "Inset canvas, cards, panels, popovers"
+				},
+				{
+					"name": "--surface-2",
+					"value": "#FAFAFC",
+					"use": "Wells and quiet areas inside a surface"
+				},
+				{
+					"name": "--hover",
+					"value": "#ECECF2",
+					"use": "Row and item hover on a surface (tables, lists, menus)"
+				},
+				{
+					"name": "--selected",
+					"value": "#E6E6EC",
+					"use": "Hover on the app background (sidebar, top bar) and the cell under the pointer in a grid; the current nav item sits raised on --surface instead"
+				},
+				{
+					"name": "--line",
+					"value": "#E6E6EC",
+					"use": "Default separator"
+				},
+				{
+					"name": "--line-strong",
+					"value": "#D6D6DF",
+					"use": "Stronger separator, keycap border"
+				},
+				{
+					"name": "--ink",
+					"value": "#17171F",
+					"use": "Primary text (17.8:1 on white)"
+				},
+				{
+					"name": "--ink-2",
+					"value": "#474756",
+					"use": "Secondary text and labels (9.1:1)"
+				},
+				{
+					"name": "--ink-3",
+					"value": "#656574",
+					"use": "Metadata, placeholder (5.7:1)"
+				},
+				{
+					"name": "--accent",
+					"value": "#5753E0",
+					"use": "Primary action, selection, links (5.65:1)"
+				},
+				{
+					"name": "--accent-hover",
+					"value": "#4A46D1",
+					"use": "Primary action hover"
+				},
+				{
+					"name": "--accent-soft",
+					"value": "#EEEDFD",
+					"use": "Accent tint for selected and AI surfaces"
+				},
+				{
+					"name": "--accent-ink",
+					"value": "#4340C4",
+					"use": "Accent text on --accent-soft (6.56:1)"
+				},
+				{
+					"name": "--on-accent",
+					"value": "#FFFFFF",
+					"use": "Text on --accent"
+				},
+				{
+					"name": "--ok / --ok-bg / --ok-line",
+					"value": "#1E7F47 / #E8F6EE / #BFE3CD",
+					"use": "Positive status"
+				},
+				{
+					"name": "--warn / --warn-bg / --warn-line",
+					"value": "#965606 / #FDF4E3 / #F0D7A8",
+					"use": "Caution status"
+				},
+				{
+					"name": "--bad / --bad-bg / --bad-line",
+					"value": "#C2333B / #FCECED / #F1C3C6",
+					"use": "Error, destructive, closed"
+				},
+				{
+					"name": "--mute / --mute-bg / --mute-line",
+					"value": "#474756 / #F2F2F5 / #E1E1E8",
+					"use": "Neutral status such as Draft"
+				},
+				{
+					"name": "--progress",
+					"value": "#D9A118",
+					"use": "Progress fill only, always next to a text value"
+				}
+			],
+			"dos": [
+				{
+					"t": "Use one --accent button per view so the main action is obvious.",
+					"s": []
+				},
+				{
+					"t": "Pair every status colour with a word.",
+					"s": []
+				},
+				{
+					"t": "Reference tokens by name in code.",
+					"s": []
+				}
+			],
+			"donts": [
+				{
+					"t": "Do not write hex, rgb or named colours in component code.",
+					"s": []
+				},
+				{
+					"t": "Do not use --bad for anything that is not an error, a destructive action or a closed state.",
+					"s": []
+				},
+				{
+					"t": "Do not pick a token because its colour matches what you want; pick it because its name matches the job.",
+					"s": []
+				}
+			],
+			"related": [
+				"data-vis-colours",
+				"design-tokens",
+				"accessibility",
+				"shape-elevation"
+			],
+			"references": []
+		},
+		{
+			"id": "data-vis-colours",
+			"name": "Data visualisation colours",
+			"kind": "foundation",
+			"group": "Visual foundation",
+			"summary": "One categorical palette of eight colours in a fixed order, one single-hue ordinal ramp of five steps, and a hard rule that status colours never become a series. Validated on white (#ffffff) with an OKLab and colour vision deficiency (CVD) simulator; every colour reaches at least 3:1.",
+			"principles": [
+				{
+					"t": "Fixed order, always. Series take --c1, --c2, --c3 and so on in sequence, so 'Applications' is the same colour in every chart on a page. The categorical palette is applied strictly in sequence and stays consistent across charts.",
+					"s": []
+				},
+				{
+					"t": "Every mark is visible. All eight categorical colours reach at least 3:1 on white, the WCAG minimum for graphical objects needed to understand a chart.",
+					"s": []
+				},
+				{
+					"t": "No palette is colour-blind safe. There is no such thing as a true colour-blind safe palette, so colour is never the only way to tell series apart.",
+					"s": []
+				},
+				{
+					"t": "Status is not data. --ok, --warn and --bad keep their meaning; a series that happens to be 'bad' news is still drawn in its categorical slot.",
+					"s": []
+				}
+			],
+			"whenToUse": [
+				{
+					"t": "Categorical (--c1 to --c8): unordered groups such as source (job board, referral, careers site) or listing type. Up to about eight series for line and bar charts.",
+					"s": []
+				},
+				{
+					"t": "Ordinal ramp (--q1 to --q5): ordered buckets such as days open (0 to 7, 8 to 14...) or match score bands, and sequential heatmaps. More means more contrast with the surface: darker in the light theme, brighter in the dark theme, with a sequential palette for each theme.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "Do not use data colours for buttons, badges, tags or any UI element.",
+					"s": []
+				},
+				{
+					"t": "Do not use more than three categorical colours in a scatter plot or categorical heatmap; fold the rest into 'Other' or split into small multiples.",
+					"s": []
+				},
+				{
+					"t": "Do not use pie or donut charts for more than about five slices.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Why this order: adjacent pairs were ordered to stay apart. Worst adjacent difference under normal vision is OKLab ΔE 18.0; worst adjacent difference under simulated CVD is ΔE 10.0 (protan, --c3 teal against --c2 orange). Neighbours in a legend or stacked bar are the pairs people compare most, so adjacency is what the order optimises.",
+					"s": []
+				},
+				{
+					"t": "Why only three for scatter and heatmaps: in those forms any colour can sit next to any other, so all pairs matter, not just neighbours. Only --c1, --c2 and --c3 pass the all-pairs check; from the fourth colour some pair falls too close under CVD.",
+					"s": []
+				},
+				{
+					"t": "Why one hue for the ramp: --q1 to --q5 are indigo with lightness falling monotonically, so order reads from lightness alone, which survives CVD and greyscale print. One hue also means the ramp cannot be mistaken for categorical series.",
+					"s": []
+				},
+				{
+					"t": "Limit of the ramp: --q1 is 2.23:1 on white, below 3:1. The lightest bucket must carry a value label or sit inside a bordered cell, so understanding never depends on seeing it.",
+					"s": []
+				},
+				{
+					"t": "Separate touching segments (stacked bars, pies) with a 2px --surface gap so edges do not rely on hue difference.",
+					"s": []
+				},
+				{
+					"t": "Charts sit on --surface (#ffffff), the background the palette was validated on. Do not place charts on --bg or tinted cards.",
+					"s": []
+				},
+				{
+					"t": "Every chart has a legend or direct labels, and a table view of the same data.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "3:1 is required for the parts of a chart needed to understand it. When the values are also printed as text, the marks themselves are exempt, which is how --q1 stays usable.",
+					"s": []
+				},
+				{
+					"t": "Colour is never the only cue: use direct labels, a legend in series order, and patterns or markers where lines cross.",
+					"s": []
+				},
+				{
+					"t": "CVD was checked with simulation; the worst adjacent case is protan. Simulation models such as Machado et al. are a check, not a guarantee; about 200 million people have some CVD.",
+					"s": []
+				},
+				{
+					"t": "Offer a 'View as table' toggle on every chart so screen reader and keyboard users get the same data.",
+					"s": []
+				}
+			],
+			"tokens": [
+				{
+					"name": "--c1",
+					"value": "#5753e0",
+					"use": "Series 1, indigo (5.65:1)"
+				},
+				{
+					"name": "--c2",
+					"value": "#e0602b",
+					"use": "Series 2, orange (3.57:1)"
+				},
+				{
+					"name": "--c3",
+					"value": "#00897b",
+					"use": "Series 3, teal (4.32:1)"
+				},
+				{
+					"name": "--c4",
+					"value": "#a87000",
+					"use": "Series 4, ochre (4.21:1)"
+				},
+				{
+					"name": "--c5",
+					"value": "#cc4a7a",
+					"use": "Series 5, magenta (4.35:1)"
+				},
+				{
+					"name": "--c6",
+					"value": "#008300",
+					"use": "Series 6, green (4.95:1)"
+				},
+				{
+					"name": "--c7",
+					"value": "#2a78d6",
+					"use": "Series 7, blue (4.42:1)"
+				},
+				{
+					"name": "--c8",
+					"value": "#d93f3e",
+					"use": "Series 8, red (4.44:1)"
+				},
+				{
+					"name": "--q1",
+					"value": "#a9a6f3",
+					"use": "Ordinal lowest (2.23:1, needs a label)"
+				},
+				{
+					"name": "--q2",
+					"value": "#7f7beb",
+					"use": "Ordinal 2 (3.54:1)"
+				},
+				{
+					"name": "--q3",
+					"value": "#5753e0",
+					"use": "Ordinal midpoint (5.65:1)"
+				},
+				{
+					"name": "--q4",
+					"value": "#3d39b0",
+					"use": "Ordinal 4 (8.71:1)"
+				},
+				{
+					"name": "--q5",
+					"value": "#24226f",
+					"use": "Ordinal highest (13.7:1)"
+				}
+			],
+			"dos": [
+				{
+					"t": "Assign series in order and keep a series on the same colour across every chart in a view.",
+					"s": []
+				},
+				{
+					"t": "Fold small categories into 'Other' (drawn in --ink-3) rather than reaching for a ninth colour.",
+					"s": []
+				},
+				{
+					"t": "Label the lightest ordinal bucket with its value.",
+					"s": []
+				}
+			],
+			"donts": [
+				{
+					"t": "Do not use --ok green for 'hired' and --bad red for 'rejected' in a chart; use categorical slots and say the meaning in the legend.",
+					"s": []
+				},
+				{
+					"t": "Do not use colour for decoration, or give different colours to points in the same series.",
+					"s": []
+				},
+				{
+					"t": "Do not reorder or skip palette colours to make a chart look nicer.",
+					"s": []
+				}
+			],
+			"related": [
+				"colours",
+				"accessibility",
+				"design-tokens"
+			],
+			"references": []
+		},
+		{
+			"id": "typography",
+			"name": "Typography",
+			"kind": "foundation",
+			"group": "Visual foundation",
+			"summary": "Geist for interface text, Geist Mono for IDs, keys and code. A seven-step scale from 11px to 24px with 13px as the default, tuned for dense tables. Numbers in columns use tabular figures.",
+			"principles": [
+				{
+					"t": "13px is the working size. Tables, forms and panels set at --t-base so a row of 36px holds one line with air. Body larger than this is for reading, not scanning.",
+					"s": []
+				},
+				{
+					"t": "Hierarchy by size and weight, not by colour. Headings use the heading scale; never fake a heading with bold body text.",
+					"s": []
+				},
+				{
+					"t": "Mono for values, not for style. Geist Mono marks IDs, keyboard keys and code: dedicated value types only.",
+					"s": []
+				},
+				{
+					"t": "Sentence case everywhere, including headings, buttons and menu items.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Scale: --t-xs 11px (keycaps, counters, chart ticks), --t-sm 12px (metadata, table headers, helper text), --t-base 13px (default UI and table cells), --t-md 14px (reading text in panels and AI answers), --t-lg 16px (section titles), --t-xl 20px (panel titles), --t-2xl 24px (page title).",
+					"s": []
+				},
+				{
+					"t": "No sentence text below 12px. TwoUX allows 11px only for non-sentence content (a keycap, a count, an axis tick). Never set a sentence at --t-xs.",
+					"s": []
+				},
+				{
+					"t": "Line height between 1.2 and 1.45 of the size: tight for headings, about 1.4 for body.",
+					"s": []
+				},
+				{
+					"t": "Line length for reading text (AI answers, descriptions) is capped near 80 characters, inside the comfortable range of 45 to 90.",
+					"s": []
+				},
+				{
+					"t": "Weights: 400 for body, 500 for labels and controls, 600 for headings. Medium weight carries most component text and bold stays rare.",
+					"s": []
+				},
+				{
+					"t": "Numbers that line up in columns (counts, salaries, dates) use font-variant-numeric: tabular-nums, the .num utility. Tabular figures keep vertically aligned columns readable.",
+					"s": []
+				},
+				{
+					"t": "Avoid all caps. If a short label must be in caps, letterspace it, and keep caps to short labels.",
+					"s": []
+				},
+				{
+					"t": "Text is left aligned, ragged right. Centred and justified text is atypical for product UI.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Text colour must reach 4.5:1; --ink-3 at 5.7:1 is the lightest allowed for text.",
+					"s": []
+				},
+				{
+					"t": "Text must reflow at 320 CSS px wide without horizontal scrolling, except inside data tables.",
+					"s": []
+				},
+				{
+					"t": "Use real heading elements in order; heading structure matters for accessibility, not just bold or size.",
+					"s": []
+				}
+			],
+			"tokens": [
+				{
+					"name": "--font-ui",
+					"value": "\"Geist\", ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
+					"use": "All interface text"
+				},
+				{
+					"name": "--font-mono",
+					"value": "\"Geist Mono\", ui-monospace, \"SF Mono\", Menlo, monospace",
+					"use": "IDs, keycaps, code"
+				},
+				{
+					"name": "--t-xs",
+					"value": "11px",
+					"use": "Keycaps, counters, chart ticks only"
+				},
+				{
+					"name": "--t-sm",
+					"value": "12px",
+					"use": "Metadata, table headers, helper text"
+				},
+				{
+					"name": "--t-base",
+					"value": "13px",
+					"use": "Default UI text and table cells"
+				},
+				{
+					"name": "--t-md",
+					"value": "14px",
+					"use": "Reading text in panels and AI answers"
+				},
+				{
+					"name": "--t-lg",
+					"value": "16px",
+					"use": "Section titles"
+				},
+				{
+					"name": "--t-xl",
+					"value": "20px",
+					"use": "Panel and dialog titles"
+				},
+				{
+					"name": "--t-2xl",
+					"value": "24px",
+					"use": "Page title (h1)"
+				}
+			],
+			"dos": [
+				{
+					"t": "Set listing IDs like JOB-1042 in --font-mono at --t-sm.",
+					"s": []
+				},
+				{
+					"t": "Use tabular figures in every numeric column.",
+					"s": []
+				},
+				{
+					"t": "Write headings in sentence case: 'Open listings', not 'Open Listings'.",
+					"s": []
+				}
+			],
+			"donts": [
+				{
+					"t": "Do not set font-size in px, rem or em directly; use a --t-* token.",
+					"s": []
+				},
+				{
+					"t": "Do not use mono for emphasis or decoration.",
+					"s": []
+				},
+				{
+					"t": "Do not set paragraphs in all caps.",
+					"s": []
+				}
+			],
+			"related": [
+				"spacing",
+				"content-density",
+				"writing",
+				"design-tokens"
+			],
+			"references": []
+		},
+		{
+			"id": "spacing",
+			"name": "Spacing",
+			"kind": "foundation",
+			"group": "Visual foundation",
+			"summary": "Spacing sits on a 4px grid with 2px for fine detail. Space shows relationship: closer means related. Apps use role utilities: fixed ones inside controls that never change, and region ones between parts that tighten by themselves in a workspace.",
+			"principles": [
+				{
+					"t": "Proximity is meaning. Related items sit closer than unrelated ones, and items of the same kind share the same gap.",
+					"s": []
+				},
+				{
+					"t": "4px grid. Spacing is built from small multiples, from 2px to 40px on a 4px grid.",
+					"s": []
+				},
+				{
+					"t": "Spacing comes from components and tokens, not from pixel values typed into a page.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Use the role utilities, not numbers. Inside a control: gap-hair (2px), gap-tight (4px), gap-control (6px, icon to label in buttons, menu items and badges only), gap-inline (8px). Between parts: gap-group. Inside a card, pane or panel: p-region. Page sides and top: px-page, pt-page-top.",
+					"s": []
+				},
+				{
+					"t": "Fixed roles never change; region roles change with the layout. On an inset canvas a region is padded 16px, groups sit 16px apart and the page has 24px sides and a 20px top. In a workspace (AppShell frame=\"flush\") regions are padded 8px, groups 12px, the page 12px and 8px, and regions meet at a 1px line.",
+					"s": []
+				},
+				{
+					"t": "Inside a group (a form field's label, input and help text) use 4 to 8px; between groups use gap-group so the grouping is visible.",
+					"s": []
+				},
+				{
+					"t": "Below 860px every page, workspace or not, uses the inset values with 16px page sides, so stacked panes do not crowd.",
+					"s": []
+				},
+				{
+					"t": "The numeric steps (p-2, gap-3) are for TwoUX's own components. twoux check warns on them in app code and names the role to use.",
+					"s": []
+				},
+				{
+					"t": "Every value sits on the 4px grid except two documented ones: 6px between an icon and its label in a row (gap-control), and the padding inside controls generated from shadcn, which stays as shadcn ships it so every button, input and menu keeps its shape.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Spacing between small targets counts: a target under 24 by 24px still passes if a 24px circle around it does not overlap another target.",
+					"s": []
+				},
+				{
+					"t": "Content must reflow at 320 CSS px; fixed gaps must not force horizontal scrolling outside tables.",
+					"s": []
+				}
+			],
+			"tokens": [
+				{
+					"name": "--spacing-hair",
+					"value": "2px",
+					"use": "Fixed. Icon to text nudges, keycap padding, badge inset (gap-hair, p-hair)"
+				},
+				{
+					"name": "--spacing-tight",
+					"value": "4px",
+					"use": "Fixed. Inside a control; label to help text"
+				},
+				{
+					"name": "--spacing-control",
+					"value": "6px",
+					"use": "Fixed. Icon to label inside buttons, menu items and badges only"
+				},
+				{
+					"name": "--spacing-inline",
+					"value": "8px",
+					"use": "Fixed. Between controls in a row; field label to input"
+				},
+				{
+					"name": "--spacing-group",
+					"value": "16px · 12px in a workspace",
+					"use": "Region. Between groups and sections (gap-group)"
+				},
+				{
+					"name": "--spacing-region",
+					"value": "16px · 8px in a workspace",
+					"use": "Region. Inside a card, pane or panel (p-region)"
+				},
+				{
+					"name": "--spacing-page",
+					"value": "24px · 12px in a workspace",
+					"use": "Region. Page sides (px-page)"
+				},
+				{
+					"name": "--spacing-page-top",
+					"value": "20px · 8px in a workspace",
+					"use": "Region. Page top (pt-page-top)"
+				},
+				{
+					"name": "--spacing-region-gap",
+					"value": "16px · 1px in a workspace",
+					"use": "Region. Between cards on a page; in a workspace regions meet at a divider"
+				}
+			],
+			"dos": [
+				{
+					"t": "Use the same gap between all rows of a property list.",
+					"s": []
+				},
+				{
+					"t": "Let the component own its internal padding.",
+					"s": []
+				}
+			],
+			"donts": [
+				{
+					"t": "Do not add margin to a component from outside to nudge it into place.",
+					"s": []
+				},
+				{
+					"t": "Do not invent in-between values like 13px or 18px.",
+					"s": []
+				}
+			],
+			"related": [
+				"content-density",
+				"layout",
+				"design-tokens"
+			],
+			"references": []
+		},
+		{
+			"id": "content-density",
+			"name": "Content density",
+			"kind": "foundation",
+			"group": "Visual foundation",
+			"summary": "TwoUX ships one density: compact. Controls are 28 or 32px high and table rows 36px. Spacing that protects reading and pointing is kept, so compact never means cramped targets. Tool pages that pass three tests use workspace density: the same sizes with the chrome and gaps taken out.",
+			"principles": [
+				{
+					"t": "Compact only. Compact suits data-heavy views such as dashboards, resource lists and details; that is every main view in TwoUX, so a second mode would double the testing for little gain.",
+					"s": []
+				},
+				{
+					"t": "One density means one set of numbers. People, reviewers and code generators never have to ask which mode a screen is in.",
+					"s": []
+				},
+				{
+					"t": "Dense data, roomy reading. Informational content such as alerts and help keeps more space even in compact mode; TwoUX keeps 14px text and wider line height in AI answers and descriptions.",
+					"s": []
+				},
+				{
+					"t": "Workspace density takes away chrome, never size. A trading or operations screen fits every region in view by dropping the canvas margin, card frames and gaps between regions, not by shrinking text or targets.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Control heights: --h-sm 28px for toolbars, filters and buttons inside rows or panels; --h-md 32px for primary forms and page-level actions; --row 36px for table and list rows.",
+					"s": []
+				},
+				{
+					"t": "Every pointer target is at least 24 by 24 CSS px, or has enough clear space around it. Icon buttons at --h-sm (28px square) pass outright.",
+					"s": []
+				},
+				{
+					"t": "Small targets inside dropdowns and pickers keep extra padding, even in compact mode.",
+					"s": []
+				},
+				{
+					"t": "Never shrink alerts, validation messages or empty states to save space.",
+					"s": []
+				},
+				{
+					"t": "One variant, for data rather than people: Table and SheetGrid take size=\"dense\" (28px rows, the same 13px text) for spreadsheet-like data such as inventories, ledgers, imports and mapping. It is chosen per table by whoever builds the screen, never a switch people turn on.",
+					"s": []
+				},
+				{
+					"t": "Use workspace density only when all three are true: people watch and act on several regions at once; experts work in it for long, repeated sessions; the content is mostly numbers or tables scanned across many rows. Trading, operations consoles, data workspaces and editors pass; forms, settings, onboarding, record detail, list pages and glance dashboards do not.",
+					"s": []
+				},
+				{
+					"t": "Workspace density is a layout, not a size: AppShell frame=\"flush\" with the sidebar as a rail, regions in a Pane layout divided by 1px lines, 8px padding inside panes, charts flush (the default inside a flush shell), and size=\"dense\" for spreadsheet-like tables.",
+					"s": []
+				},
+				{
+					"t": "Even in a workspace, text stays on TwoUX's type scale (13px body, 12px meta, never smaller), targets at 24px or more, and alerts, validation messages and empty states keep their size.",
+					"s": []
+				},
+				{
+					"t": "Below 900px a workspace stacks its panes and the page scrolls; it never becomes a separate mobile app.",
+					"s": []
+				},
+				{
+					"t": "Choose workspace density per page when the page is designed, never as a switch people turn on. Salt's high density (20px controls, 11px text) is the counter-example: Salt itself says it does not meet WCAG 2.2 AA, target size included, and is not recommended as a default.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Target size minimum is 24 by 24 CSS px at AA, with a spacing exception for smaller targets.",
+					"s": []
+				},
+				{
+					"t": "Compact rows must still reflow and stay readable at 400% zoom; tables may scroll horizontally inside their own container.",
+					"s": []
+				},
+				{
+					"t": "Because density is not a user setting, zoom and text-size support carry the job of making things bigger.",
+					"s": []
+				}
+			],
+			"tokens": [
+				{
+					"name": "--h-sm",
+					"value": "28px",
+					"use": "Small controls: toolbars, filters, in-row and in-panel buttons"
+				},
+				{
+					"name": "--h-md",
+					"value": "32px",
+					"use": "Default controls: forms, page actions"
+				},
+				{
+					"name": "--row",
+					"value": "36px",
+					"use": "Table and list row height: the 32px control plus 2px above and below"
+				},
+				{
+					"name": "--size-row-dense",
+					"value": "28px",
+					"use": "Table and SheetGrid size=\"dense\", spreadsheet-like data only"
+				}
+			],
+			"dos": [
+				{
+					"t": "Use --row for every list and table, including the inbox and AI history.",
+					"s": []
+				},
+				{
+					"t": "Check targets with the 24px circle test when placing icon buttons side by side.",
+					"s": []
+				}
+			],
+			"donts": [
+				{
+					"t": "Do not add a 'comfortable' variant to a single component.",
+					"s": []
+				},
+				{
+					"t": "Do not shrink text below --t-sm to fit more in a row.",
+					"s": []
+				},
+				{
+					"t": "Do not use workspace density to fit more on a page that fails one of the three tests; give it the inset canvas.",
+					"s": []
+				}
+			],
+			"related": [
+				"spacing",
+				"typography",
+				"layout",
+				"accessibility",
+				"dense-table",
+				"pane-layout",
+				"app-shell"
+			],
+			"references": []
+		},
+		{
+			"id": "layout",
+			"name": "Layout",
+			"kind": "foundation",
+			"group": "Visual foundation",
+			"summary": "One app shell for the whole product: a 224px side navigation on the grey --bg, and an inset white canvas where the work happens. Record details open in a side panel that overlays by default and can push the list aside. Below 860px the shell collapses to one column.",
+			"principles": [
+				{
+					"t": "One shell, every screen. A product uses only one app layout; TwoUX has one, so navigation never moves.",
+					"s": []
+				},
+				{
+					"t": "Familiar beats novel. A left nav with a central canvas is the layout people already know from other work tools.",
+					"s": []
+				},
+				{
+					"t": "Keep the list in view. Opening a record should not lose the user's place in the list; a split view shows item details next to the collection.",
+					"s": []
+				},
+				{
+					"t": "Design for widths, not devices. Don't design for specific screen sizes or devices.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Shell: .app is a two-column grid, side nav 224px and canvas 1fr, on --bg. The canvas is --surface with 8px margin, a 1px --line border and --r-lg corners, so the work area reads as one sheet inset in the chrome.",
+					"s": []
+				},
+				{
+					"t": "Canvas anatomy, top to bottom: a 44px top bar (breadcrumb, Ask ⌘J, command search ⌘K), the page header (h1 at --t-2xl and up to two actions), then content. Repeated across every view in the same order.",
+					"s": []
+				},
+				{
+					"t": "Side panel, overlay (default): 440px, slides over the right of the canvas, below the top bar. Use it to peek at a record while moving through the list with J and K. It suits tables with few important columns.",
+					"s": []
+				},
+				{
+					"t": "Side panel, push (side by side, ⇧P): the page gets a right margin so the list and panel sit together without overlap. Use it when comparing a record with its neighbours or when the hidden columns matter. People can change the panel position, and TwoUX remembers the choice.",
+					"s": []
+				},
+				{
+					"t": "Full page (Open, ⇧↵): for editing and long reading. Modal dialogs are only for short, blocking decisions such as confirming a close.",
+					"s": []
+				},
+				{
+					"t": "Breakpoints: at 860px and below the side nav hides and grids go to one column; at 1100px and above wide dashboard tiles may span two columns. Components also use 560, 640 and 760px; these should be folded into the two shell breakpoints.",
+					"s": []
+				},
+				{
+					"t": "Reading width: AI answers and long descriptions are capped near 80 characters even on wide canvases.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "An overlay panel must not entirely cover the focused element; when a row behind the panel has focus, scroll it clear or switch to push.",
+					"s": []
+				},
+				{
+					"t": "At 320 CSS px wide the page reflows to one column; data tables may scroll inside their own container.",
+					"s": []
+				},
+				{
+					"t": "Navigation keeps the same relative order on every page.",
+					"s": []
+				},
+				{
+					"t": "Moving focus into the panel on open and back to the row on close keeps focus order meaningful.",
+					"s": []
+				}
+			],
+			"dos": [
+				{
+					"t": "Use the shell component for every route, including settings and the assistant.",
+					"s": []
+				},
+				{
+					"t": "Open records in the side panel from lists; open them as a page from links elsewhere.",
+					"s": []
+				}
+			],
+			"donts": [
+				{
+					"t": "Do not build a second layout for one feature.",
+					"s": []
+				},
+				{
+					"t": "Do not use a modal to show record details.",
+					"s": []
+				},
+				{
+					"t": "Do not let an overlay panel cover the selected row.",
+					"s": []
+				}
+			],
+			"related": [
+				"content-density",
+				"keyboard-model",
+				"shape-elevation",
+				"spacing"
+			],
+			"references": []
+		},
+		{
+			"id": "iconography",
+			"name": "Iconography",
+			"kind": "foundation",
+			"group": "Visual foundation",
+			"summary": "One line icon set, 16px with a 1.7 stroke in currentColor, and a fixed meaning for every icon. An icon that means one thing in one place means that thing everywhere.",
+			"principles": [
+				{
+					"t": "One meaning per icon. WCAG requires components with the same function to be identified consistently, and people cannot rely on icons whose function varies.",
+					"s": []
+				},
+				{
+					"t": "Words first. Few icons are universally understood, so icons sit beside a text label; icon-only buttons are kept to well-known actions and always have an accessible name and tooltip.",
+					"s": []
+				},
+				{
+					"t": "Reuse before you draw. Use existing icons rather than making new ones.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "↗ external (i-ext): the link leaves TwoUX, for example 'View public page' on the job board. Never used for in-app navigation.",
+					"s": []
+				},
+				{
+					"t": "↳ follow-up (i-reply): a suggested follow-up question that continues an AI answer, under a 'Follow-ups' label.",
+					"s": []
+				},
+				{
+					"t": "Bulb (i-bulb): a starter idea, a suggested first prompt in an empty assistant. Starters can be hidden.",
+					"s": []
+				},
+				{
+					"t": "Expand (i-expand): open this record or conversation as a full page. Not used for 'show more'; that is a chevron.",
+					"s": []
+				},
+				{
+					"t": "Panel (i-panel): show the side panel side by side (push).",
+					"s": []
+				},
+				{
+					"t": "Origin mark (AiMark, a small speech bubble): content the assistant wrote, beside that content, and the type icon of AI columns in a sheet.",
+					"s": []
+				},
+				{
+					"t": "Sizes: 16px default, 14px (.sm) inside small controls and tabs, the smaller size mainly for chevrons and badges.",
+					"s": []
+				},
+				{
+					"t": "Colour: icons inherit text colour. Status icons take the status text token; the origin mark is muted (text-ink-3) like any supporting icon, never an accent or AI colour.",
+					"s": []
+				},
+				{
+					"t": "AI is marked in one place only: the origin mark next to generated output. Buttons that start AI work (Ask, Suggest titles) use their normal icon or none.",
+					"s": []
+				},
+				{
+					"t": "The origin mark is not a sparkle and is never added to other icons to mean \"AI-enhanced\". Search that uses a model is still Search.",
+					"s": []
+				},
+				{
+					"t": "The assistant's identity is its name, \"Assistant\", in text. If several agents speak in one thread, each has its own avatar and name; the origin mark is never used as an avatar.",
+					"s": []
+				},
+				{
+					"t": "Match the strength of the marking to the stage: the entry point looks like any button, work in progress shows step text and a timer, finished output carries the small mark and \"Assistant · from …\".",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Icons that carry meaning reach 3:1 against their background.",
+					"s": []
+				},
+				{
+					"t": "Decorative icons beside a text label are hidden from assistive technology; icon-only buttons get an aria-label that matches the tooltip.",
+					"s": []
+				},
+				{
+					"t": "Never use an icon as the only signal of status; pair it with text.",
+					"s": []
+				}
+			],
+			"dos": [
+				{
+					"t": "Use the origin mark only beside output the assistant produced, and as the AI column type in sheets.",
+					"s": []
+				},
+				{
+					"t": "Keep the same icon and the same accessible name for Save, Close or Share everywhere.",
+					"s": []
+				}
+			],
+			"donts": [
+				{
+					"t": "Do not use ↗ for links that stay inside TwoUX.",
+					"s": []
+				},
+				{
+					"t": "Do not use a sparkle for AI anywhere, and do not put the origin mark on buttons, menu items or sidebar items that start AI work.",
+					"s": []
+				},
+				{
+					"t": "Do not draw a new icon when an existing one already has that meaning.",
+					"s": []
+				}
+			],
+			"related": [
+				"writing",
+				"consistency",
+				"accessibility"
+			],
+			"references": []
+		},
+		{
+			"id": "shape-elevation",
+			"name": "Shape and elevation",
+			"kind": "foundation",
+			"group": "Visual foundation",
+			"summary": "Four radii, each tied to a role, and two shadows. The page is flat; only layers that float above it (menus, popovers, toasts, dialogs) get a real shadow.",
+			"principles": [
+				{
+					"t": "Radius follows role, and stays tight: 4 to 8px. Small parts are tightest, overlays the roundest.",
+					"s": []
+				},
+				{
+					"t": "Flat by default. Raised and overlay elevation are used sparingly because they make a UI busy. Borders and surface changes do the grouping.",
+					"s": []
+				},
+				{
+					"t": "A shadow means 'this floats'. If it casts a --shadow-pop, it sits above the page and can be dismissed.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "rounded-xs 4px: parts that sit inside a control or a row. Badges, checkboxes, keycaps, menu and palette items, segments, skeleton bars, tags.",
+					"s": []
+				},
+				{
+					"t": "rounded-sm 6px: controls and cards. Buttons, inputs, toggles, the segmented track, banners, cards, empty and error states.",
+					"s": []
+				},
+				{
+					"t": "rounded-md 8px: layers that float. Menus, popovers, the command palette, toasts and dialogs.",
+					"s": []
+				},
+				{
+					"t": "rounded-lg 12px and rounded-xl 16px stay in the scale for marketing surfaces; product UI does not use them.",
+					"s": []
+				},
+				{
+					"t": "Fully round (99px or 50%) is only for avatars, dots and pill toggles.",
+					"s": []
+				},
+				{
+					"t": "--shadow-pop is for overlays only: command menu, menus, popovers, toasts, tooltips and dialogs, the UI that floats over other UI.",
+					"s": []
+				},
+				{
+					"t": "--shadow-sm is a 1px lift on primary and secondary buttons and the AI composer, a tactile cue rather than elevation.",
+					"s": []
+				},
+				{
+					"t": "Known drift: the side panel uses a raw shadow value and several components use raw 2, 3 and 5px radii and raw z-index values. These should become tokens (for example a --shadow-panel and a --z-* scale).",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "A shadow is never the only boundary of a control; it also has a border or fill that meets 3:1 where the boundary matters.",
+					"s": []
+				},
+				{
+					"t": "Overlays must not hide the element that has focus.",
+					"s": []
+				}
+			],
+			"tokens": [
+				{
+					"name": "rounded-xs",
+					"value": "4px",
+					"use": "Badges, checkboxes, keycaps, menu items, segments"
+				},
+				{
+					"name": "rounded-sm",
+					"value": "6px",
+					"use": "Buttons, inputs, toggles, banners, cards"
+				},
+				{
+					"name": "rounded-md",
+					"value": "8px",
+					"use": "Menus, popovers, palette, toasts, dialogs"
+				},
+				{
+					"name": "--shadow-sm",
+					"value": "0 1px 2px rgba(23,23,40,.05)",
+					"use": "Button lift, composer"
+				},
+				{
+					"name": "--shadow-pop",
+					"value": "0 0 0 1px var(--line), 0 10px 28px -8px rgba(23,23,40,.20)",
+					"use": "Floating layers only"
+				},
+				{
+					"name": "--ring",
+					"value": "0 0 0 2px var(--surface), 0 0 0 4px color-mix(in srgb, var(--accent) 55%, transparent)",
+					"use": "Focus ring on :focus-visible"
+				}
+			],
+			"dos": [
+				{
+					"t": "Match radius to role: a button inside a card still uses rounded-sm.",
+					"s": []
+				},
+				{
+					"t": "Pair --shadow-pop with --surface: each elevation has its own surface and shadow.",
+					"s": []
+				}
+			],
+			"donts": [
+				{
+					"t": "Do not put a shadow on a card that sits on the canvas.",
+					"s": []
+				},
+				{
+					"t": "Do not invent radii like 5px or 10px.",
+					"s": []
+				}
+			],
+			"related": [
+				"colours",
+				"layout",
+				"motion",
+				"design-tokens"
+			],
+			"references": []
+		},
+		{
+			"id": "motion",
+			"name": "Motion",
+			"kind": "foundation",
+			"group": "Visual foundation",
+			"summary": "Motion in TwoUX shows what changed and where it went: 120 to 260ms, eased by role, exits shorter than entrances, and nothing moves when people ask for reduced motion. It never decorates.",
+			"principles": [
+				{
+					"t": "Motion explains a change. Use it when people need to see what happened: a panel arriving, a section expanding, a value updating, a setting switching. If nothing would be lost without it, leave it out.",
+					"s": []
+				},
+				{
+					"t": "Productive, not expressive. Expressive motion suits rare, significant moments; a tool used all day has none worth the delay, so TwoUX has no expressive tier.",
+					"s": []
+				},
+				{
+					"t": "Ease by role. Something arriving or changing in place decelerates (--ease-entrance, --ease-standard), something moving between two places eases at both ends (--ease-move), something leaving accelerates and gets out of the way (--ease-exit). Only a changing count overshoots (--ease-pop).",
+					"s": []
+				},
+				{
+					"t": "Shortest that is not jarring. Most UI animation belongs between 100 and 500ms, and animations are far more often too long than too short; TwoUX stays between 120 and 260ms for anything people trigger.",
+					"s": []
+				},
+				{
+					"t": "Overlays keep shadcn's motion. Dialogs, menus, popovers and tooltips open with shadcn's fade and 95% zoom; the sheet slides 40px with a fade over 200ms. The push side panel matches it with --duration-move and --ease-move, so the list beside it eases aside.",
+					"s": []
+				},
+				{
+					"t": "Changes inside a screen use the motion helpers: Swap for a label or icon that changes state, Count for a number that changes, RollingNumber for a figure on a stat card, ShimmerText for a working status, StreamingText for AI text, AnimateHeight for a card that changes size. Nothing animates on first render.",
+					"s": []
+				},
+				{
+					"t": "Never the only signal. Motion never carries information alone; every change motion shows is also visible in its end state.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Hover, press and colour changes: --duration-fast (120ms).",
+					"s": []
+				},
+				{
+					"t": "Tabs, menus, state swaps and small transforms such as a chevron turning: --duration-base (180ms).",
+					"s": []
+				},
+				{
+					"t": "Panels and layout that move, such as the side panel push or the sidebar collapsing: --duration-move (200ms) with --ease-move, matching shadcn's sheet.",
+					"s": []
+				},
+				{
+					"t": "Content swaps, height changes and progress fills: --duration-slow (260ms).",
+					"s": []
+				},
+				{
+					"t": "Figures rolling to a new value: --duration-long (480ms), only for values people read after the change, never for something they trigger many times a minute.",
+					"s": []
+				},
+				{
+					"t": "Exits are shorter than entrances and use --duration-exit with --ease-exit. Tooltips, hover cards and menus may disappear at once; nobody needs to watch them leave.",
+					"s": []
+				},
+				{
+					"t": "Match the exit to the entrance: what slid in from the right leaves to the right, what faded in fades out.",
+					"s": []
+				},
+				{
+					"t": "Direction follows the action. Going deeper (opening a record, the next step) moves forward; going back moves back.",
+					"s": []
+				},
+				{
+					"t": "Contextual UI grows from its trigger: a menu or popover opens from the button that opened it. Global UI such as the command palette and toasts has no trigger to connect to.",
+					"s": []
+				},
+				{
+					"t": "Loops (spinner 0.8s, thinking pulse 1.2s, skeleton shimmer 1.4s) always sit next to text such as 'Searching listings', and stop once content arrives. Theme tempo does not scale them.",
+					"s": []
+				},
+				{
+					"t": "Animate with the tokens, never with raw values, so a theme tempo change reaches every animation: duration-(--duration-base) ease-(--ease-standard) in a class, var(--duration-base) in CSS.",
+					"s": []
+				},
+				{
+					"t": "Tune motion for a whole product in the theme file: motion.tempo from 0.75 (quicker) to 1.25 (calmer) scales every duration token, and motion.character \"crisp\" removes the overshoot from pops. Never retime one component on one page.",
+					"s": []
+				},
+				{
+					"t": "Streamed text appears without a typing animation or cursor blink; under reduced motion it arrives in sentences or paragraphs rather than word by word.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Under prefers-reduced-motion: reduce, TwoUX sets every transition and animation to 0ms, so changes happen at once. Values that change in place, such as a progress fill, jump straight to the new value.",
+					"s": []
+				},
+				{
+					"t": "WCAG 2.3.3 (AAA) asks that interaction-triggered motion can be disabled; TwoUX meets it through the operating-system setting, with no extra control to find.",
+					"s": []
+				},
+				{
+					"t": "Because the reduced-motion rule also stops spinners, every loading state must have text that says what is happening.",
+					"s": []
+				},
+				{
+					"t": "Nothing flashes more than three times a second.",
+					"s": []
+				},
+				{
+					"t": "Test every view with reduced motion turned on, on a laptop and on a touch screen.",
+					"s": []
+				}
+			],
+			"tokens": [
+				{
+					"name": "--duration-fast",
+					"value": "120ms × tempo",
+					"use": "Hover, press, colour, small controls"
+				},
+				{
+					"name": "--duration-base",
+					"value": "180ms × tempo",
+					"use": "Tabs, menus, state swaps, small transforms"
+				},
+				{
+					"name": "--duration-move",
+					"value": "200ms × tempo",
+					"use": "Panels and layout that move (side panel, sidebar)"
+				},
+				{
+					"name": "--duration-slow",
+					"value": "260ms × tempo",
+					"use": "Content swaps, height changes, progress fills"
+				},
+				{
+					"name": "--duration-long",
+					"value": "480ms × tempo",
+					"use": "Figures rolling to a new value only"
+				},
+				{
+					"name": "--duration-exit",
+					"value": "= --duration-fast",
+					"use": "Anything leaving"
+				},
+				{
+					"name": "--ease-standard",
+					"value": "cubic-bezier(0.22, 1, 0.36, 1)",
+					"use": "State changes in place: swaps, numbers, heights, fills"
+				},
+				{
+					"name": "--ease-entrance",
+					"value": "cubic-bezier(0.22, 1, 0.36, 1)",
+					"use": "Something arriving"
+				},
+				{
+					"name": "--ease-move",
+					"value": "cubic-bezier(0.4, 0, 0.2, 1)",
+					"use": "Something moving between two places"
+				},
+				{
+					"name": "--ease-exit",
+					"value": "cubic-bezier(0.4, 0, 1, 1)",
+					"use": "Something leaving. Never overshoots"
+				},
+				{
+					"name": "--ease-pop",
+					"value": "cubic-bezier(0.34, 1.56, 0.64, 1)",
+					"use": "A count that changes. Standard character only; crisp uses --ease-standard"
+				},
+				{
+					"name": "--motion-tempo",
+					"value": "1 (0.75 to 1.25)",
+					"use": "Set by motion.tempo in the theme file. Scales every duration token"
+				},
+				{
+					"name": "--ease-out, --ease-in-out, --ease-soft, --ease-spring",
+					"value": "aliases",
+					"use": "Earlier names for entrance, move, standard and pop. Kept for existing code"
+				}
+			],
+			"dos": [
+				{
+					"t": "Animate a spatial change, such as a panel sliding in, so people see where it came from.",
+					"s": []
+				},
+				{
+					"t": "Use the fast band for small interactions and the move or slow band for layout changes.",
+					"s": []
+				},
+				{
+					"t": "Leave faster than you arrive.",
+					"s": []
+				},
+				{
+					"t": "Change tempo in the theme file when the whole product should feel calmer or quicker.",
+					"s": []
+				}
+			],
+			"donts": [
+				{
+					"t": "Don't animate hover on rows or menu items, or make any frequent interaction lag.",
+					"s": []
+				},
+				{
+					"t": "Don't use bounce, spring or scale-up entrances; the only overshoot is a count that changes.",
+					"s": []
+				},
+				{
+					"t": "Don't go above 300ms for anything people trigger often, or make people wait for an animation before acting.",
+					"s": []
+				},
+				{
+					"t": "Don't move something in a way that contradicts where it came from or where it goes.",
+					"s": []
+				}
+			],
+			"related": [
+				"accessibility",
+				"shape-elevation",
+				"design-tokens"
+			],
+			"references": [],
+			"whenToUse": [
+				{
+					"t": "Panels, sheets and dialogs arriving, so people see where they came from and where they will go back to.",
+					"s": []
+				},
+				{
+					"t": "Sections expanding or collapsing, and cards changing height, so the content below doesn't jump.",
+					"s": []
+				},
+				{
+					"t": "State changes on a control people just used: a switch, a selected segment, Copy turning into Copied.",
+					"s": []
+				},
+				{
+					"t": "A value that updates while people watch, such as a stat card after a filter change or a count in a tab.",
+					"s": []
+				},
+				{
+					"t": "Toasts arriving and leaving, so a confirmation is noticed without taking focus.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "Hover on table rows, list items and menu items. These change many times a second as the pointer moves; a fill that lags reads as a slow app.",
+					"s": []
+				},
+				{
+					"t": "Rows loading, sorting or filtering in a table. People scan the result, not the transition.",
+					"s": []
+				},
+				{
+					"t": "Anything that blocks the next action: never make people wait for an animation to finish before they can click or type.",
+					"s": []
+				},
+				{
+					"t": "Decoration: entrance animations on page load, gradients that drift, icons that wiggle to get attention.",
+					"s": []
+				},
+				{
+					"t": "Showing that AI is working when the result is under about one second away; show the result.",
+					"s": []
+				}
+			]
+		},
+		{
+			"id": "design-tokens",
+			"name": "Design tokens",
+			"kind": "foundation",
+			"group": "Visual foundation",
+			"summary": "Tokens are the only way a visual value enters TwoUX. They are named for their job, defined once in :root, and consumed by components. Raw hex, px and ms values in product code are bugs.",
+			"principles": [
+				{
+					"t": "A token is a decision, not a value: a name and value pair that represents a small, repeatable design decision.",
+					"s": []
+				},
+				{
+					"t": "Choose by meaning. Pick --ink-2 because it is secondary text, not because it is the grey you wanted; never use a token just because the value matches.",
+					"s": []
+				},
+				{
+					"t": "Components before tokens. Check for an existing component before building a custom one with tokens.",
+					"s": []
+				},
+				{
+					"t": "Never raw values. Use tokens instead of hard-coded values.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Naming: short role names with a family prefix. Colour roles are words (--bg, --surface, --ink, --accent, --ok); size families are prefixed (--t-* type, --r-* radius, --h-* height, --c-* categorical, --q-* ordinal). Numbers or size words step along a scale, and suffixes add a variant (-2, -soft, -bg, -line, -hover).",
+					"s": []
+				},
+				{
+					"t": "Layers: role tokens in :root (the public API) are consumed by components; components may declare private local tokens such as --pk-x for the side panel's padding. Product code reads role tokens only through components.",
+					"s": []
+				},
+				{
+					"t": "Today the role tokens hold raw values directly. A raw palette layer underneath is only needed when a second theme arrives; until then one layer keeps the system easy to read.",
+					"s": []
+				},
+				{
+					"t": "Never change the value of an existing token to fix one screen. Add a role or fix the component.",
+					"s": []
+				},
+				{
+					"t": "Enforce with lint: Stylelint for CSS and an ESLint rule for inline styles that reject hex, rgb, raw px font sizes and raw radii.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Contrast is checked at the token pairing, so a correctly used token pair passes 1.4.3 and 1.4.11 without re-checking each screen.",
+					"s": []
+				},
+				{
+					"t": "The focus ring is a token (--ring) so every focusable element gets the same visible indicator.",
+					"s": []
+				}
+			],
+			"tokens": [
+				{
+					"name": "--ink-2",
+					"value": "#474756",
+					"use": "Example colour role"
+				},
+				{
+					"name": "--t-base",
+					"value": "13px",
+					"use": "Example type step"
+				},
+				{
+					"name": "--r-md",
+					"value": "6px",
+					"use": "Example radius role"
+				},
+				{
+					"name": "--h-sm",
+					"value": "28px",
+					"use": "Example control height"
+				},
+				{
+					"name": "--c1",
+					"value": "#5753e0",
+					"use": "Example data token"
+				}
+			],
+			"dos": [
+				{
+					"t": "Write color: var(--ink-2), not color: #474756.",
+					"s": []
+				},
+				{
+					"t": "Propose a new token in review when no existing role fits.",
+					"s": []
+				}
+			],
+			"donts": [
+				{
+					"t": "Do not use a text token for a border because the colour is right.",
+					"s": []
+				},
+				{
+					"t": "Do not override token values inside a component or page.",
+					"s": []
+				},
+				{
+					"t": "Do not use --c* or --q* outside charts.",
+					"s": []
+				}
+			],
+			"related": [
+				"consistency",
+				"colours",
+				"typography",
+				"spacing"
+			],
+			"references": []
+		},
+		{
+			"id": "consistency",
+			"name": "Consistency",
+			"kind": "foundation",
+			"group": "Key principles",
+			"summary": "TwoUX's first rule: the same job gets the same component, the same token and the same behaviour, on every screen, whether a designer, an engineer or a language model wrote the code. Consistency is what makes a dense product learnable.",
+			"principles": [
+				{
+					"t": "Same job, same component. People should not have to wonder whether different words, situations or actions mean the same thing.",
+					"s": []
+				},
+				{
+					"t": "Consistency is also a WCAG requirement. Components with the same function are identified the same way (3.2.4) and repeated navigation keeps its order (3.2.3).",
+					"s": []
+				},
+				{
+					"t": "Learn once, use everywhere. People transfer expectations from what they already know, inside the product as much as between products.",
+					"s": []
+				},
+				{
+					"t": "A design system manages design at scale with reusable components and patterns; its value is lost the first time someone rebuilds a component by hand.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "The job to component registry is the source of truth. Each row names a job and the one component that does it. Examples: show a record's state = Badge; confirm a destructive action = Dialog; peek at a record from a list = Side panel; run any command = Command menu (⌘K); ask the assistant = Assistant (⌘J); act on many rows = Bulk bar; show a one-line result with undo = Toast; filter a list = Filter pill.",
+					"s": []
+				},
+				{
+					"t": "If a job is not in the registry, do not improvise. Propose a new row, or extend an existing component, through design review. Always check for an existing component before building a custom one.",
+					"s": []
+				},
+				{
+					"t": "No one-off styling. Product code sets no colours, font sizes, radii, shadows or spacing; those come from components and tokens.",
+					"s": []
+				},
+				{
+					"t": "Same behaviour, too: Esc closes the innermost layer, J and K move through every list, ↵ opens, ⇧↵ opens full page. A component that behaves differently in one place is a different component.",
+					"s": []
+				},
+				{
+					"t": "Same words: one term per concept (listing, not job post in one place and role in another), and the same button label for the same action.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Rules for code written by language models: 1. Import components from the TwoUX package; never recreate a button, badge, menu or panel with raw HTML and CSS.",
+					"s": []
+				},
+				{
+					"t": "2. Look up the job in the registry before choosing a component. If two components could fit, the registry decides.",
+					"s": []
+				},
+				{
+					"t": "3. Use tokens only. No hex, rgb, raw px font sizes, raw radii, raw shadows or raw durations. Choose the token by its role, not its value.",
+					"s": []
+				},
+				{
+					"t": "4. Use the icon meaning table; never pick an icon because it looks right.",
+					"s": []
+				},
+				{
+					"t": "5. Copy follows the Writing page: UK English, sentence case, verb-first buttons.",
+					"s": []
+				},
+				{
+					"t": "6. Lint must pass. Stylelint and ESLint rules reject raw values and unknown tokens. A generated change that needs a lint exception goes to human review.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Predictable components are an accessibility feature: the same icon and the same accessible name for the same function.",
+					"s": []
+				},
+				{
+					"t": "Navigation and the shell appear in the same order on every page.",
+					"s": []
+				},
+				{
+					"t": "Reusing tested components carries their keyboard and focus behaviour; custom components lack built-in testing and accessibility.",
+					"s": []
+				}
+			],
+			"dos": [
+				{
+					"t": "Use the Toast for every 'done, undo?' message, from bulk close to AI actions.",
+					"s": []
+				},
+				{
+					"t": "Add to the registry when you add a component.",
+					"s": []
+				}
+			],
+			"donts": [
+				{
+					"t": "Do not make a 'special' button for one page.",
+					"s": []
+				},
+				{
+					"t": "Do not copy a component's markup to tweak it; extend the component.",
+					"s": []
+				},
+				{
+					"t": "Do not accept generated code that hard-codes visual values, even when it looks right.",
+					"s": []
+				}
+			],
+			"related": [
+				"design-tokens",
+				"iconography",
+				"writing",
+				"keyboard-model"
+			],
+			"references": []
+		},
+		{
+			"id": "accessibility",
+			"name": "Accessibility",
+			"kind": "foundation",
+			"group": "Key principles",
+			"summary": "TwoUX targets WCAG 2.2 level AA on every component and view. Keyboard is a first-class input, focus is always visible and always managed, and single-key shortcuts can be turned off.",
+			"principles": [
+				{
+					"t": "Everything works from the keyboard. All functionality is operable through a keyboard interface.",
+					"s": []
+				},
+				{
+					"t": "Focus is never lost and never hidden. It is always visible, moves in a logical order, and returns where it came from.",
+					"s": []
+				},
+				{
+					"t": "Colour is never the only cue.",
+					"s": []
+				},
+				{
+					"t": "Accessibility lives in components. Teams get it by using components and following their guidance: semantic markup and appropriate ARIA attributes.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Focus ring: every focusable element uses :focus-visible with --ring (a 2px --surface gap and a 2px accent ring). Removing focus indicators is catastrophic for keyboard users.",
+					"s": []
+				},
+				{
+					"t": "Dialogs: focus moves into the dialog, Tab stays inside, Esc closes, focus returns to the element that opened it.",
+					"s": []
+				},
+				{
+					"t": "Side panel and popovers: focus moves to the first useful control on open and back to the row or trigger on close. If the trigger is gone, focus moves somewhere logical, such as the next row.",
+					"s": []
+				},
+				{
+					"t": "After deleting or closing rows, focus goes to the next row, so screen reader users notice the list changed.",
+					"s": []
+				},
+				{
+					"t": "Lists and grids use one tab stop with arrow keys or J and K inside (roving tabindex or aria-activedescendant).",
+					"s": []
+				},
+				{
+					"t": "Status messages (saved, closed 3 listings, AI finished) are announced through role=status without moving focus.",
+					"s": []
+				},
+				{
+					"t": "Sticky headers, the bulk bar and the overlay side panel must not fully cover the focused element.",
+					"s": []
+				},
+				{
+					"t": "Targets are at least 24 by 24 CSS px or spaced so they do not crowd.",
+					"s": []
+				},
+				{
+					"t": "Errors say what is wrong and how to fix it.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Single-character shortcuts (J, K, X, C, E, F, T, D) can be turned off in the shortcut sheet; ⌘ shortcuts stay on. This meets 2.1.4, which requires that character-only shortcuts can be turned off, remapped or limited to focus.",
+					"s": []
+				},
+				{
+					"t": "Text contrast 4.5:1, large text and non-text 3:1.",
+					"s": []
+				},
+				{
+					"t": "Reflow at 320 CSS px; tables scroll in their own container.",
+					"s": []
+				},
+				{
+					"t": "Reduced motion removes all animation.",
+					"s": []
+				}
+			],
+			"dos": [
+				{
+					"t": "Test every new component with keyboard only before review.",
+					"s": []
+				},
+				{
+					"t": "Return focus to the triggering row when the side panel closes.",
+					"s": []
+				}
+			],
+			"donts": [
+				{
+					"t": "Do not remove outlines without replacing them with --ring.",
+					"s": []
+				},
+				{
+					"t": "Do not move focus for info messages; announce them.",
+					"s": []
+				},
+				{
+					"t": "Do not ship a shortcut that only works with a mouse nearby.",
+					"s": []
+				}
+			],
+			"related": [
+				"keyboard-model",
+				"colours",
+				"motion",
+				"writing"
+			],
+			"references": []
+		},
+		{
+			"id": "writing",
+			"name": "Writing",
+			"kind": "foundation",
+			"group": "Key principles",
+			"summary": "TwoUX speaks plain UK English. Buttons start with a verb, everything is in sentence case, and every message says what happened and what to do next. AI is described by what it does, never as smart or magic. How the copy should sound is set in Voice and tone.",
+			"principles": [
+				{
+					"t": "Plain English first.",
+					"s": []
+				},
+				{
+					"t": "Say what happened, then what to do. Error messages should state the problem in plain language and point to a fix.",
+					"s": []
+				},
+				{
+					"t": "Verbs on actions. Lead buttons with a verb that says what will happen.",
+					"s": []
+				},
+				{
+					"t": "Same thing, same word, everywhere.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "UK English spelling and conventions: organise, colour, licence (noun); dates as 6 November 2026 with no ordinal; numerals for all numbers including 2 to 9; commas in numbers over 999.",
+					"s": []
+				},
+				{
+					"t": "Sentence case for everything: headings, buttons, tabs, menu items, column headers.",
+					"s": []
+				},
+				{
+					"t": "Buttons: verb first, 2 to 4 words, a noun when the target is unclear. 'Close listing', 'Extend 30 days', 'Export CSV'. Never 'OK'; name the action.",
+					"s": []
+				},
+				{
+					"t": "Errors and empty states: what happened, why if useful, one action. 'No listings match these filters. Clear filters.' Do not blame the user.",
+					"s": []
+				},
+				{
+					"t": "Confirmations: past tense and a count. '3 listings closed. Undo'.",
+					"s": []
+				},
+				{
+					"t": "Device-independent words: select or choose, not click.",
+					"s": []
+				},
+				{
+					"t": "No exclamation marks and no 'please'.",
+					"s": []
+				},
+				{
+					"t": "AI: describe the job, not the technology. 'Ask', 'Draft a reply', 'Summarise applicants'. Mark generated output with AiOrigin ('Assistant · from …') beside it, never a 'Generated by AI' badge or an AI colour. Do not write AI-powered, magic, smart or intelligent.",
+					"s": []
+				},
+				{
+					"t": "Common contractions (can't, isn't, you're) are fine. Write 'not' in full when the negative is the point and could be missed: 'Do not close this window while the import runs.'",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Error messages include a suggested fix when one is known.",
+					"s": []
+				},
+				{
+					"t": "Button text and accessible names match, so speech users can say what they see.",
+					"s": []
+				},
+				{
+					"t": "Never refer to things by position or colour alone ('the red one', 'above'); avoid directional language.",
+					"s": []
+				}
+			],
+			"dos": [
+				{
+					"t": "'Listing closed. It no longer appears on your careers page.'",
+					"s": []
+				},
+				{
+					"t": "'Couldn't save' becomes 'Changes not saved. Check your connection and try again.'",
+					"s": []
+				}
+			],
+			"donts": [
+				{
+					"t": "Do not write 'Oops! Something went wrong.'",
+					"s": []
+				},
+				{
+					"t": "Do not write 'Smart suggestions' or 'AI-powered search'.",
+					"s": []
+				},
+				{
+					"t": "Do not use Title Case In Buttons.",
+					"s": []
+				}
+			],
+			"related": [
+				"voice-and-tone",
+				"consistency",
+				"iconography",
+				"accessibility"
+			],
+			"references": []
+		},
+		{
+			"id": "voice-and-tone",
+			"name": "Voice and tone",
+			"kind": "foundation",
+			"group": "Key principles",
+			"summary": "TwoUX sounds like a capable colleague who knows the data: precise, calm, candid and respectful of people's expertise. The voice is the same on every screen and in the assistant. The tone moves with the moment, from strictly practical in an error to one sentence warmer when someone is starting out or has just finished.",
+			"principles": [
+				{
+					"t": "Precise. Name the thing, the number and the result: '3 listings closed', not 'Items updated'. Translate system detail into what it means for the person's work.",
+					"s": []
+				},
+				{
+					"t": "Calm. Use the same level voice for success and failure. Excitement comes from what happened, not from punctuation or adjectives: no exclamation marks, no hype, no apologies.",
+					"s": []
+				},
+				{
+					"t": "Candid. Say what is known and what is not, what can't be undone, and what the assistant did. Never promise more than the product does.",
+					"s": []
+				},
+				{
+					"t": "Respectful of expertise. Write for people who do this work every day. Teach only on first run, in empty states and when help is asked for. Never say a task is easy, quick or simple.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Voice is fixed; tone varies. Before writing, ask three questions: how does the person probably feel, how often will they see this, and what is at stake? The answers set the tone, never the voice.",
+					"s": []
+				},
+				{
+					"t": "TwoUX sits at one end of three of the four common tone dimensions: serious, not funny; respectful, not irreverent; matter-of-fact, not enthusiastic. On formal to casual it sits in the middle: plain and conversational, with common contractions and no slang. Tone moves within this range, never outside it.",
+					"s": []
+				},
+				{
+					"t": "Inform to build trust: the default for every screen. Statuses, warnings, errors and assistant caveats say what happened, what it affects and what to do next, and only what is needed now. Banner, ErrorState, ConfidenceNote, AiOrigin.",
+					"s": []
+				},
+				{
+					"t": "Empower to act: wherever a decision is needed. State the consequence and both choices plainly and leave the choice to the person; never nudge. ConfirmationDialog, PlanCard, approval cards, AgentPermissions.",
+					"s": []
+				},
+				{
+					"t": "Encourage people along the path: wherever work is stuck or partly done. Say how much is done, what is left and one way forward. EmptyState, RunStatusBar, CsvImport, SetupChecklist.",
+					"s": []
+				},
+				{
+					"t": "Motivate by showing possibilities: only where someone is starting something. Say what it lets them do in their own terms, as an outcome, never a superlative. OnboardingStep, empty workspace, FeatureLabel popover, ConnectorPicker.",
+					"s": []
+				},
+				{
+					"t": "Satisfy by meeting expectations: the routine. Saves, completions and toasts are short, past tense, with a count and Undo. Nothing more is added.",
+					"s": []
+				},
+				{
+					"t": "Delight: in TwoUX, delight comes from speed and precision, not from words. A quiet line is allowed at a real milestone people reach rarely, such as a finished setup checklist or an empty Inbox ('You're all caught up.'). Never in errors, never on repeated messages, never a joke, pun or emoji.",
+					"s": []
+				},
+				{
+					"t": "Tone by person: experienced, daily users get the short form. First-run screens, empty states and help get one more sentence saying why. Both use the same words for the same things; there is no beginner vocabulary.",
+					"s": []
+				},
+				{
+					"t": "Tone by stakes: the higher the stakes (money, people outside the workspace, decisions about candidates, permanent deletes), the plainer and more complete the copy. Never soften a risky action with 'just', 'quickly' or 'simply'.",
+					"s": []
+				},
+				{
+					"t": "Address the person as 'you'. The product does not say 'we' or 'I': in a shared workspace 'we' could mean the vendor or the team. State the event instead: 'Listing not saved', not 'We couldn't save your listing'.",
+					"s": []
+				},
+				{
+					"t": "The assistant speaks in the same voice. It opens with the answer, does not greet, praise the question or claim feelings ('I'd love to'), uses 'I' only for what it did ('I drafted 3 replies'), and states its limits as one specific caveat.",
+					"s": []
+				},
+				{
+					"t": "When an agent or model writes copy, give it these four traits and a short sample of existing TwoUX copy, not a single adjective such as 'friendly'. Models exaggerate a single tone word; then edit the result by hand.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Words to cut: just, simply, easy, quick (unless measured), seamless, powerful, robust, smart, magic, AI-powered, awesome, great, oops, whoops, sorry, please, successfully, exclamation marks. 'twoux check' warns on the most common ones.",
+					"s": []
+				},
+				{
+					"t": "Common contractions (can't, don't, isn't, you're) are fine because they read as speech. Avoid unusual ones (it'd, mustn't, should've). Write 'not' in full when the negative is the point and could be missed: 'Do not close this window while the import runs.'",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Plain, literal words translate and read aloud well. Avoid idioms, wordplay and cultural references, which screen reader users, people reading in a second language and translation tools often get wrong.",
+					"s": []
+				},
+				{
+					"t": "Tone never replaces information: a reassuring sentence does not stand in for the cause and the fix an error must give.",
+					"s": []
+				}
+			],
+			"dos": [
+				{
+					"t": "Error, inform: 'Listing not published. The closing date is in the past. Change the date and publish again.'",
+					"s": []
+				},
+				{
+					"t": "Stuck, encourage: '12 of 240 rows have no email. Import the other 228, or fix them first.'",
+					"s": []
+				},
+				{
+					"t": "Starting, motivate: 'Connect your calendar to offer candidates interview times that are really free.'",
+					"s": []
+				},
+				{
+					"t": "Routine, satisfy: '3 candidates moved to Interview. Undo'",
+					"s": []
+				},
+				{
+					"t": "High stakes, empower: 'Delete 3 candidates permanently? Their CVs and notes are erased. Interview history stays.'",
+					"s": []
+				}
+			],
+			"donts": [
+				{
+					"t": "Don't celebrate routine work: 'Woohoo! Your listing was successfully published!'",
+					"s": []
+				},
+				{
+					"t": "Don't be playful when work is blocked: 'Uh-oh, our robots tripped over your file.'",
+					"s": []
+				},
+				{
+					"t": "Don't minimise effort: 'Just connect your ATS, it's easy.'",
+					"s": []
+				},
+				{
+					"t": "Don't make the assistant perform: 'Great question! I'd be happy to help you with that.'",
+					"s": []
+				}
+			],
+			"related": [
+				"writing",
+				"error-messages",
+				"labelling-ai-output",
+				"consistency"
+			],
+			"references": []
+		},
+		{
+			"id": "keyboard-model",
+			"name": "Keyboard model",
+			"kind": "foundation",
+			"group": "Key principles",
+			"summary": "TwoUX is built to be driven from the keyboard. ⌘K runs any command, ⌘J opens the assistant, ? shows every shortcut, J and K move through lists, and Esc always closes the innermost layer first.",
+			"principles": [
+				{
+					"t": "Shortcuts are accelerators, not the only path. Everything is also reachable by Tab and by the command menu. APG: do not use shortcuts as a substitute for navigation.",
+					"s": []
+				},
+				{
+					"t": "Few, mnemonic, and familiar. APG warns that too many shortcuts add cognitive load and recommends mnemonics and known conventions.",
+					"s": []
+				},
+				{
+					"t": "Discoverable. Shortcuts are shown in tooltips, menus and buttons as keycaps, so people learn them where they already look.",
+					"s": []
+				},
+				{
+					"t": "Can be turned off. Single-key shortcuts have a switch; ⌘ shortcuts stay on.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Global: ⌘K command menu; ⌘J ask the assistant; ? shortcut sheet; / search this view; G then L go to listings; G then P go to pipeline; ⌘Z undo last action.",
+					"s": []
+				},
+				{
+					"t": "Lists: J next row, K previous row, X select, ⇧J extend selection, ↵ open in side panel, ⇧↵ open as full page, ⇧P toggle side by side.",
+					"s": []
+				},
+				{
+					"t": "Actions on the current row or selection: C new listing, E edit, F add filter, T extend 30 days, D duplicate, ⇧E export, ⇧V columns.",
+					"s": []
+				},
+				{
+					"t": "Destructive actions need Shift: ⇧C close listing. Shift keeps a stray keypress from doing harm, and the toast offers Undo.",
+					"s": []
+				},
+				{
+					"t": "Inside popovers, menus and the command menu: ↑ and ↓ move, ↵ chooses, Tab changes scope or moves, Esc closes.",
+					"s": []
+				},
+				{
+					"t": "Esc order, innermost first: 1. open popover or menu; 2. assistant sub-menus and history; 3. the assistant panel; 4. the side panel; 5. clear the row selection. One press closes one layer, and focus returns to what opened it.",
+					"s": []
+				},
+				{
+					"t": "No browser or OS conflicts: avoid ⌘ plus a single key that the browser owns (find, refresh, bookmarks) and modifier combinations with Tab, Enter, Space or Escape.",
+					"s": []
+				},
+				{
+					"t": "Single-key shortcuts are ignored while focus is in a text field.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "2.1.4: single-character shortcuts can be turned off in the shortcut sheet ('Turn off if you use a screen reader or voice control').",
+					"s": []
+				},
+				{
+					"t": "All functionality is available through the keyboard, with or without shortcuts.",
+					"s": []
+				},
+				{
+					"t": "J and K move a visible focus or active-row indicator and scroll the row into view.",
+					"s": []
+				},
+				{
+					"t": "The focused row stays visible when the side panel or bulk bar is open.",
+					"s": []
+				}
+			],
+			"dos": [
+				{
+					"t": "Show the keycap in the button or tooltip for any action that has a shortcut.",
+					"s": []
+				},
+				{
+					"t": "Add new shortcuts to the shortcut sheet and the command menu at the same time.",
+					"s": []
+				}
+			],
+			"donts": [
+				{
+					"t": "Do not bind a destructive action to a single unshifted key.",
+					"s": []
+				},
+				{
+					"t": "Do not override ⌘S, ⌘F, ⌘L or ⌘R.",
+					"s": []
+				},
+				{
+					"t": "Do not make Esc close more than one layer at a time.",
+					"s": []
+				}
+			],
+			"related": [
+				"accessibility",
+				"consistency",
+				"layout"
+			],
+			"references": []
+		},
+		{
+			"id": "migrating",
+			"name": "Migrating an existing app",
+			"kind": "foundation",
+			"group": "Adopting TwoUX",
+			"summary": "Move an existing product onto TwoUX one screen at a time, keeping its brand and the way it already works. Primitives come over quietly behind the app's own names; the change people notice comes from rebuilding composites and page flows on TwoUX patterns.",
+			"principles": [
+				{
+					"t": "Replace gradually. Each screen moves on its own and ships when it is done; the old and new run side by side until the last screen moves.",
+					"s": []
+				},
+				{
+					"t": "Keep the brand and the workflow. TwoUX takes the product's colour, corners and font through the theme file, and the flows people already know stay where they are unless a TwoUX pattern fixes a real problem in them.",
+					"s": []
+				},
+				{
+					"t": "Start where people see the difference. Swapping buttons and inputs changes little in an app that is already tidy; the rough edges live in composites (filter chips, review cards, dialogs, the sidebar) and in how pages combine them.",
+					"s": []
+				},
+				{
+					"t": "Propose, then apply. Every step is shown as a list of changes the team approves before anything is rewritten.",
+					"s": []
+				}
+			],
+			"steps": [
+				{
+					"t": "Check the platform. TwoUX components need React 19 and Tailwind CSS 4; upgrade those first, on their own branch, and run the app's tests before any TwoUX change. twoux init warns when a version is too old.",
+					"s": []
+				},
+				{
+					"t": "Install @twoux/ui and run npx twoux init. It links AGENTS.md and CLAUDE.md, adds the guard hook, the five skills and twoux.theme.json, and never overwrites existing files.",
+					"s": []
+				},
+				{
+					"t": "Set the theme before touching a component: the product's primary colour, corner radii and font in twoux.theme.json, then npx twoux theme. The generator refuses colours that fail WCAG contrast.",
+					"s": []
+				},
+				{
+					"t": "Decide who owns each shared token name. Apps built on shadcn define many of the same CSS variables as TwoUX (primary, border, muted, radius, font). Whichever stylesheet loads last repaints the other's components, so pick one owner per name and delete the other definition.",
+					"s": []
+				},
+				{
+					"t": "Keep raw Tailwind colours building while you migrate. TwoUX switches off Tailwind's default palette; if the app still uses classes such as text-slate-500, add those colour families back in an @theme block after TwoUX's stylesheet, and remove them once the codemod in step 6 has run.",
+					"s": []
+				},
+				{
+					"t": "Swap primitives behind the app's own names. Write one thin adapter per component (same name and props, TwoUX inside) so importing files don't change; map variants and sizes to TwoUX's. Expect tests that assert class names to fail, and fix the tests, not the adapters.",
+					"s": []
+				},
+				{
+					"t": "Codemod raw colour classes to roles (text-slate-500 to text-ink-3, border-slate-200 to border-line, bg-primary-50 to bg-selected). A person reviews the mappings that change meaning, such as light grey text that would fail contrast.",
+					"s": []
+				},
+				{
+					"t": "Move one screen at a time. Map each composite to the TwoUX job and pattern (filters to the filter bar, record detail to the side panel, delete to Undo, errors in place, the assistant's output to the origin label), rebuild it with /twoux-build and /twoux-design, and keep the product's layout where it already works.",
+					"s": []
+				},
+				{
+					"t": "Lock it in. Run npx twoux check in CI on every migrated folder, so new drift fails the build while the rest of the app is still moving.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Ask /twoux-audit for the migration plan: it measures the app (versions, shared token names, raw colour classes, primitives that match TwoUX's names, composites that map to TwoUX patterns) and proposes the steps above in order, applying only what the team approves.",
+					"s": []
+				},
+				{
+					"t": "Before moving a screen, decide which of its differences from TwoUX are product decisions to keep and which are drift to remove. Write the kept ones down; they are candidates for a TwoUX proposal, not exceptions to repeat.",
+					"s": []
+				},
+				{
+					"t": "Keep each migration change small enough to review: one adapter, one codemod pass or one screen per pull request.",
+					"s": []
+				}
+			],
+			"dos": [
+				{
+					"t": "Theme TwoUX with the product's brand colour and font, then swap primitives behind adapters so nothing else changes in that pull request.",
+					"s": []
+				},
+				{
+					"t": "Rebuild the product's own review card as a TwoUX list row with a side panel, because that is the screen people use all day.",
+					"s": []
+				}
+			],
+			"donts": [
+				{
+					"t": "Don't rebuild the app in TwoUX's demo look; people should still recognise their product.",
+					"s": []
+				},
+				{
+					"t": "Don't load both stylesheets and leave shared token names to load order.",
+					"s": []
+				},
+				{
+					"t": "Don't stop after the primitives and call the migration done; the visible gains come from the composites.",
+					"s": []
+				}
+			],
+			"related": [
+				"consistency",
+				"design-tokens",
+				"colours",
+				"writing",
+				"voice-and-tone"
+			],
+			"references": []
+		}
+	]
+}

@@ -1,0 +1,198 @@
+# TwoUX
+
+> Engineering-first design system for complex, data-intensive B2B applications built with AI coding agents: data tables, visualisations, drill-down workflows and command-centre dashboards. TwoUX AI Knowledge: which component and pattern fits each job, and why. Same job, same component, same tokens, same behaviour. Read AGENTS.md first.
+
+- [Rules for AI coding agents](AGENTS.md)
+- [Tokens](packages/ui/src/styles/twoux.css)
+- [Job to component registry](packages/ui/registry/jobs.json)
+
+## Foundation
+
+- [Colours](docs-md/colours.md): TwoUX is a mostly neutral interface, light by default with a dark theme people can choose. Colour is spent on two things only: the one accent that marks the main action and current selection, and three reserved status families. Every colour is applied through a role token, never a hex value.
+- [Data visualisation colours](docs-md/data-vis-colours.md): One categorical palette of eight colours in a fixed order, one single-hue ordinal ramp of five steps, and a hard rule that status colours never become a series. Validated on white (#ffffff) with an OKLab and colour vision deficiency (CVD) simulator; every colour reaches at least 3:1.
+- [Typography](docs-md/typography.md): Geist for interface text, Geist Mono for IDs, keys and code. A seven-step scale from 11px to 24px with 13px as the default, tuned for dense tables. Numbers in columns use tabular figures.
+- [Spacing](docs-md/spacing.md): Spacing sits on a 4px grid with 2px for fine detail. Space shows relationship: closer means related. Apps use role utilities: fixed ones inside controls that never change, and region ones between parts that tighten by themselves in a workspace.
+- [Content density](docs-md/content-density.md): TwoUX ships one density: compact. Controls are 28 or 32px high and table rows 36px. Spacing that protects reading and pointing is kept, so compact never means cramped targets. Tool pages that pass three tests use workspace density: the same sizes with the chrome and gaps taken out.
+- [Layout](docs-md/layout.md): One app shell for the whole product: a 224px side navigation on the grey --bg, and an inset white canvas where the work happens. Record details open in a side panel that overlays by default and can push the list aside. Below 860px the shell collapses to one column.
+- [Iconography](docs-md/iconography.md): One line icon set, 16px with a 1.7 stroke in currentColor, and a fixed meaning for every icon. An icon that means one thing in one place means that thing everywhere.
+- [Shape and elevation](docs-md/shape-elevation.md): Four radii, each tied to a role, and two shadows. The page is flat; only layers that float above it (menus, popovers, toasts, dialogs) get a real shadow.
+- [Motion](docs-md/motion.md): Motion in TwoUX shows what changed and where it went: 120 to 260ms, eased by role, exits shorter than entrances, and nothing moves when people ask for reduced motion. It never decorates.
+- [Design tokens](docs-md/design-tokens.md): Tokens are the only way a visual value enters TwoUX. They are named for their job, defined once in :root, and consumed by components. Raw hex, px and ms values in product code are bugs.
+- [Consistency](docs-md/consistency.md): TwoUX's first rule: the same job gets the same component, the same token and the same behaviour, on every screen, whether a designer, an engineer or a language model wrote the code. Consistency is what makes a dense product learnable.
+- [Accessibility](docs-md/accessibility.md): TwoUX targets WCAG 2.2 level AA on every component and view. Keyboard is a first-class input, focus is always visible and always managed, and single-key shortcuts can be turned off.
+- [Writing](docs-md/writing.md): TwoUX speaks plain UK English. Buttons start with a verb, everything is in sentence case, and every message says what happened and what to do next. AI is described by what it does, never as smart or magic. How the copy should sound is set in Voice and tone.
+- [Voice and tone](docs-md/voice-and-tone.md): TwoUX sounds like a capable colleague who knows the data: precise, calm, candid and respectful of people's expertise. The voice is the same on every screen and in the assistant. The tone moves with the moment, from strictly practical in an error to one sentence warmer when someone is starting out or has just finished.
+- [Keyboard model](docs-md/keyboard-model.md): TwoUX is built to be driven from the keyboard. ⌘K runs any command, ⌘J opens the assistant, ? shows every shortcut, J and K move through lists, and Esc always closes the innermost layer first.
+- [Migrating an existing app](docs-md/migrating.md): Move an existing product onto TwoUX one screen at a time, keeping its brand and the way it already works. Primitives come over quietly behind the app's own names; the change people notice comes from rebuilding composites and page flows on TwoUX patterns.
+
+## Components
+
+- [Button](docs-md/button.md): Starts an action on the current page, such as saving, exporting or opening a menu.
+- [Split button](docs-md/split-button.md): A button joined to a chevron: the button runs the usual action (Import data), the chevron opens its variants (Import all, Import selection).
+- [Text input](docs-md/text-input.md): Lets people type a single line of text, such as a job title, a salary or a search term.
+- [Date picker](docs-md/date-picker.md): Enter a calendar date, or a range of dates, by typing it or choosing it on a calendar: a closing date, a start date, a reporting period.
+- [Combobox](docs-md/combobox.md): Pick one or several values from a long list by typing a few letters, and add a missing one without leaving the form: a location, skills, an owner.
+- [Tag input](docs-md/tag-input.md): Enter several short values that don't come from a list, typed or pasted, and see at once which are wrong: email addresses to invite, allowed domains, keywords.
+- [Form validation](docs-md/form-validation.md): Tells people which fields need fixing and how, at the field and in a summary at the top on submit.
+- [Checkbox](docs-md/checkbox.md): Lets people choose any number of options, or confirm one setting that is applied when they save.
+- [Radio](docs-md/radio.md): Lets people choose exactly one option from a short, visible list in a form.
+- [Switch](docs-md/switch.md): Turns one setting on or off with immediate effect, without a Save button.
+- [Status badge](docs-md/status-badge.md): Shows the system state of a record, such as Live, Draft or Closed early, in one short word or phrase.
+- [Tag](docs-md/tag.md): Labels a record with a category people chose, such as Design, Hybrid or Graduate scheme.
+- [Tabs (underline)](docs-md/tabs.md): Splits one record or page into sections such as Overview, Candidates and Activity, one visible at a time.
+- [Segmented control](docs-md/segmented-control.md): Switches between two or three views or settings of the same content, such as All, Active and Backlog.
+- [Dropdown menu](docs-md/dropdown-menu.md): Opens a short list of actions or options from a button, with optional groups and one level of submenus.
+- [Tooltip](docs-md/tooltip.md): Shows a short, non-essential label or hint on hover or focus, such as an icon button's name and its shortcut.
+- [Keyboard shortcut hint](docs-md/keyboard-shortcut-hint.md): Prints the key or keys that run an action, on its button, menu item or tooltip, so people learn shortcuts by using the product.
+- [Avatar and avatar stack](docs-md/avatar.md): Shows who owns or is linked to a record, as a photo or initials, and several people as an overlapping stack with +N.
+- [Popover rules](docs-md/popover-rules.md): Shared behaviour for every floating layer (menus, filters, snooze, selectors): one open at a time and never cut off.
+- [Sign in](docs-md/sign-in.md): Provider buttons first, then email. Single sign-on is found from the email domain, and an email link means no password to remember.
+- [File drop](docs-md/file-drop.md): Drop a file or choose one. Accepted types and the size limit show before choosing, and a preview replaces the icon once a file is picked.
+- [Connector picker](docs-md/connector-picker.md): Search and connect outside services. Each row says what connecting lets the product do, and a dialog explains the access before anything is shared.
+- [Code block](docs-md/code-block.md): Shows code, commands, IDs or log output exactly as written, so people can read and copy it. Inline Code marks a token inside a sentence.
+- [Card](docs-md/card.md): A white container that groups one object or one task, such as a settings section, a sign-in form or a summary, with an optional header, actions and footer.
+- [Separator](docs-md/separator.md): A thin line that divides groups of content or menu items. With a label, it separates two ways of doing the same thing, such as “or”.
+- [Timestamp](docs-md/timestamp.md): One component for every date and time in the product: relative or absolute display, the exact value on hover and focus, and an optional "by" source.
+- [Provider logo](docs-md/provider-logo.md): The official mark of a service people sign in with or connect, shown unaltered on a white tile beside the service's name.
+- [Toast](docs-md/toast.md): A short, non-blocking confirmation of something the person just did, with Undo when the action can be reversed.
+- [Banner (inline alert)](docs-md/banner.md): A persistent message inside the page about a condition that affects what the person is looking at, with at most one action.
+- [Confirmation dialog](docs-md/confirmation-dialog.md): A modal question before an irreversible or high-impact action, stating the consequence and offering the safe option first.
+- [Empty state](docs-md/empty-state.md): What a list, table or panel shows when it loaded correctly but has nothing to show, with the next step.
+- [Loading skeleton](docs-md/loading-skeleton.md): Grey placeholder rows that keep the table or panel's shape while data loads.
+- [Error state (failed to load)](docs-md/error-state.md): Shown in place of a region that failed to load: what failed, that nothing was lost, and Try again.
+- [Side panel (drawer)](docs-md/side-panel.md): A panel on the right that shows the selected row's detail beside the table, in push (default) or overlay mode; 440px by default and resizable from 360px to half the canvas in push mode.
+- [Command palette (⌘K)](docs-md/command-palette.md): A searchable list of actions and destinations, scoped to the current selection, opened with ⌘K from anywhere.
+- [Shortcut sheet (?)](docs-md/keyboard-shortcut-sheet.md): A panel listing every shortcut by task, opened with ?, which also holds the switch to turn single-key shortcuts off.
+- [Inbox (triage)](docs-md/inbox.md): The one place for things that need the person, shown as a list beside the selected item's detail, cleared by doing, marking done or snoozing.
+- [Notifications vs inbox vs toast](docs-md/notifications-decision.md): The rule for where a message goes: toast for your own action, banner for a condition on this page, inbox for anything that needs you later, activity for the rest.
+- [App shell and sidebar navigation](docs-md/app-shell.md): The frame of every screen: a tinted left sidebar for navigation and an inset white canvas with a top bar for breadcrumb, Ask and search.
+- [Pane layout](docs-md/pane-layout.md): A workspace that fills the screen with columns of panes people resize with splitters and rearrange by dragging, for tool pages such as trading screens and editors where everything has to stay in view.
+- [Breadcrumb](docs-md/breadcrumb.md): A short trail in the top bar showing where the page sits in the hierarchy, ending with the current page.
+- [Page header](docs-md/page-header.md): The page title on the left and its actions on the right, with exactly one primary action per view.
+- [Stepper](docs-md/stepper.md): A vertical list of numbered steps for a task done in order, such as setting up a workspace or publishing a listing, showing what is done, what is current and what is left.
+- [Setup checklist](docs-md/setup-checklist.md): A short list in the sidebar of the few things that make the product useful, with progress shown as "2 of 4".
+- [Onboarding step](docs-md/onboarding-step.md): One step of first-run setup on a plain page: why we ask, the fields, which step this is, and Back, Skip and Continue.
+- [Help panel](docs-md/help-panel.md): Read-only help in the right-hand panel slot, opened from an Info link next to a heading or label, with the topic heading, short guidance and Learn more links.
+- [Feedback prompt](docs-md/feedback-prompt.md): A small "Was this helpful?" block with Yes and No buttons, a thank you once voted, and an optional short follow-up form.
+- [Usage meter](docs-md/usage-meter.md): Credits or seats used against a limit, when it resets, and what used them. An upgrade link appears only near the limit.
+- [Guide cue](docs-md/guide-cue.md): A short guide of one to three popovers that point at the real controls for a task, opened only when the person asks to be shown.
+- [List table](docs-md/list-table.md): A read-mostly table for scanning and triaging records such as listings or candidates, with a sticky header, sortable columns, J and K row focus and checkbox selection.
+- [Dense table](docs-md/dense-table.md): The List table at 28px rows for spreadsheet-like data, such as a life-cycle inventory or a product library, with group rows, row numbers with a row menu, a filter row, in-cell buttons and frozen first columns.
+- [Data grid](docs-md/data-grid.md): An editable, spreadsheet-like grid for enriching and exporting many columns, with pinned columns, cell-by-cell keyboard navigation, a totals row and AI-generated columns.
+- [Filter pills and filter bar](docs-md/filter-bar.md): Filters applied from one button in the toolbar and shown as segmented chips on their own row: each reads as a sentence, values apply as soon as they are ticked, and the row appears only while something is filtered.
+- [Filter panel](docs-md/filter-panel.md): A side panel of collapsible filter sections for searches with many fields, with live counts per option and a main action that says how many rows it will act on.
+- [Saved views](docs-md/saved-views.md): Named, reusable combinations of filters, sort order and column choices, also kept in the URL so a link reproduces the view.
+- [Bulk action bar](docs-md/bulk-action-bar.md): A grey band directly above the table while rows are selected: the actions that apply to every selected row, the count and Clear selection.
+- [Pagination and counts](docs-md/pagination.md): The footer that says which rows are showing and how many exist ("1–100 of 1,262"), with previous and next controls and the selection count.
+- [Grouped list](docs-md/grouped-list.md): A compact list of records split under group headers (such as candidates by stage), each header showing its count.
+- [Export menu](docs-md/export-menu.md): One Export menu per table: options first (only visible columns, include AI columns), then file formats, then copy to clipboard.
+- [Board and board item](docs-md/board.md): A dashboard grid of self-contained items, such as charts, stats and lists, that people can reorder, resize and remove to build the overview they need.
+- [Stat card with comparison](docs-md/stat-compare.md): One number that matters, with its change against a named previous period shown by arrow, sign and colour, and an optional faint previous-period line.
+- [Line chart card](docs-md/chart-card-line.md): A card that shows how one or more series change over time, with a title, period controls, a Chart or Table switch, direct labels, a shared crosshair tooltip and a source footer.
+- [Bar chart](docs-md/chart-bar.md): Vertical bars from a zero baseline for comparing amounts per period or category, with the latest bar labelled and an incomplete period shown lighter.
+- [Heatmap](docs-md/chart-heatmap.md): A grid of two dimensions (such as team by weekday) shaded in one hue from light to dark, with every cell showing its number and a legend under the grid.
+- [Funnel](docs-md/chart-funnel.md): Horizontal bars for ordered stages (views, applies, interviews, offers) that show each stage's count and its rate from the stage before, darkest to lightest.
+- [Breakdown table](docs-md/breakdown-table.md): A table under a chart that splits its figure by team, location or owner, with current and previous periods side by side and change in both units.
+- [Stacked area chart](docs-md/chart-area.md): Two or more series stacked over time, so the top edge is the total and each band is one part of it, such as applications per week split by source.
+- [Bar and line chart](docs-md/chart-mixed.md): One bar series with one to three lines on the same y-axis and unit, such as weekly applications as bars and their four-week average as a line.
+- [Donut chart](docs-md/chart-donut.md): Two to five parts of one total at a single moment, with the total in the centre and every segment labelled with its count and share. Most of the time a bar chart is better.
+- [Scatter chart](docs-md/chart-scatter.md): One dot per record placed by two measures, such as each live listing by advertised salary and applications, for spotting relationships and outliers.
+- [Items palette](docs-md/items-palette.md): A searchable list, in a side panel beside a configurable dashboard, of the items a person can add, each with a title, a short description, its type and an Add to dashboard button.
+- [Share bar](docs-md/chart-share-bar.md): One whole split into up to six parts in a single horizontal bar, with each part's name and share in a legend above. Smaller parts fold into a grey Other.
+- [Ranked list](docs-md/ranked-list.md): Ranked rows with a series dot or icon, name, value and change, optionally a sparkline. Beside a stacked chart it is the chart's legend; each row links to the record.
+- [Change list](docs-md/change-list.md): Ticker rows for indices, prices or rates: name and code, value with unit, change by arrow, sign and colour, an optional sparkline, and a See all link.
+- [Price chart](docs-md/chart-price.md): One price over a session: a line with a light wash, the last value tagged on the right axis, the previous close as a dashed reference, a live dot, and an axis that says when it does not start at zero.
+- [Waterfall chart](docs-md/chart-waterfall.md): How an opening amount becomes a closing amount: each increase and decrease floats from the running total, joined by connectors, with totals in grey from zero.
+- [Bullet chart](docs-md/chart-bullet.md): Actual against target for a few measures: a thin bar over grey qualitative bands with the target as a dark tick, in a fraction of a gauge's space.
+- [Treemap](docs-md/chart-treemap.md): Parts of a total as nested rectangles sized by value: squarified so tiles stay readable, names only where they fit, and the tail folded into Other after 12 tiles.
+- [Sankey chart](docs-md/chart-sankey.md): Flows from left to right across two or three columns, such as traffic sources to pages to outcomes. Link width shows value; hover or focus highlights a path.
+- [Histogram](docs-md/chart-histogram.md): How values spread: touching columns, one per equal bin, counted on one axis, with an optional dashed marker such as the median.
+- [Box plot](docs-md/chart-box-plot.md): Distributions of several groups on one axis: a box for the middle half, a line for the median, whiskers to 1.5 times the IQR and dots for outliers.
+- [Candlestick chart](docs-md/chart-candlestick.md): Open, high, low and close per period for a price. Up candles are hollow and down candles filled, in two categorical colours, or green and red on trading screens; volume is its own chart below.
+- [Order book](docs-md/order-book.md): Resting sell and buy orders either side of the spread, each with a bar for the running total, so people see where the price is likely to meet resistance and can pick a price to trade at.
+- [Map chart](docs-md/chart-map.md): Regions shaded by a rate in five steps of one hue, or circles sized by an amount at places. For questions where location itself matters; missing regions are hatched and labelled No data.
+- [Timeline](docs-md/timeline.md): Scheduled work across a few tracks on one time ruler, such as releases and maintenance per service or hiring campaigns per team. Spans and instants, a labelled Now line, four zoom levels; selecting an event opens it in the side panel.
+- [Radial bars](docs-md/chart-radial-bars.md): One to four small concentric rings, each the share of a fixed limit such as seats, credits or storage, with used of limit always written beside them. Never actual against target: that stays the bullet chart.
+- [Radial lines](docs-md/chart-radial-lines.md): A line chart wrapped round a circle for cyclical periods (hour of day, day of week, month), so the last period runs into the first. One to three series, values from zero, gaps for missing data.
+- [Scheduler](docs-md/scheduler.md): Interviews, shifts or bookings on a day, week or month grid, with people or rooms as resources. Click a free time to add, click an event to open it, and drag, use the keyboard or the event menu to move it. Below 768px it becomes an agenda list.
+- [Sheet grid](docs-md/sheet-grid.md): A spreadsheet of records with typed columns, a menu per column, row numbers and a status row for computed columns, and Excel and Google Sheets keys: select ranges, copy and paste to and from either, fill, clear and undo. size="dense" gives 28px rows for spreadsheet-like data.
+- [Columns menu](docs-md/columns-menu.md): A menu that shows, hides and reorders the columns of a sheet or list table, with search, Show all and Hide all, type icons and eye toggles, plus wrapping and rows per page on list tables. Changes apply at once.
+- [Run status bar](docs-md/run-status-bar.md): The bottom bar of a sheet: Table up to date, or how far the run is with a meter, the credits spent so far and Stop; run history; and Auto-run with its cost per row.
+- [Field mapping](docs-md/field-mapping.md): A list of target fields, each with the source column that fills it: required fields marked, type mismatches warned in words, and other source columns skipped or created as new columns. Used by imports and, later, automations.
+- [CSV import](docs-md/csv-import.md): A two-step dialog: choose a CSV file, its delimiter and header row; then match columns, read the problems before importing, preview the first 20 rows with problem cells marked, and import with the count on the button.
+- [Action catalogue](docs-md/action-catalogue.md): A searchable list, in the side panel, of actions that add a column: look-ups from other services, AI, formulas and exports, each with a one-line description and its cost per row. Choosing one opens a short set-up with the estimated total.
+- [Table settings](docs-md/table-settings.md): Settings for one table in the side panel: how duplicates are handled with the consequence written out, deleting empty rows, and sharing as a template with who can use it. Saved with Save; closing with changes asks first.
+- [Assistant side panel](docs-md/assistant-panel.md): A side panel, opened with ⌘J, where people ask about the records on screen and get answers grounded in the current selection and filters.
+- [Assistant page](docs-md/assistant-page.md): The same conversation opened as a full page, with Answer and Records tabs and a Sources panel listing every record the answer used.
+- [Message composer](docs-md/message-composer.md): The message box with context chips, a + menu, @ mentions, / saved tasks, typeahead completions and the Quick or Thorough answer mode.
+- [Thinking and steps](docs-md/thinking-steps.md): A row that shows what the assistant is doing in words with a running timer, then collapses to "Thought for 2.1s · 4 steps" and expands on request.
+- [Clarifying question card](docs-md/clarifying-question.md): A card docked above the message box that asks up to three questions with recommended defaults when the answer would change the result.
+- [Suggested changes](docs-md/suggested-changes.md): A proposal card listing each change with a checkbox and before and after, applied with one button and undoable afterwards.
+- [Step card](docs-md/step-card.md): The proposal turns into a step card while changes apply: each change shows a spinner then a check, with an "N / M" counter, and the table updates row by row.
+- [Follow-ups and starters](docs-md/follow-ups-starters.md): Follow-ups continue an answer as muted rows under a "Follow-ups" label; starters appear only in the empty state as suggested tasks based on what is on screen.
+- [Citations and sources](docs-md/citations-sources.md): Record IDs inline in answers that open the record, plus a Sources panel on the full page listing every record and file the answer used.
+- [AI origin label](docs-md/ai-origin-label.md): One small mark and short text on generated content, such as "Assistant · from your workspace data". No sparkle on every button and no separate AI colour.
+- [AI column](docs-md/ai-column.md): A generated table column that fills one row at a time, cites each row, shows when it was written and never overwrites real data.
+- [Task builder](docs-md/task-builder.md): Repeated tasks written as a sentence with editable slots that reuse filter values, with Run blocked until every required slot is filled.
+- [Agent permissions](docs-md/agent-permissions.md): Per-action access set in plain words with three levels, Off, Ask first and Allow, grouped into Read and Change.
+- [Agent run timeline](docs-md/agent-run.md): The steps of an agent run with state in shape and colour, the filter each step used, a highlighted waiting step and Stop always visible.
+- [Connected tools](docs-md/connected-tools.md): Outside tools listed in the + menu and settings, each with a detail card saying what it can read and change, where data is stored and who connected it.
+- [Team instructions and files](docs-md/team-instructions.md): Shared instructions and files set once for the workspace, visible and editable, and named in the assistant's empty state and citations when used.
+- [Previous conversations](docs-md/conversation-history.md): A searchable list opened from the clock in the panel bar: scheduled tasks first, then recent conversations, with a dot for a new answer and "Needs you" for one waiting.
+- [Templates gallery](docs-md/templates-gallery.md): A dialog with categories on the left, search on top and cards that say what each template does and which tools it uses; picking one opens it as a draft task.
+- [Prompt editor with fields](docs-md/prompt-editor.md): An editor where row fields and team files are removable chips, inputs and outputs are listed with types, and the prompt is tested on a few rows before running on the whole table.
+- [Answer actions](docs-md/answer-actions.md): The row under every answer: origin label on the left, then Copy, Helpful, Not helpful, Regenerate and a More menu. Always visible, never only on hover.
+- [Generated file card](docs-md/artifact-card.md): A compact card under an answer for one thing the assistant made: name, type and size, origin label, and up to two actions with the rest in a More menu.
+- [Plan preview](docs-md/plan-card.md): The plan an agent shows before a multi-step or costly run: numbered steps people can remove, risky steps marked in words, and nothing running until it is approved.
+- [Change review](docs-md/change-request.md): The review queue for changes an agent proposes to records, procedures, prompts, tools or another agent: the reason, the diff, and test results, approved or rejected by a person.
+- [Confidence note](docs-md/confidence-note.md): A short note beside agent output that says, in words, what the agent is unsure about, why, and the safer option or the way to check.
+- [Why this choice](docs-md/why-choice.md): A small Why? control beside a choice an agent made. On demand, it names the deciding factors and the options that lost, then offers Change this or Keep it.
+
+## Patterns
+
+- [Filtering and search](docs-md/filtering-search.md): Narrow a list to the rows that matter with filter pills that apply as you tick, show counts, and live in the URL.
+- [Saved views](docs-md/saving-views.md): Store a filtered, sorted, column-chosen list under a name so people and teams return to it in one click.
+- [Selection and bulk actions](docs-md/selection-bulk-actions.md): Pick rows with X or checkboxes, then act on all of them from one bar above the table that says how many rows it will touch.
+- [Inline editing and validation](docs-md/inline-editing-validation.md): Edit values where they are shown, check each field when the person leaves it, and summarise every problem on submit.
+- [Empty, loading and error states](docs-md/empty-loading-error.md): One rule set for the three states every view has before or instead of data: loading, nothing to show, and failed.
+- [Undo and destructive actions](docs-md/undo-destructive.md): Decide between Undo after the fact and a confirmation before it, using one test: can the action be reversed, and who else does it reach?
+- [Notifications: inbox, bell, toast or email digest](docs-md/notification-channels.md): Route every message by one question: does it need this person to act? Things that need you go to the Inbox; your own results go in a toast; nothing gets a separate bell list.
+- [Record detail: side panel, overlay or full page](docs-md/record-detail.md): Open a record in a side panel that pushes the list by default, overlay it on narrow or wide-content pages, and go to the full page for deep work.
+- [Keyboard-first navigation](docs-md/keyboard-navigation.md): Every action has a key shown on its button. J/K move, Enter opens, Esc steps back one layer at a time, ⌘K runs anything, ⌘J asks the assistant.
+- [Data export](docs-md/data-export.md): One Export menu on every table: choose what to include first, then the format, then copy instead of download if you want.
+- [Comparison over time](docs-md/period-comparison.md): Every headline number says what it compares against: this period vs the previous period of the same length, with arrow, sign and colour.
+- [Onboarding to an empty workspace](docs-md/workspace-onboarding.md): A new workspace shows a short setup checklist in the sidebar and empty states that each offer one way in: create, import or start from a template.
+- [Ask about what's on screen](docs-md/ask-on-screen.md): ⌘J or Ask opens the assistant beside the data with the current selection and filters as removable context chips, so the scope of every answer is visible.
+- [Propose, then apply](docs-md/propose-apply.md): The assistant never edits on its own: it lists suggested changes with checkboxes, the person applies them in one step, each change shows its progress, and Undo reverses all of it.
+- [Showing reasoning and progress](docs-md/reasoning-progress.md): While working, say the current step in words with a running timer and a Stop; when done, collapse to "Thought for 2.1s · 4 steps" that opens on request.
+- [Clarifying before acting](docs-md/clarify-before-acting.md): When the answer would change the result, ask with a question card above the composer: options with a recommended default, number keys, Skip and Next.
+- [Citing sources](docs-md/citing-sources.md): Every claim in an answer links to the record it came from by ID; clicking opens the record in the side panel, and the full page lists every record used.
+- [Labelling AI output](docs-md/labelling-ai-output.md): Mark generated content with one small origin mark next to it. No AI colour, no sparkle on every button, no "AI-powered" copy.
+- [Agents acting on your behalf](docs-md/agents-on-behalf.md): Agents work within permissions set per action (Off, Ask first, Allow), show every run as a list of steps, stop to wait for you through the Inbox, and can always be stopped.
+- [Generated table columns and enrichment](docs-md/generated-columns.md): Add an AI column, test it on three rows, see the cost per row, then run it with progress and Stop. Each cell shows its own state and cites its record.
+- [Saved tasks and schedules](docs-md/saved-tasks-schedules.md): Turn repeated requests into a task sentence with editable slots, test it once, then save it and optionally run it on a schedule.
+- [Data visualisation](docs-md/data-visualisation.md): Start from the question the person is asking, pick the one chart that answers it, give it a noun title, units and a period, and ship it with a table view and its four states.
+- [Chart drill-down](docs-md/chart-drill-down.md): Select a point on a chart to see what makes it up, then narrow the chart or the whole page to that point, with every applied filter shown as a pill you can remove.
+- [Static dashboard](docs-md/static-dashboard.md): A fixed overview page where the team sees the same items in the same order, most important first, answering the day's questions at a glance.
+- [Configurable dashboard](docs-md/configurable-dashboard.md): A personal overview where each person adds, removes, moves and resizes items on a board, with an items palette to add from, a saved layout and a reset to the default.
+- [Dashboard items](docs-md/dashboard-items.md): The catalogue of item types a dashboard is built from, such as key metrics, charts, short lists, alerts, quick links, getting started and feature news, and what each one should contain.
+- [Regenerating an answer](docs-md/regenerating-answers.md): Regenerate reruns the same question with the same context and replaces the latest answer, keeping the earlier version one step away. It never touches changes already applied.
+- [Generated drafts and files](docs-md/generated-drafts-files.md): Show what the assistant makes (a job description, a CSV, a chart) as a card under the answer. Short things are read and copied in place; long drafts open on the assistant page. Anything that would change a record goes through Suggested changes.
+- [Asking for details inside the answer](docs-md/inline-input-in-answer.md): When the assistant knows what to do but needs a few values to do it, it asks with a short form card in the thread, prefilled from context. Submitting the form produces a proposal, not a change.
+- [Agent activity log](docs-md/agent-activity-log.md): A chronological list of what agents and the assistant did across runs: time, an icon with a word for the outcome, a past-tense label that links to the run or message, grouped by day.
+- [Managing agents](docs-md/managing-agents.md): One Agents page lists every agent with its source, what it does, whether it is on and where it may act. People turn agents on and off with Undo, edit scope in the side panel, and agents are never switched off or deleted without someone choosing to.
+- [Disabled and read-only states](docs-md/disabled-read-only.md): Show an action as unavailable only when the person can do something about it, say why in one sentence, and show values they can't change as read-only rather than greyed out.
+- [Drag and drop](docs-md/drag-and-drop.md): Dragging is a shortcut, never the only way: every drag in TwoUX has a keyboard path and a menu path that do the same thing.
+- [Error messages](docs-md/error-messages.md): Put every error where it happened, at the smallest scope that contains it, and say what went wrong and what to do next in plain words.
+- [Contextual help](docs-md/help-system.md): Answer "what is this, why does it matter, how do I choose" in three steps of depth: the words on the screen, a help panel opened from an Info link, and a help centre article in a new tab.
+- [Secondary panels: which right-hand panel](docs-md/secondary-panels.md): TwoUX has one right-hand panel slot. Record detail, the assistant, help and filters each have a clear job, only one is open at a time, and none is ever required to finish a task.
+- [Collecting product feedback](docs-md/user-feedback.md): Ask "Was this helpful?" in a quiet spot after people have read or used something, record the Yes or No straight away, then offer one short optional question.
+- [Unsaved changes](docs-md/unsaved-changes.md): Don't let people lose work by accident: save drafts of long text automatically, and ask before discarding a changed form only when there really are changes.
+- [Timestamps](docs-md/timestamps.md): Show when things happened as relative time in lists ("3 hours ago"), the exact date and time on hover and in record details, and always say what the time refers to and who caused it.
+- [Page actions and row actions](docs-md/actions.md): Actions that affect the page or many records sit in the page header or the bulk action bar; one or two frequent actions also sit on each row, and every row action is reachable from the selection too.
+- [Choosing a selection control](docs-md/choosing-selection-control.md): Pick the control from three questions: one choice or many, how many options, and does it apply at once or on Save.
+- [Creating a record: dialog, single page or steps](docs-md/create-record.md): Pick the creation surface by how much people must decide: a small dialog for a name or two, one page for most records, steps only for long or high-stakes set-ups. Fill everything else with visible defaults.
+- [Editing a record: inline, section or whole page](docs-md/edit-record.md): Change one value where it is shown, one section in place, or many linked settings on an edit page that mirrors the create form. Every saved edit can be undone.
+- [Deleting records](docs-md/delete-record.md): Deleting moves records to Deleted with Undo. Only permanent or cascading deletes ask first, and only the rare, severe ones ask people to type the name.
+- [Navigation: what goes in the sidebar and the top bar](docs-md/navigation.md): The sidebar holds where you can go and the few things you always need; the top bar holds where you are and what this page does. Records never become sidebar items.
+- [Announcing new and beta features](docs-md/announcing-features.md): Mark new or beta things where people meet them, with a small text label that opens a short explanation. Keep a What's new list for the rest. Never use toasts or banners for announcements.

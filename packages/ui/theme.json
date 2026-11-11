@@ -1,0 +1,14 @@
+{
+  "$comment": "The only place to change TwoUX's look. primary: a palette family (indigo, blue, teal, green...) or any #RRGGBB brand colour. radius: px for inside a control (xs), controls and cards (sm), floating layers (md); optional button: px or \"pill\". motion: tempo from 0.75 (quicker) to 1.25 (calmer) scales every duration; character \"standard\" or \"crisp\" (no overshoot on pops). Run pnpm theme after editing; it refuses colours that fail WCAG contrast and warns when the brand is close to a status colour.",
+  "primary": "indigo",
+  "radius": {
+    "xs": 4,
+    "sm": 6,
+    "md": 8
+  },
+  "font": "Geist",
+  "motion": {
+    "tempo": 1,
+    "character": "standard"
+  }
+}

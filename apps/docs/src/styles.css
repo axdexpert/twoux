@@ -1,0 +1,140 @@
+@import "tailwindcss";
+@import "@twoux/ui/styles.css";
+@source "../../../packages/ui/src";
+@source "../../../packages/ui/templates";
+
+/* Docs-only helpers. The docs chrome uses the same tokens as the product. */
+.shiki { background: transparent !important; }
+/* Code follows the theme: Shiki writes both palettes as variables; light-dark() picks one per colour scheme, like every role token. */
+.shiki, .shiki span { color: light-dark(var(--shiki-light), var(--shiki-dark)); }
+.code-panel pre { margin: 0; padding: 14px 16px; overflow-x: auto; font-family: var(--font-mono); font-size: 12px; line-height: 1.6; }
+.code-panel.code-wrap pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+
+/* Docs reading scale. The product is compact (13px); docs are read, so they get a larger scale built on the same tokens. */
+@theme {
+  --text-docs-sm: 13px;   --text-docs-sm--line-height: 20px;
+  --text-docs: 15px;      --text-docs--line-height: 24px;   --text-docs--letter-spacing: -0.011em;
+  --text-docs-lead: 16px; --text-docs-lead--line-height: 26px;
+  --text-docs-h3: 16px;   --text-docs-h3--line-height: 24px;   --text-docs-h3--letter-spacing: -0.01em;
+  --text-docs-h2: 24px;   --text-docs-h2--line-height: 32px;   --text-docs-h2--letter-spacing: -0.012em;
+  --text-docs-h1: 24px;   --text-docs-h1--line-height: 32px;
+  --text-docs-title: 32px; --text-docs-title--line-height: 36px; --text-docs-title--letter-spacing: -0.022em; /* page titles */
+  --text-docs-intro: 15px; --text-docs-intro--line-height: 24px; --text-docs-intro--letter-spacing: -0.011em;  /* the summary under a page title */
+}
+
+/* Only the very first heading of an article sits flush, without a rule above it. */
+article > h2:first-child,
+article > div:first-child > h2:first-child {
+  margin-top: 0;
+  border-top: 0;
+  padding-top: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  main { scroll-behavior: smooth; }
+}
+
+@theme {
+  --animate-slide-in: twoux-slide-in var(--duration-base) var(--ease-out) both;
+  @keyframes twoux-slide-in { from { transform: translateX(-100%); } }
+}
+
+/* Grid items may shrink below their content, so wide children (tables, previews, code) scroll inside their own box
+   instead of pushing the page sideways (WCAG 1.4.10 Reflow). */
+main .grid > *, header .grid > * { min-width: 0; }
+
+/* One page frame for every docs page: 1180px wide, no padding when there is room,
+   a 32px gutter (16px on phones) only when the panel is narrower. */
+@utility page-frame {
+	margin-inline: auto;
+	width: min(1180px, 100% - 4rem);
+	@media (width < 48rem) {
+		width: calc(100% - 2rem);
+	}
+}
+
+/* Example apps open on their own page and fill the screen. */
+@utility h-example-frame { height: 100dvh; }
+
+/* Marketing home: a tighter display face for headlines, and the agent panel's entrance. */
+@theme {
+  --font-display: "Inter Tight", "Geist", ui-sans-serif, system-ui, sans-serif;
+  /* Marketing display scale: headlines only, never inside product UI. */
+  --text-display: 48px;   --text-display--line-height: 1.1;    --text-display--letter-spacing: -0.035em;
+  --text-display-2: 44px; --text-display-2--line-height: 48px; --text-display-2--letter-spacing: -0.03em;
+  --text-display-3: 32px; --text-display-3--line-height: 38px; --text-display-3--letter-spacing: -0.025em;
+  --text-lead: 18px;      --text-lead--line-height: 28px;
+}
+/* Marketing layer (proposal: proposals/marketing-layer.md). Every value derives from TwoUX role tokens,
+   so a brand change in theme.json recolours shadows, tints and patterns with it, in light and dark. */
+@theme inline {
+  --text-copy: 15px; --text-copy--line-height: 24px;   /* marketing paragraphs */
+  /* Docs reading colour: body text a step below headings. Light: ink-2 itself (neutral-700, 9.1:1). Dark: between ink and ink-2,
+     so long text stays soft without losing contrast. Built from role tokens, so a theme change carries it. */
+  --color-ink-prose: light-dark(var(--color-ink-2), color-mix(in oklab, var(--color-ink) 40%, var(--color-ink-2)));
+  /* Tinted surfaces: the role colour mixed into the surface, so they hold contrast in both themes. */
+  --color-tint-primary: color-mix(in oklab, var(--color-primary) 7%, var(--color-surface));
+  --color-tint-teal: color-mix(in oklab, var(--color-c3) 8%, var(--color-surface));
+  --color-tint-magenta: color-mix(in oklab, var(--color-c5) 7%, var(--color-surface));
+  --color-edge-primary: color-mix(in oklab, var(--color-primary) 35%, var(--color-line));
+  /* Coloured lift: an offset, softly blurred shadow tinted by a role colour, over a neutral contact shadow. Never a zero-offset halo. */
+  --shadow-lift: 0 1px 2px color-mix(in oklab, black 6%, transparent), 0 12px 24px -12px color-mix(in oklab, black 14%, transparent), 0 32px 64px -24px color-mix(in oklab, var(--color-primary) 32%, transparent);
+  --shadow-lift-teal: 0 1px 2px color-mix(in oklab, black 6%, transparent), 0 12px 24px -12px color-mix(in oklab, black 14%, transparent), 0 32px 64px -24px color-mix(in oklab, var(--color-c3) 30%, transparent);
+  --shadow-lift-magenta: 0 1px 2px color-mix(in oklab, black 6%, transparent), 0 12px 24px -12px color-mix(in oklab, black 14%, transparent), 0 32px 64px -24px color-mix(in oklab, var(--color-c5) 28%, transparent);
+}
+/* Light from above a section: a soft wash of the brand colour that fades out. Marketing only, never on AI output. */
+@utility bg-spot {
+  background-image: radial-gradient(60% 50% at 50% 0%, color-mix(in oklab, var(--color-primary) 16%, transparent), transparent 70%);
+}
+/* Blueprint grid lines, faded at the edges. */
+@utility bg-grid {
+  background-image: linear-gradient(var(--color-line) 1px, transparent 1px), linear-gradient(90deg, var(--color-line) 1px, transparent 1px);
+  background-size: 32px 32px;
+  mask-image: radial-gradient(70% 60% at 50% 40%, black, transparent);
+}
+
+/* Marketing bands: a slab that is always in the dark scheme, with notched top and bottom edges.
+   In the light theme it reads as near-black; in the dark theme it sits a step deeper than the page.
+   Colour is re-declared so text inside resolves its role tokens in the dark scheme too. */
+@utility band {
+  --notch-x: 40px; --notch-run: 24px; --notch-y: 24px;
+  color-scheme: dark;
+  color: var(--color-ink);
+  background-color: color-mix(in oklab, var(--color-bg) 55%, black);
+  clip-path: polygon(0 0, var(--notch-x) 0, calc(var(--notch-x) + var(--notch-run)) var(--notch-y), calc(100% - var(--notch-x) - var(--notch-run)) var(--notch-y), calc(100% - var(--notch-x)) 0, 100% 0, 100% 100%, calc(100% - var(--notch-x)) 100%, calc(100% - var(--notch-x) - var(--notch-run)) calc(100% - var(--notch-y)), calc(var(--notch-x) + var(--notch-run)) calc(100% - var(--notch-y)), var(--notch-x) 100%, 0 100%);
+  @media (width < 48rem) { --notch-x: 16px; --notch-run: 14px; --notch-y: 14px; }
+}
+/* Engineering-paper texture behind product frames. */
+@utility bg-dots {
+  background-image: radial-gradient(var(--color-line) 1px, transparent 1px);
+  background-size: 16px 16px;
+  background-position: center;
+}
+@keyframes fade-up { from { opacity: 0; transform: translateY(6px); filter: blur(2px); } to { opacity: 1; transform: none; filter: none; } }
+@media (prefers-reduced-motion: no-preference) {
+  .hero-stage { animation: fade-up 0.9s cubic-bezier(0.16, 1, 0.3, 1) both; }
+}
+
+/* Docs sidebar drill-down: a short slide that says which way you moved (into a section, or back to the root). */
+@theme {
+  --animate-panel-in: twoux-panel-in var(--duration-base) var(--ease-out) both;
+  --animate-panel-back: twoux-panel-back var(--duration-base) var(--ease-out) both;
+  @keyframes twoux-panel-in { from { opacity: 0; transform: translateX(16px); } }
+  @keyframes twoux-panel-back { from { opacity: 0; transform: translateX(-16px); } }
+}
+
+/* Docs reading layout: a centred reading column, and "On this page" pinned near the right edge.
+   Tracks: gutter | reading column (up to 48rem) | gutter | table of contents | edge. The first child is the reading
+   column (title, tabs, article, Previous/Next); the second, when there is one, is the table of contents.
+   Below 1280px the table of contents hides and the reading column centres on its own. */
+@utility docs-cols {
+  display: grid;
+  grid-template-columns: minmax(2rem, 1fr) minmax(0, 48rem) minmax(3rem, 1fr) 13rem 2.5rem;
+  & > :nth-child(1) { grid-column: 2; }
+  & > :nth-child(2) { grid-column: 4; }
+  @media (width < 80rem) { grid-template-columns: minmax(2rem, 1fr) minmax(0, 48rem) minmax(2rem, 1fr); }
+  @media (width < 48rem) { grid-template-columns: 1rem minmax(0, 1fr) 1rem; }
+}
+
+/* Anatomy: the part being read about is outlined in the preview. */
+[data-anatomy-active] { outline: 2px solid var(--color-primary); outline-offset: 2px; border-radius: var(--radius-xs); }

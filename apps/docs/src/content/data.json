@@ -1,0 +1,5076 @@
+{
+	"components": [
+		{
+			"id": "list-table",
+			"name": "List table",
+			"group": "Data",
+			"summary": "A read-mostly table for scanning and triaging records such as listings or candidates, with a sticky header, sortable columns, J and K row focus and checkbox selection.",
+			"structure": [
+				"Table header (title, item count, actions)",
+				"Filter bar",
+				"Sticky column header row",
+				"Selection checkbox column",
+				"Identifying column (Role)",
+				"Data columns",
+				"Row focus indicator",
+				"Footer (count, selection count, pagination)"
+			],
+			"whenToUse": [
+				{
+					"t": "People need to find records that match criteria, compare them, and act on one or several. These are the core table tasks.",
+					"s": []
+				},
+				{
+					"t": "Every record has the same attributes and the set will keep growing, such as all live listings or an applicant inbox.",
+					"s": []
+				},
+				{
+					"t": "People will scan, sort and analyse large volumes of rows rather than read each one.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "To edit cells, enrich with AI or total columns. Use the TwoUX Data grid, because a table is not an interactive widget and its cells are not focusable.",
+					"s": []
+				},
+				{
+					"t": "For a short list of items under shared headings, such as candidates by stage. Use the TwoUX Grouped list.",
+					"s": []
+				},
+				{
+					"t": "For page layout. Tables are only for structured data.",
+					"s": []
+				},
+				{
+					"t": "For one figure that matters. Use the TwoUX Stat card with comparison instead of a one-row table.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Keep the column header row visible on scroll when a table has more than 30 items per page, more than five columns or sortable columns.",
+					"s": []
+				},
+				{
+					"t": "Put a human-readable identifier (the Role) first and order the remaining columns by importance.",
+					"s": []
+				},
+				{
+					"t": "Only the sorted column shows its arrow; the others reveal it on hover. Expose the current sort with aria-sort on that header only.",
+					"s": []
+				},
+				{
+					"t": "J and K (or the arrow keys) move row focus, X toggles selection, Enter opens the row in the side panel, Esc clears. Show each shortcut on its button so experts learn it.",
+					"s": []
+				},
+				{
+					"t": "The header checkbox selects only the rows on the current page, and the footer reads \"2 of 24 selected\".",
+					"s": []
+				},
+				{
+					"t": "Open a row in a non-modal side panel so the table stays visible; modals hide neighbouring rows.",
+					"s": []
+				},
+				{
+					"t": "Never add cell editing or a totals row to a list table; that is the Data grid's job.",
+					"s": []
+				},
+				{
+					"t": "For spreadsheet-like data people scan many rows of, such as an inventory, a ledger, an import or a mapping, use size=\"dense\" (28px rows) and the Dense table parts. Keep the default 36px rows for everything else. Dense is a variant for that data, never a setting people switch.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Left-align text and right-align numbers with a consistent number of decimals, in tabular figures.",
+					"s": []
+				},
+				{
+					"t": "Write column labels as short, plain nouns.",
+					"s": []
+				},
+				{
+					"t": "Show the total next to the title, and the selected count before the total when rows are selected. Hide the count while loading.",
+					"s": []
+				},
+				{
+					"t": "Show a dash for an empty value and give it hidden text for screen readers, never a blank cell.",
+					"s": []
+				},
+				{
+					"t": "Status is a bordered pill with a word, never colour alone.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "1.3.1 Info and Relationships: mark up header cells with scope=\"col\" (and scope=\"row\" for the Role cell) so each value is tied to its column.",
+					"s": []
+				},
+				{
+					"t": "APG table pattern: use table semantics with an accessible name from a caption or aria-label, and aria-sort on the sorted header only.",
+					"s": []
+				},
+				{
+					"t": "2.1.4 Character Key Shortcuts: J, K, X, E and / are single-key shortcuts, so TwoUX lets people turn them off in settings.",
+					"s": []
+				},
+				{
+					"t": "2.4.7 Focus Visible: the focused row shows a visible indicator, and highlighted rows are never the only signal of selection or focus.",
+					"s": []
+				},
+				{
+					"t": "2.4.11 Focus Not Obscured: the sticky header must not fully cover the focused row; use scroll padding.",
+					"s": []
+				},
+				{
+					"t": "Give repeated row actions unique names, for example \"Open Junior Product Designer\" rather than \"Open\".",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "J / ↓",
+					"action": "Move row focus down"
+				},
+				{
+					"keys": "K / ↑",
+					"action": "Move row focus up"
+				},
+				{
+					"keys": "⇧J / ⇧K",
+					"action": "Extend selection down or up"
+				},
+				{
+					"keys": "X",
+					"action": "Select or deselect the focused row"
+				},
+				{
+					"keys": "Enter",
+					"action": "Open the focused row in the side panel"
+				},
+				{
+					"keys": "Esc",
+					"action": "Close the side panel, or clear the selection"
+				},
+				{
+					"keys": "/",
+					"action": "Focus search"
+				},
+				{
+					"keys": "F",
+					"action": "Open the filter field list"
+				},
+				{
+					"keys": "⇧P",
+					"action": "Switch the side panel between push and overlay"
+				}
+			],
+			"related": [
+				"data-grid",
+				"filter-bar",
+				"bulk-action-bar",
+				"pagination",
+				"columns-menu",
+				"saved-views",
+				"grouped-list",
+				"dense-table"
+			],
+			"references": []
+		},
+		{
+			"id": "dense-table",
+			"name": "Dense table",
+			"group": "Data",
+			"summary": "The List table at 28px rows for spreadsheet-like data, such as a life-cycle inventory or a product library, with group rows, row numbers with a row menu, a filter row, in-cell buttons and frozen first columns.",
+			"structure": [
+				"Table size=\"dense\": 28px header and rows, 8px cell padding, 13px text",
+				"Frozen first columns (data-pinned): selection, row number with ⋮ row menu, the identifying column",
+				"Filter row: a search field under each filterable header",
+				"Group rows: label, info tooltip, count, optionally collapsible",
+				"Cells: Tag with a value, Switch with its word, two linked items with an arrow, n/a, in-cell button on hover and focus",
+				"Footer: pagination; the Bulk action bar while rows are selected"
+			],
+			"whenToUse": [
+				{
+					"t": "The data is spreadsheet-like and people scan many rows at once to compare values: inventories, ledgers, bills of materials, imports and field mappings.",
+					"s": []
+				},
+				{
+					"t": "Rows fall into a few sections people read separately, such as Inputs, Wastes and emissions and Products.",
+					"s": []
+				},
+				{
+					"t": "Every row has the same attributes and people need to find, compare and act on several rows.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "As a density setting, a comfortable mode or a user preference. TwoUX has one density for the app; dense is only for this kind of data.",
+					"s": []
+				},
+				{
+					"t": "For a list people triage one record at a time (an inbox, candidates). Use the List table at its default 36px rows.",
+					"s": []
+				},
+				{
+					"t": "To type, paste from Excel, fill or undo cell edits. Use the Sheet grid with size=\"dense\": a table's cells are not focusable.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Use Table size=\"dense\". Rows and the header are 28px, cells have 8px padding and text stays 13px, so dense never means smaller type.",
+					"s": []
+				},
+				{
+					"t": "Freeze the selection column, the row number and the identifying column with data-pinned, and set each one's --pin offset. Wide tables scroll sideways inside their own box.",
+					"s": []
+				},
+				{
+					"t": "Group rows split the table into sections. Put each group in its own TableBody with a TableGroupRow first: label, count, and an info tooltip saying what belongs there. Make it collapsible when the sections are long.",
+					"s": []
+				},
+				{
+					"t": "The row number cell holds the ⋮ row menu, named “Actions for <row>”. Every row action lives there.",
+					"s": []
+				},
+				{
+					"t": "An in-cell button (Open, Share) shows on row hover and keyboard focus, and always on touch screens. It is a shortcut: the same action is always in the row menu.",
+					"s": []
+				},
+				{
+					"t": "A filter row puts one search field under each filterable header, named “Filter <column>”. Filtering goes back to page 1 and Esc clears a field.",
+					"s": []
+				},
+				{
+					"t": "Keep at most one in-cell button per row, and no more than two quick actions plus the row menu, so rows stay scannable.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Tag with a value: the category as a Tag, then the value in tabular figures, such as Allocate 90.3 %. The Tag never carries the number.",
+					"s": []
+				},
+				{
+					"t": "Switch with its word: the word says the current state (Published, Draft), never only the switch.",
+					"s": []
+				},
+				{
+					"t": "Linked items: “Magnet preparation → NdFeB magnet powder”, read as “Magnet preparation to NdFeB magnet powder”.",
+					"s": []
+				},
+				{
+					"t": "Use n/a (read as “not applicable”) when a value can't exist for the row, and a dash with hidden text when it exists but is empty.",
+					"s": []
+				},
+				{
+					"t": "Right-align numbers in tabular figures with the same decimals; put units in their own column or the header, and region codes in monospace.",
+					"s": []
+				},
+				{
+					"t": "Header labels in sentence case, short nouns: Amount, In reference unit.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "APG table pattern: a dense table is still a table, with an accessible name, header cells and scope=\"rowgroup\" on group rows.",
+					"s": []
+				},
+				{
+					"t": "The collapsible group label is a button with aria-expanded and aria-controls naming its TableBody.",
+					"s": []
+				},
+				{
+					"t": "2.5.8 Target size: row menu buttons and checkboxes keep a 24px hit area inside 28px rows.",
+					"s": []
+				},
+				{
+					"t": "In-cell buttons stay in the tab order when hidden, appear on focus, and are named for their row (“Open Electricity, medium voltage”).",
+					"s": []
+				},
+				{
+					"t": "Filter fields have their own labels, not only a placeholder.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Move through checkboxes, row menus, in-cell buttons and filter fields"
+				},
+				{
+					"keys": "Enter / Space",
+					"action": "Open the row menu, press an in-cell button, collapse or expand a group"
+				},
+				{
+					"keys": "Esc (filter field)",
+					"action": "Clear the filter"
+				},
+				{
+					"keys": "J / K, X, Enter",
+					"action": "Row focus, selection and open, with useRowKeyboard as on the List table"
+				}
+			],
+			"related": [
+				"list-table",
+				"sheet-grid",
+				"bulk-action-bar",
+				"pagination",
+				"split-button",
+				"tag",
+				"switch"
+			],
+			"references": []
+		},
+		{
+			"id": "data-grid",
+			"name": "Data grid",
+			"group": "Data",
+			"summary": "An editable, spreadsheet-like grid for enriching and exporting many columns, with pinned columns, cell-by-cell keyboard navigation, a totals row and AI-generated columns.",
+			"structure": [
+				"Toolbar (view name, Columns, Group, Export)",
+				"Pinned header row with column type icons",
+				"Pinned checkbox and identifying columns",
+				"Scrollable data cells",
+				"AI column (tinted, with run state per cell)",
+				"Pinned totals row",
+				"Status line for save and validation messages"
+			],
+			"whenToUse": [
+				{
+					"t": "People edit, enrich or export many columns of data, and cells contain interactive or editable content.",
+					"s": []
+				},
+				{
+					"t": "The table is wider than the screen and people compare values across columns, so the identifying column must stay in view.",
+					"s": []
+				},
+				{
+					"t": "People need summary content such as totals kept in view while they scroll, for example total salary or average apply rate.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "For scanning and triage of records. Use the TwoUX List table; a static table keeps reading simpler.",
+					"s": []
+				},
+				{
+					"t": "For deep edits of one record. Use the side panel or full record page; in-place editing only works for narrow edits.",
+					"s": []
+				},
+				{
+					"t": "For a handful of records. Use the TwoUX List table without pagination or totals.",
+					"s": []
+				},
+				{
+					"t": "For spreadsheet work: selecting ranges, copying to and pasting from Excel or Google Sheets, fill down and undo. Use the Sheet grid, with size=\"dense\" for 28px rows.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "The grid has one tab stop. Arrow keys move between cells, Home and End go to the first and last cell in the row.",
+					"s": []
+				},
+				{
+					"t": "Enter or F2 starts editing, Escape cancels, Enter or Tab commits. Validation is per field.",
+					"s": []
+				},
+				{
+					"t": "Pin the checkbox and Role columns while scrolling sideways, and the header and totals row while scrolling down.",
+					"s": []
+				},
+				{
+					"t": "Mark editable columns in the header and show the edit affordance on hover.",
+					"s": []
+				},
+				{
+					"t": "The totals row is chosen per column (sum, average, empty percentage) and counts only rows on screen; say so in the label.",
+					"s": []
+				},
+				{
+					"t": "The AI column runs on demand with progress, Stop and per-cell state, and never overwrites real data.",
+					"s": []
+				},
+				{
+					"t": "The Data grid keeps 36px rows. For spreadsheet-like data where people need many rows in view, use the Sheet grid with size=\"dense\" instead of changing the Data grid's height.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Each column shows its type icon so people recognise number, money, person, link, date and AI columns at a glance.",
+					"s": []
+				},
+				{
+					"t": "Right-align numbers and money with consistent decimals.",
+					"s": []
+				},
+				{
+					"t": "Keep three empty states apart: a dash when there is nothing, \"Not found\" when the AI looked and found nothing, and a red message with Retry when it failed.",
+					"s": []
+				},
+				{
+					"t": "Validation messages name the field and the rule, for example \"Enter at least £23,400, the UK minimum for a full-time role.\"",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "APG grid pattern: role=\"grid\", roving focus on cells, aria-selected on selected rows, aria-sort on the sorted header.",
+					"s": []
+				},
+				{
+					"t": "2.1.1 Keyboard: every cell action, including sort, hide, totals and AI run, works from the keyboard.",
+					"s": []
+				},
+				{
+					"t": "3.3.1 Error Identification: invalid values stay in edit with a red outline and a text message, not the outline alone.",
+					"s": []
+				},
+				{
+					"t": "4.1.3 Status Messages: save confirmations and AI progress are announced from the status line without moving focus.",
+					"s": []
+				},
+				{
+					"t": "2.4.11 Focus Not Obscured: pinned columns and rows must not hide the focused cell; scroll it into view.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "← → ↑ ↓",
+					"action": "Move one cell"
+				},
+				{
+					"keys": "Home / End",
+					"action": "First or last cell in the row"
+				},
+				{
+					"keys": "Enter / F2",
+					"action": "Edit the focused cell"
+				},
+				{
+					"keys": "Enter (editing)",
+					"action": "Save and stay"
+				},
+				{
+					"keys": "Tab (editing)",
+					"action": "Save and move to the next cell"
+				},
+				{
+					"keys": "Esc (editing)",
+					"action": "Cancel the edit"
+				},
+				{
+					"keys": "⇧Space",
+					"action": "Select or deselect the active row; the bulk action bar shows above the header"
+				}
+			],
+			"related": [
+				"list-table",
+				"columns-menu",
+				"export-menu",
+				"saved-views",
+				"filter-bar",
+				"bulk-action-bar",
+				"sheet-grid",
+				"dense-table"
+			],
+			"references": []
+		},
+		{
+			"id": "filter-bar",
+			"name": "Filter pills and filter bar",
+			"group": "Data",
+			"summary": "Filters applied from one button in the toolbar and shown as segmented chips on their own row: each reads as a sentence, values apply as soon as they are ticked, and the row appears only while something is filtered.",
+			"structure": [
+				"Filter button in the toolbar (F): fields, then the chosen field’s values beside them",
+				"Filter row, shown only once a filter is applied",
+				"Applied filter chip: field, operator, value, remove",
+				"Add another filter (+)",
+				"Result count",
+				"Clear"
+			],
+			"whenToUse": [
+				{
+					"t": "People filter a table by a few properties and need to see every active filter without opening anything.",
+					"s": []
+				},
+				{
+					"t": "People combine several properties, values and operators on a large collection.",
+					"s": []
+				},
+				{
+					"t": "Results load quickly enough for each change to apply live.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "When there are many fields to filter by, as in candidate search. Use the TwoUX Filter panel.",
+					"s": []
+				},
+				{
+					"t": "For collections under about five items. Do not filter at all.",
+					"s": []
+				},
+				{
+					"t": "For settings that always have a value, such as a chart's date range or Daily and Weekly. Use a rectangle control or the TwoUX segmented control.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Shape says what a control does. A filter is a segmented chip (field, operator, value, remove) on the filter row; actions and view settings are buttons in the toolbar.",
+					"s": []
+				},
+				{
+					"t": "Each chip reads field, operator, value, for example \"Status is any of Live, Expiring\". Three or more values are counted: \"3 statuses\".",
+					"s": []
+				},
+				{
+					"t": "Put the filter button in the toolbar. Picking a field opens its values beside the field list, and the chip appears on the filter row only once a value is ticked, never as an empty suggestion.",
+					"s": []
+				},
+				{
+					"t": "List values apply as soon as they are ticked and show how many rows each matches. Typed values (numbers, dates) apply on Enter.",
+					"s": []
+				},
+				{
+					"t": "Put the result count and Clear at the end of the filter row, and filter the full collection, not only the loaded rows.",
+					"s": []
+				},
+				{
+					"t": "Each chip can be removed on its own with the remove button at its end; + after the chips adds another field.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Use \"is\", \"is not\" and \"is any of\" as operators, matching the field, operator, value token model.",
+					"s": []
+				},
+				{
+					"t": "Dates offer quick picks first, then \"in the last N days\", then a calendar.",
+					"s": []
+				},
+				{
+					"t": "Write the result count as a full phrase, \"24 listings\", not a bare number.",
+					"s": []
+				},
+				{
+					"t": "Show the field name before the value so values like \"2\" or \"London\" are never ambiguous.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "4.1.3 Status Messages: announce the updated result count without moving focus.",
+					"s": []
+				},
+				{
+					"t": "4.1.2 Name, Role, Value: each remove button is named \"Remove Status filter\"; ticked values expose their checked state.",
+					"s": []
+				},
+				{
+					"t": "1.4.11 Non-text Contrast: the chip border must reach 3:1 against the filter row, since it is the chip’s only boundary.",
+					"s": []
+				},
+				{
+					"t": "2.1.4 Character Key Shortcuts: F can be turned off with the other single-key shortcuts.",
+					"s": []
+				},
+				{
+					"t": "Moving focus or scroll back to the top after each change is avoided so people keep their place.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "F",
+					"action": "Open the field list"
+				},
+				{
+					"keys": "↑ ↓, Enter",
+					"action": "Move through and choose fields or values"
+				},
+				{
+					"keys": "Space",
+					"action": "Tick or untick a list value (applies at once)"
+				},
+				{
+					"keys": "Enter",
+					"action": "Apply a typed number or date"
+				},
+				{
+					"keys": "Esc",
+					"action": "Close the values, then the field list, and return focus to the filter button"
+				}
+			],
+			"related": [
+				"filter-panel",
+				"saved-views",
+				"list-table",
+				"data-grid"
+			],
+			"references": []
+		},
+		{
+			"id": "filter-panel",
+			"name": "Filter panel",
+			"group": "Data",
+			"summary": "A side panel of collapsible filter sections for searches with many fields, with live counts per option and a main action that says how many rows it will act on.",
+			"structure": [
+				"Header (Filters, count of active filters, Clear all)",
+				"Collapsible sections with set-value count",
+				"Options with result counts",
+				"Results table",
+				"Footer (\"Showing 5 of 412 candidates\", Save search, main action with count)"
+			],
+			"whenToUse": [
+				{
+					"t": "Search across many dimensions at once, such as candidates by location, team, experience and salary. That is faceted navigation.",
+					"s": []
+				},
+				{
+					"t": "People set filters across several categories, which work best placed vertically on the left.",
+					"s": []
+				},
+				{
+					"t": "People need counts per option to avoid zero-result combinations.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "For two or three filters on a table. Use the TwoUX Filter bar so filters stay inline.",
+					"s": []
+				},
+				{
+					"t": "Inside a dropdown or menu when there are several categories; multiple categories should never go in a menu.",
+					"s": []
+				},
+				{
+					"t": "For saved combinations people reuse. Use TwoUX Saved views.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Sections collapse, and each closed section shows how many values are set.",
+					"s": []
+				},
+				{
+					"t": "Show the most used sections open and the rest collapsed.",
+					"s": []
+				},
+				{
+					"t": "Each option shows how many results it matches.",
+					"s": []
+				},
+				{
+					"t": "The result count updates live and the main action states its scope, \"Add 412 to pipeline\".",
+					"s": []
+				},
+				{
+					"t": "Offer Clear all for the panel and a clear per section.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Section titles are the field names people use, not database names.",
+					"s": []
+				},
+				{
+					"t": "Write \"Any team\" or \"Any time\" when a section has no value, so the default is explicit.",
+					"s": []
+				},
+				{
+					"t": "Keep counts in the same place on every option so they scan down the column.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "APG disclosure pattern: each section header is a button with aria-expanded; Enter or Space toggles it.",
+					"s": []
+				},
+				{
+					"t": "4.1.3 Status Messages: the live result count is announced as a full phrase, \"412 candidates\".",
+					"s": []
+				},
+				{
+					"t": "2.1.1 Keyboard: every section, option and Clear all can be reached and used from the keyboard.",
+					"s": []
+				},
+				{
+					"t": "1.3.1 Info and Relationships: options are grouped under their section with a group label.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab / ⇧Tab",
+					"action": "Move between sections and controls"
+				},
+				{
+					"keys": "Enter / Space (section)",
+					"action": "Expand or collapse the section"
+				},
+				{
+					"keys": "Space (option)",
+					"action": "Tick or untick an option"
+				}
+			],
+			"related": [
+				"filter-bar",
+				"saved-views",
+				"list-table",
+				"bulk-action-bar"
+			],
+			"references": []
+		},
+		{
+			"id": "saved-views",
+			"name": "Saved views",
+			"group": "Data",
+			"summary": "Named, reusable combinations of filters, sort order and column choices, also kept in the URL so a link reproduces the view.",
+			"structure": [
+				"View switcher (tabs or select) with live counts",
+				"Save view (rectangle button, shown when filters are on)",
+				"Unsaved changes indicator",
+				"Manage: rename, update, set default, delete"
+			],
+			"whenToUse": [
+				{
+					"t": "People apply the same filter configuration on every visit; saving it reduces memory load and repeat work.",
+					"s": []
+				},
+				{
+					"t": "A team needs shared starting points, such as \"Expiring this week\".",
+					"s": []
+				},
+				{
+					"t": "Expert users want to customise the interface to their own needs.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "For one-off filtering. Use the TwoUX Filter bar; a URL already preserves the state.",
+					"s": []
+				},
+				{
+					"t": "For display choices only. Use the TwoUX Columns menu, which is saved per person per table.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "A view stores filters, sort order and column choices together.",
+					"s": []
+				},
+				{
+					"t": "Keep filter state in the URL. On arrival, apply the default view unless the URL carries filter parameters.",
+					"s": []
+				},
+				{
+					"t": "Show unsaved changes and let people return to the saved state in one step.",
+					"s": []
+				},
+				{
+					"t": "Confirm before deleting or overwriting a view, naming the view in the dialog.",
+					"s": []
+				},
+				{
+					"t": "Show only the metadata people need to tell views apart, such as name and live count.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Name views after what they show, \"Expiring this week\", not \"View 3\".",
+					"s": []
+				},
+				{
+					"t": "Use fixed action labels for the lifecycle: \"Save view\", \"Update view\", \"Delete view\", \"Set as default\".",
+					"s": []
+				},
+				{
+					"t": "Confirmation text says what will change, for example that deleting removes the saved filters and columns.",
+					"s": []
+				},
+				{
+					"t": "Most people will not customise, so ship sensible default views.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "4.1.2 Name, Role, Value: the view switcher exposes the current view as selected.",
+					"s": []
+				},
+				{
+					"t": "APG dialog pattern: the delete confirmation traps focus, closes on Escape and returns focus to the trigger.",
+					"s": []
+				},
+				{
+					"t": "4.1.3 Status Messages: \"View saved\" is announced without moving focus.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab, ← →",
+					"action": "Move between views"
+				},
+				{
+					"keys": "Enter",
+					"action": "Apply the view"
+				},
+				{
+					"keys": "Esc",
+					"action": "Close the save or manage dialog"
+				}
+			],
+			"related": [
+				"filter-bar",
+				"filter-panel",
+				"columns-menu",
+				"list-table",
+				"data-grid"
+			],
+			"references": []
+		},
+		{
+			"id": "bulk-action-bar",
+			"name": "Bulk action bar",
+			"group": "Data",
+			"summary": "A grey band directly above the table while rows are selected: the actions that apply to every selected row, the count and Clear selection.",
+			"structure": [
+				"Band directly above the table, below any filters; the header row stays visible",
+				"Actions with icons and shortcuts, up to four (Ask, Extend 30 days, Duplicate); the rest in More",
+				"Destructive action (Close listings)",
+				"Count (\"2 listings selected\") and Clear selection (Esc)"
+			],
+			"whenToUse": [
+				{
+					"t": "People act on several records at once; checkboxes plus batch actions is the standard pattern.",
+					"s": []
+				},
+				{
+					"t": "An action applies to all selected items, such as extending or closing listings.",
+					"s": []
+				},
+				{
+					"t": "People select rows from the keyboard with X or Shift with J and K, then act without reaching for the mouse.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "For one or two actions on a single row. Use inline row actions or the side panel.",
+					"s": []
+				},
+				{
+					"t": "For actions on the whole table regardless of selection, such as Export. Put them in the table toolbar.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Show the bar only while rows are selected, and always show how many.",
+					"s": []
+				},
+				{
+					"t": "Place the bar directly above the table, below the filters, so the filters and the column headers stay in view.",
+					"s": []
+				},
+				{
+					"t": "Show up to four actions as buttons. The rest, and any that don't fit the width, move into a More menu that keeps their shortcuts; never shrink actions to icons only.",
+					"s": []
+				},
+				{
+					"t": "Exit by clearing the selection or pressing Esc.",
+					"s": []
+				},
+				{
+					"t": "Disable row-level actions while the bulk bar is showing so the two do not compete.",
+					"s": []
+				},
+				{
+					"t": "Confirm destructive bulk actions in a dialog that states the count and consequence, and offer Undo when the action can be reversed.",
+					"s": []
+				},
+				{
+					"t": "Selection on the header checkbox covers the visible page only, and actions affect only selected rows.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Label actions verb plus noun, \"Close listings\", and put the count in confirmations, \"Close 2 listings?\".",
+					"s": []
+				},
+				{
+					"t": "Show each action's shortcut on the button.",
+					"s": []
+				},
+				{
+					"t": "Put destructive actions last.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "APG toolbar pattern: role=\"toolbar\" with aria-label \"Bulk actions\", one tab stop, arrow keys between buttons.",
+					"s": []
+				},
+				{
+					"t": "4.1.3 Status Messages: announce \"2 listings selected\" when the count changes.",
+					"s": []
+				},
+				{
+					"t": "2.4.11 Focus Not Obscured: the bar sits in the page flow above the table, so it never covers a focused row.",
+					"s": []
+				},
+				{
+					"t": "2.5.8 Target Size: every button is at least 24 by 24 CSS pixels.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "← →",
+					"action": "Move between actions"
+				},
+				{
+					"keys": "T",
+					"action": "Extend 30 days"
+				},
+				{
+					"keys": "D",
+					"action": "Duplicate"
+				},
+				{
+					"keys": "⇧C",
+					"action": "Close listings (asks to confirm)"
+				},
+				{
+					"keys": "⌘J",
+					"action": "Ask the assistant about the selection"
+				},
+				{
+					"keys": "Esc",
+					"action": "Clear the selection"
+				}
+			],
+			"related": [
+				"list-table",
+				"data-grid",
+				"export-menu"
+			],
+			"references": []
+		},
+		{
+			"id": "pagination",
+			"name": "Pagination and counts",
+			"group": "Data",
+			"summary": "The footer that says which rows are showing and how many exist (\"1–100 of 1,262\"), with previous and next controls and the selection count.",
+			"structure": [
+				"Range and total (\"Showing 1–9 of 24\")",
+				"Selection count when rows are selected",
+				"Previous page",
+				"Page numbers or compact \"1 of 3\"",
+				"Next page"
+			],
+			"whenToUse": [
+				{
+					"t": "A collection is too large for one page or one view.",
+					"s": []
+				},
+				{
+					"t": "Lists over 20 items, with pagination at the bottom.",
+					"s": []
+				},
+				{
+					"t": "People need to know where they are and return to a section, which pagination supports better than endless scroll.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "Collections under five items.",
+					"s": []
+				},
+				{
+					"t": "Steps in a flow. Use buttons or a progress control.",
+					"s": []
+				},
+				{
+					"t": "When the total cannot be known, do not invent one; use an open-ended count such as \"100+\".",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Show the range and the total. When rows are selected, put the selected count first.",
+					"s": []
+				},
+				{
+					"t": "Use the compact \"1 of 3\" form where a row of page numbers does not fit, and offer jump to page past about 9 pages.",
+					"s": []
+				},
+				{
+					"t": "Previous is inactive on the first page and Next on the last.",
+					"s": []
+				},
+				{
+					"t": "Show pagination even when everything fits on one page, so the layout does not shift.",
+					"s": []
+				},
+				{
+					"t": "Changing page clears the selection; say so in the selection count.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Show the current range and the total together, for example \"1–100 of 1,262\", with an en dash and thousands separators.",
+					"s": []
+				},
+				{
+					"t": "Name controls by destination, \"Previous page\", \"Page 6\", not \"left\".",
+					"s": []
+				},
+				{
+					"t": "Do not show a count while the table is loading.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Wrap page links in a nav landmark with an aria-label, and mark the current page with aria-current=\"page\".",
+					"s": []
+				},
+				{
+					"t": "Give previous, next and page buttons labels; set them explicitly for non-English interfaces.",
+					"s": []
+				},
+				{
+					"t": "4.1.3 Status Messages: the range and selection count update as status text, \"2 of 24 selected\".",
+					"s": []
+				},
+				{
+					"t": "After a page change, move focus and scroll to the top of the new content.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Reach the pagination controls"
+				},
+				{
+					"keys": "Enter / Space",
+					"action": "Go to the previous, next or chosen page"
+				}
+			],
+			"related": [
+				"list-table",
+				"data-grid",
+				"columns-menu",
+				"bulk-action-bar"
+			],
+			"references": []
+		},
+		{
+			"id": "grouped-list",
+			"name": "Grouped list",
+			"group": "Data",
+			"summary": "A compact list of records split under group headers (such as candidates by stage), each header showing its count.",
+			"structure": [
+				"Group header (name, count, optional action)",
+				"Rows: ID, title, secondary text, owner avatar, date",
+				"Divider between rows"
+			],
+			"whenToUse": [
+				{
+					"t": "Records fall into a small number of meaningful groups that people scan one at a time, such as pipeline stages.",
+					"s": []
+				},
+				{
+					"t": "A short list where a full table would be heavy; simple vertical content reads better as a simple list.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "When people sort or compare many attributes across all records. Use the TwoUX List table.",
+					"s": []
+				},
+				{
+					"t": "For nested hierarchies more than one level deep. Use a tree.",
+					"s": []
+				},
+				{
+					"t": "For more than about seven groups at once; split with a filter or Saved view instead.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Each group header has a tinted background so rows read as belonging to it.",
+					"s": []
+				},
+				{
+					"t": "Show the count beside every group name.",
+					"s": []
+				},
+				{
+					"t": "Keep the same row layout in every group so columns line up down the list.",
+					"s": []
+				},
+				{
+					"t": "Allow groups to collapse when lists are long.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Group names are the states people use, \"Interviewing\", \"Screening\", \"Offer accepted\".",
+					"s": []
+				},
+				{
+					"t": "Order groups by workflow, not alphabetically.",
+					"s": []
+				},
+				{
+					"t": "Keep row text to the ID, name, role, owner and date; open the row for more.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "1.3.1 Info and Relationships: each group is a list with a heading, so the grouping is available to assistive technology.",
+					"s": []
+				},
+				{
+					"t": "APG disclosure pattern: collapsible headers are buttons with aria-expanded.",
+					"s": []
+				},
+				{
+					"t": "2.1.1 Keyboard: J and K move through rows across groups, as in the List table.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "J / K",
+					"action": "Move to the next or previous row"
+				},
+				{
+					"keys": "Enter",
+					"action": "Open the row"
+				},
+				{
+					"keys": "Enter / Space (header)",
+					"action": "Collapse or expand the group"
+				}
+			],
+			"related": [
+				"list-table",
+				"saved-views",
+				"filter-bar"
+			],
+			"references": []
+		},
+		{
+			"id": "export-menu",
+			"name": "Export menu",
+			"group": "Data",
+			"summary": "One Export menu per table: options first (only visible columns, include AI columns), then file formats, then copy to clipboard.",
+			"structure": [
+				"Export button with a download icon",
+				"Menu heading with the shortcut (⇧E)",
+				"Options: Only visible columns, Include AI columns (checkable, the menu stays open)",
+				"Download CSV, Download JSON",
+				"Copy as CSV, Copy as JSON"
+			],
+			"whenToUse": [
+				{
+					"t": "People take table data to another tool. Export is a table-level toolbar action.",
+					"s": []
+				},
+				{
+					"t": "Several related export actions start one action each; a menu suits 5 to 15 such items.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "For a single format. Use a plain button, \"Export CSV\", as on chart cards.",
+					"s": []
+				},
+				{
+					"t": "To choose a value that changes the view. Use a select.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Group items with labelled sections: options, download, copy.",
+					"s": []
+				},
+				{
+					"t": "Options are checkbox items that toggle without closing the menu.",
+					"s": []
+				},
+				{
+					"t": "Order by frequency: the most used format first.",
+					"s": []
+				},
+				{
+					"t": "Confirm a copy or a finished download with a short status message.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Use verb plus format, \"Download CSV\", \"Copy as JSON\".",
+					"s": []
+				},
+				{
+					"t": "Checkbox labels state the choice so its opposite is clear, \"Only visible columns\".",
+					"s": []
+				},
+				{
+					"t": "Write labels in sentence case on a single line.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "APG menu button pattern: Enter, Space or Down Arrow opens the menu and focuses the first item.",
+					"s": []
+				},
+				{
+					"t": "APG menu pattern: options use role=\"menuitemcheckbox\" with aria-checked; Escape closes and returns focus to Export.",
+					"s": []
+				},
+				{
+					"t": "4.1.3 Status Messages: \"Copied 24 rows as CSV\" is announced without moving focus.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "⇧E",
+					"action": "Open the Export menu"
+				},
+				{
+					"keys": "↑ ↓",
+					"action": "Move between items"
+				},
+				{
+					"keys": "Space",
+					"action": "Toggle an option without closing"
+				},
+				{
+					"keys": "Enter",
+					"action": "Run the export and close"
+				},
+				{
+					"keys": "Esc",
+					"action": "Close and return focus to Export"
+				}
+			],
+			"related": [
+				"data-grid",
+				"list-table",
+				"breakdown-table",
+				"chart-card-line"
+			],
+			"references": []
+		},
+		{
+			"id": "board",
+			"name": "Board and board item",
+			"kind": "component",
+			"group": "Data visualisation",
+			"summary": "A dashboard grid of self-contained items, such as charts, stats and lists, that people can reorder, resize and remove to build the overview they need.",
+			"structure": [
+				"Board: a grid of up to 4 columns that stacks on narrow screens",
+				"Board item: drag handle, title and optional description, settings menu",
+				"Item content (padded by default)",
+				"Item footer (optional), such as a link to the full report",
+				"Empty slot: what shows when no items are on the board"
+			],
+			"whenToUse": [
+				{
+					"t": "For an overview page people tailor to their own job, such as a hiring lead choosing which pipeline charts to watch.",
+					"s": []
+				},
+				{
+					"t": "When each item stands alone and can be read without the others.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "For a fixed report everyone reads the same way. Lay it out with a plain grid; rearranging adds work without benefit.",
+					"s": []
+				},
+				{
+					"t": "For a list of records. Use the List table.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Each item does one job: one chart, one stat, one short list. Its title names what it shows.",
+					"s": []
+				},
+				{
+					"t": "Put the most important item first: the first row is what people see before they scroll.",
+					"s": []
+				},
+				{
+					"t": "Every drag has two alternatives: the keyboard (pick up with Enter or Space, move with arrows, drop with Enter, Esc to cancel) and the item menu (Move earlier, Move later, Wider, Narrower).",
+					"s": []
+				},
+				{
+					"t": "Announce every pick-up, move, resize, drop and removal to screen readers.",
+					"s": []
+				},
+				{
+					"t": "Show an empty state with a way to add the first item when the board has none.",
+					"s": []
+				},
+				{
+					"t": "Save the layout per person, so a change on one screen doesn't move someone else's dashboard.",
+					"s": []
+				},
+				{
+					"t": "Add items opens the items palette in the side panel. Removed items return to the palette, so Remove and Add undo each other.",
+					"s": []
+				},
+				{
+					"t": "Offer Reset to default layout in the page's more menu, applied at once with Undo in a toast.",
+					"s": []
+				},
+				{
+					"t": "Save the layout on the server as each change happens, per person and per column count (4, 2 and 1), and restore it on reload and on other devices.",
+					"s": []
+				},
+				{
+					"t": "The board has 4 columns on wide screens, 2 on tablet widths and 1 on phones; items span 1 to 4 columns and keep their order when stacking.",
+					"s": []
+				},
+				{
+					"t": "When the board has no items, its empty state offers Add items and Reset to default layout.",
+					"s": []
+				},
+				{
+					"t": "While dragging, show a drop preview of the item's size. Items swap where there is room and push others along where there is not; dropping outside the board returns the item to where it was.",
+					"s": []
+				},
+				{
+					"t": "Moving an item keeps its size and its own settings. Heights snap to fixed row steps; the default height fits the default content.",
+					"s": []
+				},
+				{
+					"t": "Show every stage of a drag. Ready: the grip darkens on hover and focus, with a grab cursor and a tooltip saying how to move it. Dragging: a lifted copy follows the pointer, the board tints to show where drops are allowed, and a dashed slot shows exactly where the item will land.",
+					"s": []
+				},
+				{
+					"t": "Other items glide to make room (180ms, off with reduced motion) instead of jumping. On drop, a short highlight settles on the moved item and the new position is announced. Esc cancels and puts it back.",
+					"s": []
+				},
+				{
+					"t": "Work out the landing slot against where items were when the drag started, so the slot doesn't jump as items move aside.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Item titles are nouns for what is shown: “Applications this month”, not “Chart 1”.",
+					"s": []
+				},
+				{
+					"t": "The menu says what will happen to the item: “Move earlier”, “Wider”, “Remove from dashboard”.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "The drag handle is a button named “Move <title>”, with a description of the keys.",
+					"s": []
+				},
+				{
+					"t": "Dragging is never the only way to move or resize (2.5.7 Dragging Movements).",
+					"s": []
+				},
+				{
+					"t": "Moves and resizes are announced in a live region (4.1.3 Status Messages).",
+					"s": []
+				},
+				{
+					"t": "Each item is an article labelled by its title, so screen reader users can jump between items.",
+					"s": []
+				},
+				{
+					"t": "Every board item region has an accessible name, and the board offers a keyboard way to jump between items.",
+					"s": []
+				},
+				{
+					"t": "Use a grab cursor on handles and a grabbing cursor while dragging, in addition to the handle icon.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Enter / Space (handle)",
+					"action": "Pick up the item, or drop it"
+				},
+				{
+					"keys": "Arrow keys",
+					"action": "Move the picked-up item one place"
+				},
+				{
+					"keys": "Esc",
+					"action": "Cancel and put the item back"
+				},
+				{
+					"keys": "Tab",
+					"action": "Reach the handle, the item's controls and its settings menu"
+				}
+			],
+			"related": [
+				"chart-card-line",
+				"stat-compare",
+				"empty-state"
+			],
+			"references": []
+		},
+		{
+			"id": "stat-compare",
+			"name": "Stat card with comparison",
+			"group": "Data visualisation",
+			"summary": "One number that matters, with its change against a named previous period shown by arrow, sign and colour, and an optional faint previous-period line.",
+			"structure": [
+				"Label with period (\"Applications · last 30 days\")",
+				"Value",
+				"Change: arrow, signed percentage, comparison text",
+				"Optional mini chart: current solid, previous dashed grey",
+				"Legend (This period, Previous period)"
+			],
+			"whenToUse": [
+				{
+					"t": "A quick view of how one metric is doing, alone or beside related stats.",
+					"s": []
+				},
+				{
+					"t": "The number is the answer; a chart would add reading time without insight.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "For one metric over time. Use the TwoUX Line chart card.",
+					"s": []
+				},
+				{
+					"t": "For plain text or labels.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "The number leads; label and change are secondary.",
+					"s": []
+				},
+				{
+					"t": "Show change with an arrow, a sign and colour together, never colour alone.",
+					"s": []
+				},
+				{
+					"t": "Say what the change compares against, \"vs 264 the 30 days before\".",
+					"s": []
+				},
+				{
+					"t": "Draw the previous period as a dashed grey line behind the current one.",
+					"s": []
+				},
+				{
+					"t": "Loading shows a skeleton of the number and change; an error shows \"Couldn't load\" with Try again in the card; no data shows a dash and \"No data for this period\", never 0.",
+					"s": []
+				},
+				{
+					"t": "When the stat has a target, say it in text (\"18 of 25 roles filled\") rather than a ring or donut.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Label with the metric and the period, and include units.",
+					"s": []
+				},
+				{
+					"t": "Round the value for reading, keep the exact value in the tooltip.",
+					"s": []
+				},
+				{
+					"t": "Keep any description to two lines; longer text is truncated with the full text in a tooltip.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "1.4.1 Use of Color: good or bad change is also shown by arrow and sign.",
+					"s": []
+				},
+				{
+					"t": "1.1.1 Non-text Content: the mini chart has a text alternative or is hidden because the figures are in text.",
+					"s": []
+				},
+				{
+					"t": "1.4.11 Non-text Contrast: the arrow and line reach 3:1 unless the text carries the same information.",
+					"s": []
+				},
+				{
+					"t": "A missing value reads \"No data for this period\" to screen readers, not \"dash\".",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Focus the card when it links to a report"
+				}
+			],
+			"related": [
+				"chart-card-line",
+				"breakdown-table",
+				"chart-colours",
+				"usage-meter"
+			],
+			"references": []
+		},
+		{
+			"id": "chart-card-line",
+			"name": "Line chart card",
+			"group": "Data visualisation",
+			"summary": "A card that shows how one or more series change over time, with a title, period controls, a Chart or Table switch, direct labels, a shared crosshair tooltip and a source footer.",
+			"structure": [
+				"Title (what is measured)",
+				"Subtitle (period)",
+				"Controls row: time range (7d, 30d, 90d), Chart or Table",
+				"Plot: 2px lines, faint grid, one y-axis",
+				"Direct labels at line ends",
+				"Legend (2 or more series)",
+				"Crosshair tooltip",
+				"Footer: source, updated time, Export CSV, Add to dashboard"
+			],
+			"whenToUse": [
+				{
+					"t": "Showing how a value changes over time.",
+					"s": []
+				},
+				{
+					"t": "Comparing trends across a few series, such as applies per day by team.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "Comparing amounts between categories. Use the TwoUX Bar chart.",
+					"s": []
+				},
+				{
+					"t": "Two measures with different units. Use two charts side by side, never two y-axes.",
+					"s": []
+				},
+				{
+					"t": "One number that matters. Use the TwoUX Stat card with comparison.",
+					"s": []
+				},
+				{
+					"t": "More than 8 series. Fold extras into \"Other\" or filter.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Title says what is measured; the subtitle gives the period.",
+					"s": []
+				},
+				{
+					"t": "Label line ends directly, and add a legend only for two or more series.",
+					"s": []
+				},
+				{
+					"t": "One tooltip lists every series at the hovered day, sorted by value, with both axis values.",
+					"s": []
+				},
+				{
+					"t": "Keep the grid faint and lines 2px; remove anything that does not carry data.",
+					"s": []
+				},
+				{
+					"t": "A line chart may start above zero, unlike a bar chart.",
+					"s": []
+				},
+				{
+					"t": "Every chart can switch to a table, which is also its accessible version.",
+					"s": []
+				},
+				{
+					"t": "Every line chart has four states in the plot area, never blank: Loading: skeleton of the plot (axes and faint grid) with \"Loading applications\" as the region label. Empty: \"No applications in this period\" with one next step. No match: \"No data matches these filters\" with Clear filters. Error: \"Couldn't load applications. Your filters are kept.\" with Try again.",
+					"s": []
+				},
+				{
+					"t": "Missing days show as a break in the line, not a drop to zero.",
+					"s": []
+				},
+				{
+					"t": "Legend items are toggles that show or hide a series; hidden series keep their colour slot. With three or more series, add a Series filter (all selected by default); with one, no filter and no legend.",
+					"s": []
+				},
+				{
+					"t": "Selecting a point or pressing Enter pins the tooltip as a popover. A pinned popover can hold a breakdown of up to seven items and up to two footer buttons; see Chart drill-down.",
+					"s": []
+				},
+				{
+					"t": "A target or limit is a threshold: a dashed line at a fixed value with a text label (\"Target 40 a day\"), not an extra series.",
+					"s": []
+				},
+				{
+					"t": "Skip x-axis date labels at a regular interval rather than crowding or rotating them. The y-axis never shows time units.",
+					"s": []
+				},
+				{
+					"t": "A forecast after today continues in the same colour but dashed, with a vertical \"Today\" marker, so the split is not shown by colour alone. Keep grey dashed for the previous period only.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Use nouns in titles and keep axis titles to one to three words with units.",
+					"s": []
+				},
+				{
+					"t": "Labels, values and legends use text colours; the series colour sits beside them as a swatch.",
+					"s": []
+				},
+				{
+					"t": "The footer names the data source and when it updated.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "1.1.1 and WAI complex images: a short alternative names the chart type, data and period; the table view is the long description.",
+					"s": []
+				},
+				{
+					"t": "1.4.1 Use of Color: direct labels identify series, so colour is not the only cue.",
+					"s": []
+				},
+				{
+					"t": "1.4.11 Non-text Contrast: lines needed to read the data reach 3:1 against the background.",
+					"s": []
+				},
+				{
+					"t": "2.1.1 Keyboard: the plot is focusable and arrow keys move the crosshair day by day.",
+					"s": []
+				},
+				{
+					"t": "The accessible name matches the visible title; the description reads \"Line chart showing applications per day by team, last 30 days.\"",
+					"s": []
+				},
+				{
+					"t": "Legend toggles are buttons with aria-pressed, and hiding a series is announced politely.",
+					"s": []
+				},
+				{
+					"t": "Enter pins the tooltip, Tab moves into its content, Esc closes it and returns focus to the same day.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Focus the plot"
+				},
+				{
+					"keys": "← →",
+					"action": "Move the crosshair to the previous or next day"
+				},
+				{
+					"keys": "Esc",
+					"action": "Hide the tooltip"
+				}
+			],
+			"related": [
+				"chart-bar",
+				"stat-compare",
+				"breakdown-table",
+				"chart-colours",
+				"export-menu"
+			],
+			"references": []
+		},
+		{
+			"id": "chart-bar",
+			"name": "Bar chart",
+			"group": "Data visualisation",
+			"summary": "Vertical bars from a zero baseline for comparing amounts per period or category, with the latest bar labelled and an incomplete period shown lighter.",
+			"structure": [
+				"Title and subtitle",
+				"Zero baseline",
+				"Bars (4px rounded top, gap between)",
+				"Latest-bar label",
+				"Incomplete period bar (lighter, labelled)",
+				"Hover tooltip"
+			],
+			"whenToUse": [
+				{
+					"t": "Comparing amounts across items or periods; simple bars are quickly processed and understood.",
+					"s": []
+				},
+				{
+					"t": "Emphasising the total of each data point.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "Showing a trend over time where shape matters more than totals. Use the TwoUX Line chart card.",
+					"s": []
+				},
+				{
+					"t": "Two dimensions at once. Use the TwoUX Heatmap.",
+					"s": []
+				},
+				{
+					"t": "Breaking down task outcomes as stacks; stacked bars are hard to read. Use separate simple bars.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Bars always start at zero.",
+					"s": []
+				},
+				{
+					"t": "Use horizontal bars when category names are long.",
+					"s": []
+				},
+				{
+					"t": "Label only the latest bar; hover shows the rest.",
+					"s": []
+				},
+				{
+					"t": "The current, incomplete period is lighter and says so in a label.",
+					"s": []
+				},
+				{
+					"t": "A single series uses colour 1 and no legend.",
+					"s": []
+				},
+				{
+					"t": "Bar charts have the same four states as line charts: skeleton plot while loading, empty, no match with Clear filters, and error with Try again.",
+					"s": []
+				},
+				{
+					"t": "Use horizontal bars when there are many categories or long names, such as applications by listing title; vertical bars for periods.",
+					"s": []
+				},
+				{
+					"t": "With several series, group bars to compare the parts. Stack only when the total is the main reading and there are four parts or fewer, with a 2px surface-colour gap between segments.",
+					"s": []
+				},
+				{
+					"t": "A single series uses one colour for every bar. Never colour bars by month or by category for variety.",
+					"s": []
+				},
+				{
+					"t": "A goal or limit is a dashed threshold line with a text label, such as \"Target 120\".",
+					"s": []
+				},
+				{
+					"t": "The pinned popover can break a bar down into up to seven parts, with a link on the name or the value, not both.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Title names the measure; subtitle gives the period and scope.",
+					"s": []
+				},
+				{
+					"t": "Keep tick increments fixed and match time labels to the data's period.",
+					"s": []
+				},
+				{
+					"t": "Label the incomplete period plainly, \"This week so far\".",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "1.1.1 and WAI complex images: provide a short alternative and a table with the values.",
+					"s": []
+				},
+				{
+					"t": "1.4.11 Non-text Contrast: bars reach 3:1 against the background.",
+					"s": []
+				},
+				{
+					"t": "1.4.1 Use of Color: the incomplete period is marked in text, not lightness alone.",
+					"s": []
+				},
+				{
+					"t": "2.1.1 Keyboard: arrow keys move between bars and show each value.",
+					"s": []
+				},
+				{
+					"t": "Description: \"Bar chart showing applications per week, last 12 weeks.\" It matches the visible title and period.",
+					"s": []
+				},
+				{
+					"t": "Grouped and stacked bars name each part in the tooltip and table, so colour is not the only cue.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Focus the chart"
+				},
+				{
+					"keys": "← →",
+					"action": "Move to the previous or next bar"
+				}
+			],
+			"related": [
+				"chart-card-line",
+				"breakdown-table",
+				"chart-colours"
+			],
+			"references": []
+		},
+		{
+			"id": "chart-heatmap",
+			"name": "Heatmap",
+			"group": "Data visualisation",
+			"summary": "A grid of two dimensions (such as team by weekday) shaded in one hue from light to dark, with every cell showing its number and a legend under the grid.",
+			"structure": [
+				"Title and subtitle",
+				"Row labels (team)",
+				"Column labels (weekday)",
+				"Cells with value text",
+				"Legend: Fewer to More ramp, under the grid"
+			],
+			"whenToUse": [
+				{
+					"t": "Showing a quantity across two dimensions at once, such as when people apply by team and weekday.",
+					"s": []
+				},
+				{
+					"t": "Spotting patterns and hot spots matters more than reading exact values; the printed numbers cover exact reading.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "When people must compare exact amounts; colour is a poor encoding of magnitude. Use the TwoUX Bar chart or Breakdown table.",
+					"s": []
+				},
+				{
+					"t": "For one dimension over time. Use the TwoUX Line chart card.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "One hue, light for low and dark for high, never a rainbow.",
+					"s": []
+				},
+				{
+					"t": "Every cell shows its number, so colour is never the only cue.",
+					"s": []
+				},
+				{
+					"t": "Avoid red and green together; for diverging values use blue against orange or red.",
+					"s": []
+				},
+				{
+					"t": "Separate neighbouring cells with a gap in the surface colour.",
+					"s": []
+				},
+				{
+					"t": "Put the legend under the grid.",
+					"s": []
+				},
+				{
+					"t": "While loading, show the grid with empty cells and labels; on error replace the grid with the error state and Try again; with no data, an empty state.",
+					"s": []
+				},
+				{
+					"t": "Missing cells show a dash and \"No data\" in the tooltip, never the lightest step, which would read as low.",
+					"s": []
+				},
+				{
+					"t": "Selecting a cell can drill down to the list behind it, such as candidates who applied to Design on Mondays, as a filtered List table.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Legend ends say \"Fewer\" and \"More\", not colour names.",
+					"s": []
+				},
+				{
+					"t": "Title says what is counted; subtitle gives the period, \"Applies by team and weekday, last 30 days\".",
+					"s": []
+				},
+				{
+					"t": "Choose text colour per cell so numbers stay readable on dark steps.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "1.4.1 Use of Color: values are printed in the cells, which is the sufficient technique of adding text.",
+					"s": []
+				},
+				{
+					"t": "1.4.11 Non-text Contrast: heat maps can fall under the essential exception, but because the cells show values TwoUX does not depend on it.",
+					"s": []
+				},
+				{
+					"t": "1.1.1 and WAI complex images: give a short alternative and a table of the values.",
+					"s": []
+				},
+				{
+					"t": "The grid is keyboard reachable: Tab to the grid, arrow keys move cell to cell, and each cell is announced with row, column and value.",
+					"s": []
+				},
+				{
+					"t": "Accessible description: \"Heatmap showing applies by team and weekday, last 30 days.\"",
+					"s": []
+				}
+			],
+			"keyboard": [],
+			"related": [
+				"chart-colours",
+				"breakdown-table",
+				"chart-bar"
+			],
+			"references": []
+		},
+		{
+			"id": "chart-funnel",
+			"name": "Funnel",
+			"group": "Data visualisation",
+			"summary": "Horizontal bars for ordered stages (views, applies, interviews, offers) that show each stage's count and its rate from the stage before, darkest to lightest.",
+			"structure": [
+				"Title and subtitle (scope, starting count)",
+				"Stage label",
+				"Bar (length by count)",
+				"Count",
+				"Rate from the previous stage"
+			],
+			"whenToUse": [
+				{
+					"t": "Showing ordered stages where people care how many make it from one step to the next.",
+					"s": []
+				},
+				{
+					"t": "Comparing amounts at each stage, which simple bars make quick to read.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "For unordered categories. Use the TwoUX Bar chart.",
+					"s": []
+				},
+				{
+					"t": "For change over time. Use the TwoUX Line chart card.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Encode counts as bar length from a shared left edge; length is judged accurately.",
+					"s": []
+				},
+				{
+					"t": "Show each stage's rate from the stage before; that is the number people act on.",
+					"s": []
+				},
+				{
+					"t": "Stages go darkest to lightest in one hue, following order.",
+					"s": []
+				},
+				{
+					"t": "Write counts beside bars so colour and length are not the only cues.",
+					"s": []
+				},
+				{
+					"t": "Show the four states: skeleton bars while loading, empty, no match with Clear filters, error with Try again.",
+					"s": []
+				},
+				{
+					"t": "A stage's count links to the List table filtered to that stage, so people go from \"Interviewed 42\" to those 42 candidates.",
+					"s": []
+				},
+				{
+					"t": "Do not use a donut for stages; order is the point and a ring loses it.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Stage names are the steps people use, \"Viewed\", \"Applied\", \"Interviewed\".",
+					"s": []
+				},
+				{
+					"t": "The subtitle states the base, \"from 6,840 views\".",
+					"s": []
+				},
+				{
+					"t": "Write rates as percentages with the same decimals on every stage.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "1.1.1 Non-text Content: the accessible name lists each stage with its count.",
+					"s": []
+				},
+				{
+					"t": "1.4.11 Non-text Contrast: the lightest stage bar still reaches 3:1, or the printed count carries the value.",
+					"s": []
+				},
+				{
+					"t": "1.3.1 Info and Relationships: stages are in reading order in the markup.",
+					"s": []
+				},
+				{
+					"t": "Stage links are named by stage and count: \"View 42 interviewed candidates\".",
+					"s": []
+				},
+				{
+					"t": "Arrow keys move between stages when the funnel is focused.",
+					"s": []
+				}
+			],
+			"keyboard": [],
+			"related": [
+				"chart-bar",
+				"stat-compare",
+				"chart-colours"
+			],
+			"references": []
+		},
+		{
+			"id": "breakdown-table",
+			"name": "Breakdown table",
+			"group": "Data visualisation",
+			"summary": "A table under a chart that splits its figure by team, location or owner, with current and previous periods side by side and change in both units.",
+			"structure": [
+				"Breakdown switch (By team, By location, By owner)",
+				"Export CSV",
+				"Columns: dimension, This period, Previous period, Change, Change %"
+			],
+			"whenToUse": [
+				{
+					"t": "A chart needs its exact values and a split by dimension; the table doubles as the chart's long description.",
+					"s": []
+				},
+				{
+					"t": "People compare values across rows.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "For many columns people edit. Use the TwoUX Data grid.",
+					"s": []
+				},
+				{
+					"t": "For record lists. Use the TwoUX List table.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Sit directly under the chart it explains.",
+					"s": []
+				},
+				{
+					"t": "Show change with sign and arrow, not colour alone.",
+					"s": []
+				},
+				{
+					"t": "Show a dash when there is nothing to compare, with hidden text for screen readers.",
+					"s": []
+				},
+				{
+					"t": "Sort by the current period by default and allow sorting by any column.",
+					"s": []
+				},
+				{
+					"t": "When a chart offers drill-down, the breakdown table is where the same split lives in full; a popover breakdown never holds data that is not also here.",
+					"s": []
+				},
+				{
+					"t": "Each row's count can link to the filtered List table behind it; link the count or the name, not both.",
+					"s": []
+				},
+				{
+					"t": "Rows follow the chart's filters and series toggles, so the table and chart never disagree.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Right-align numbers with consistent decimals.",
+					"s": []
+				},
+				{
+					"t": "Column headers state the period, \"This period\", \"Previous period\".",
+					"s": []
+				},
+				{
+					"t": "Write change with its sign, \"+12\" and \"−8%\", so direction reads without colour.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "1.3.1 Info and Relationships: real table markup with scoped headers.",
+					"s": []
+				},
+				{
+					"t": "APG sortable table: aria-sort on the sorted header only.",
+					"s": []
+				},
+				{
+					"t": "The By team, By location, By owner switch exposes the pressed state.",
+					"s": []
+				},
+				{
+					"t": "When the chart filters change, announce the new row count politely without moving focus.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Move to the switch, Export and sortable headers"
+				},
+				{
+					"keys": "Enter / Space",
+					"action": "Change breakdown or sort"
+				}
+			],
+			"related": [
+				"chart-card-line",
+				"chart-bar",
+				"stat-compare",
+				"export-menu"
+			],
+			"references": []
+		},
+		{
+			"id": "chart-colours",
+			"name": "Chart colour tokens",
+			"group": "Data visualisation",
+			"summary": "Validated chart colours: an 8-step categorical palette used in fixed order, a 5-step single-hue sequential ramp, and status colours reserved for status only.",
+			"structure": [
+				"Categorical 1 to 8 (fixed order, never cycled)",
+				"Sequential and ordinal q1 to q5 (one hue)",
+				"Status: good, warning, bad (reserved)",
+				"Text and grid colours"
+			],
+			"whenToUse": [
+				{
+					"t": "Categorical colours for discrete series with no order, such as teams.",
+					"s": []
+				},
+				{
+					"t": "The sequential ramp for ordered values, such as heatmap cells and funnel stages.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "Status colours for series. Keep good, warning and bad for status meaning only.",
+					"s": []
+				},
+				{
+					"t": "Colour for decoration; use it only where it serves communication.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Use categorical colours in order, starting at 1; the order maximises contrast between neighbours.",
+					"s": []
+				},
+				{
+					"t": "A series keeps its colour everywhere; filtering out a team never repaints the others.",
+					"s": []
+				},
+				{
+					"t": "Show at most 8 series; a 9th folds into \"Other\".",
+					"s": []
+				},
+				{
+					"t": "Where any colour can touch any other (scatter, categorical heatmap), use only the first three.",
+					"s": []
+				},
+				{
+					"t": "Colours 3, 4 and 5 are light on white, so charts using them always show labels or a table.",
+					"s": []
+				},
+				{
+					"t": "Sequential steps go light to dark, darkest for the largest values.",
+					"s": []
+				},
+				{
+					"t": "Thresholds are dashed lines in a neutral text colour with a text label. They never use good, warning or bad on their own.",
+					"s": []
+				},
+				{
+					"t": "Separate stacked bars, stacked areas and donut segments with a 2px gap in the surface colour.",
+					"s": []
+				},
+				{
+					"t": "Place charts only on the default surface colour; tinted or grey backgrounds break the 3:1 contrast the palette was checked against.",
+					"s": []
+				},
+				{
+					"t": "Judge contrast by mark size: a colour that works on a 16px bar may fail on a 2px line, so check light steps on lines before using them.",
+					"s": []
+				},
+				{
+					"t": "When a series is hidden or filtered out, keep the remaining series in their original colour slots.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Labels and values use text colours; the series colour is a swatch beside them.",
+					"s": []
+				},
+				{
+					"t": "Never refer to a series only by its colour name in copy.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "1.4.1 Use of Color: pair colour with labels, shapes or line styles.",
+					"s": []
+				},
+				{
+					"t": "1.4.11 Non-text Contrast: chart marks needed to understand the data reach 3:1 against the background, unless text carries the same values.",
+					"s": []
+				},
+				{
+					"t": "Checked for colour vision deficiency: avoid red with green, and vary lightness so the palette survives greyscale.",
+					"s": []
+				},
+				{
+					"t": "Do not rely on simulators alone; they are not a precise replacement for user feedback.",
+					"s": []
+				},
+				{
+					"t": "Offer the Table view as a second format, so people who struggle to tell colours apart can read values directly.",
+					"s": []
+				}
+			],
+			"keyboard": [],
+			"related": [
+				"chart-card-line",
+				"chart-bar",
+				"chart-heatmap",
+				"chart-funnel",
+				"stat-compare"
+			],
+			"references": []
+		},
+		{
+			"id": "chart-area",
+			"name": "Stacked area chart",
+			"kind": "component",
+			"group": "Data visualisation",
+			"summary": "Two or more series stacked over time, so the top edge is the total and each band is one part of it, such as applications per week split by source.",
+			"structure": [
+				"Title (what is measured) and subtitle (period)",
+				"Controls row: time range, Chart or Table",
+				"Plot: stacked bands from a zero baseline, a thin surface-colour line between bands, one y-axis",
+				"Legend: one item per band, in stack order, each a toggle",
+				"Crosshair tooltip: every band's value and the total at the hovered date",
+				"Optional threshold: dashed line with a text label",
+				"Footer: source and updated time"
+			],
+			"whenToUse": [
+				{
+					"t": "When the total over time matters and so does how it splits, such as weekly applications by source (LinkedIn, Indeed, Careers page, Referral).",
+					"s": []
+				},
+				{
+					"t": "When the parts always add up to a meaningful whole, such as candidates in the pipeline by stage at the end of each week.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "For one series. Use the Line chart card; a single filled area only adds ink.",
+					"s": []
+				},
+				{
+					"t": "For values that can go negative, such as net change in open roles. Use the Line chart card or Bar chart.",
+					"s": []
+				},
+				{
+					"t": "For series that do not add up to a whole, such as applications for two unrelated listings. Overlapping areas hide each other; use lines.",
+					"s": []
+				},
+				{
+					"t": "When people need to compare the middle bands exactly. Only the bottom band sits on a flat baseline; use the Line chart card or a Breakdown table.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Always stack, always from zero. The top edge must read as the true total.",
+					"s": []
+				},
+				{
+					"t": "Use two to five bands. Fold the smallest sources into \"Other\" at the top of the stack rather than adding a sixth colour.",
+					"s": []
+				},
+				{
+					"t": "Put the largest or steadiest band at the bottom so the most important part has a flat baseline, and keep the stack order the same on every chart.",
+					"s": []
+				},
+				{
+					"t": "Use categorical colours in fixed order from colour 1, separated by a thin line in the surface colour so neighbouring bands stay distinct.",
+					"s": []
+				},
+				{
+					"t": "The tooltip lists bands in the same order as the stack, top to bottom, then the total.",
+					"s": []
+				},
+				{
+					"t": "Show missing weeks as a gap, never as a drop to zero.",
+					"s": []
+				},
+				{
+					"t": "Hiding a band from the legend restacks the rest and updates the total in the tooltip. Colours do not move.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Title names the total and the split: \"Applications by source\". Subtitle gives the period: \"Last 12 weeks\".",
+					"s": []
+				},
+				{
+					"t": "Legend items use the names people use in the product: \"Careers page\", not \"careers_site\". Never truncate a name if the end is what tells two apart.",
+					"s": []
+				},
+				{
+					"t": "Skip x-axis labels at a regular interval (every other week) instead of crowding them, and abbreviate months: \"3 Nov\".",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "The chart has an accessible name matching its title and a description such as \"Stacked area chart showing applications by source, last 12 weeks.\"",
+					"s": []
+				},
+				{
+					"t": "The Table view lists every band per week plus the total, and is the long description.",
+					"s": []
+				},
+				{
+					"t": "Bands are named in the tooltip and legend, so colour is never the only way to tell them apart.",
+					"s": []
+				},
+				{
+					"t": "Legend items are toggle buttons with a pressed state; hiding one is announced politely: \"Referral hidden\".",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Focus the plot, then each legend item"
+				},
+				{
+					"keys": "← →",
+					"action": "Move the crosshair to the previous or next week"
+				},
+				{
+					"keys": "Enter",
+					"action": "Pin the tooltip so its links can be reached with Tab"
+				},
+				{
+					"keys": "Esc",
+					"action": "Close the tooltip and return focus to the plot"
+				},
+				{
+					"keys": "Space (legend item)",
+					"action": "Show or hide that band"
+				}
+			],
+			"related": [
+				"chart-card-line",
+				"chart-bar",
+				"chart-colours",
+				"breakdown-table",
+				"data-visualisation"
+			],
+			"references": []
+		},
+		{
+			"id": "chart-mixed",
+			"name": "Bar and line chart",
+			"kind": "component",
+			"group": "Data visualisation",
+			"summary": "One bar series with one to three lines on the same y-axis and unit, such as weekly applications as bars and their four-week average as a line.",
+			"structure": [
+				"Title and subtitle",
+				"Plot: one y-axis, zero baseline, bars for the main measure",
+				"Line or lines (2px) for a related measure in the same unit: average, plan or previous period",
+				"Legend: bar swatch and line swatch with names",
+				"Crosshair tooltip with each series at the hovered period",
+				"Optional threshold: dashed line with a text label"
+			],
+			"whenToUse": [
+				{
+					"t": "When a count and a reference for that count share a unit: hires per month as bars, planned hires per month as a line.",
+					"s": []
+				},
+				{
+					"t": "When volume per period is the main reading and the line adds the trend, such as applications per week with the four-week average.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "When the two measures have different units or scales, such as applications (count) and conversion to interview (%). Use two charts side by side; never a second y-axis.",
+					"s": []
+				},
+				{
+					"t": "When every series is the same kind of measure, such as applications for three listings. Use the Line chart card or grouped bars.",
+					"s": []
+				},
+				{
+					"t": "For a fixed target that does not change by period. Use a threshold line on the Bar chart instead.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Only one series is drawn as bars. Lines carry up to three related series, so the chart stays within four series in all.",
+					"s": []
+				},
+				{
+					"t": "Bars start at zero, so the shared axis starts at zero too.",
+					"s": []
+				},
+				{
+					"t": "Bars use categorical colour 1; lines use the next colours in order. A previous-period line stays the dashed grey from the Period comparison pattern.",
+					"s": []
+				},
+				{
+					"t": "Draw lines on top of bars and put a marker on each line point so it stays visible where it crosses a bar.",
+					"s": []
+				},
+				{
+					"t": "Show missing periods as gaps in the line and no bar, not as zero.",
+					"s": []
+				},
+				{
+					"t": "If the line and the bars stop sharing a unit after a change in the data, split the chart. Do not add a right-hand axis.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Name each series by role: \"Hires\", \"Plan\", \"4-week average\". The legend says which is the bar and which is the line through its swatch.",
+					"s": []
+				},
+				{
+					"t": "Axis title states the shared unit once: \"Applications\". No unit on the y-axis for time.",
+					"s": []
+				},
+				{
+					"t": "Title is a noun phrase naming the main measure: \"Hires against plan\".",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Description names both marks: \"Bar and line chart showing hires per month against plan, last 12 months.\"",
+					"s": []
+				},
+				{
+					"t": "Bars and lines differ by shape, not only by colour, and the tooltip names every series.",
+					"s": []
+				},
+				{
+					"t": "Bars and lines reach 3:1 against the background; the line marker keeps 3:1 where it sits on a bar.",
+					"s": []
+				},
+				{
+					"t": "The Table view has one column per series with the same names as the legend.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Focus the plot, then each legend item"
+				},
+				{
+					"keys": "← →",
+					"action": "Move to the previous or next period"
+				},
+				{
+					"keys": "Enter",
+					"action": "Pin the tooltip"
+				},
+				{
+					"keys": "Esc",
+					"action": "Close the tooltip"
+				}
+			],
+			"related": [
+				"chart-bar",
+				"chart-card-line",
+				"stat-compare",
+				"chart-colours",
+				"data-visualisation"
+			],
+			"references": []
+		},
+		{
+			"id": "chart-donut",
+			"name": "Donut chart",
+			"kind": "component",
+			"group": "Data visualisation",
+			"summary": "Two to five parts of one total at a single moment, with the total in the centre and every segment labelled with its count and share. Most of the time a bar chart is better.",
+			"structure": [
+				"Title and subtitle (the moment or period)",
+				"Ring of segments starting at 12 o'clock, clockwise, with a 2px surface-colour gap between segments",
+				"Centre: total value and a one or two word unit (\"412 candidates\")",
+				"Segment labels: name, count, share",
+				"Legend, required when any part is zero",
+				"Details popover on hover or select"
+			],
+			"whenToUse": [
+				{
+					"t": "When the question is how one total splits at one moment, and there are two to five parts: open roles by work pattern (On site, Hybrid, Remote (UK)).",
+					"s": []
+				},
+				{
+					"t": "When the total itself is worth showing, which the centre of the donut holds.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "For change over time. Use the Line chart card, or the Stacked area chart for parts over time.",
+					"s": []
+				},
+				{
+					"t": "For more than five parts. Use a horizontal Bar chart sorted by size.",
+					"s": []
+				},
+				{
+					"t": "When parts are close in size and the difference matters, such as 31% against 34%. Angles are hard to compare; use a Bar chart.",
+					"s": []
+				},
+				{
+					"t": "For one value against a goal, such as 18 of 25 roles filled. Use the Stat card with comparison.",
+					"s": []
+				},
+				{
+					"t": "For ordered stages such as Applied to Offer. Use the Funnel.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Order segments clockwise from 12 o'clock, largest first, unless the parts have their own order (Junior, Mid, Senior), in which case keep that order.",
+					"s": []
+				},
+				{
+					"t": "Colour segments with categorical colours in fixed order from colour 1. Never give each slice a colour chosen by meaning.",
+					"s": []
+				},
+				{
+					"t": "Label every segment with its count and share, so the chart reads without hovering.",
+					"s": []
+				},
+				{
+					"t": "A part with a value of zero has no segment but stays in the legend, so people can see it was counted.",
+					"s": []
+				},
+				{
+					"t": "Keep a minimum segment size so a small part stays visible and selectable, and show its true share in the label.",
+					"s": []
+				},
+				{
+					"t": "When people filter parts out, recalculate the centre total and every share.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Segment labels read count, unit, share: \"124 candidates, 30%\".",
+					"s": []
+				},
+				{
+					"t": "Centre text is the total and a short unit: \"412\" over \"candidates\". One or two words only.",
+					"s": []
+				},
+				{
+					"t": "Title is a noun phrase that names the whole: \"Open roles by work pattern\".",
+					"s": []
+				},
+				{
+					"t": "If a name must be cut, keep the part that tells it apart: \"…Designer, Leeds\" rather than \"Junior Product…\".",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Description: \"Donut chart showing open roles by work pattern, today.\" The Table view lists each part with count and share.",
+					"s": []
+				},
+				{
+					"t": "Segments are identified by their printed labels and the legend, never by colour alone.",
+					"s": []
+				},
+				{
+					"t": "Segments reach 3:1 against the background, and the 2px gap keeps neighbours apart.",
+					"s": []
+				},
+				{
+					"t": "Arrow keys move between segments and show each one's details in the popover.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Focus the chart, then the legend items"
+				},
+				{
+					"keys": "← →",
+					"action": "Move to the previous or next segment"
+				},
+				{
+					"keys": "Enter",
+					"action": "Pin the details popover"
+				},
+				{
+					"keys": "Esc",
+					"action": "Close the popover"
+				}
+			],
+			"related": [
+				"chart-bar",
+				"stat-compare",
+				"chart-area",
+				"chart-colours",
+				"data-visualisation"
+			],
+			"references": []
+		},
+		{
+			"id": "chart-scatter",
+			"name": "Scatter chart",
+			"kind": "component",
+			"group": "Data visualisation",
+			"summary": "One dot per record placed by two measures, such as each live listing by advertised salary and applications, for spotting relationships and outliers.",
+			"structure": [
+				"Title and subtitle",
+				"Plot: x-axis and y-axis, each with a title and unit",
+				"Dots, one per record (up to three groups by colour and shape)",
+				"Optional threshold lines with text labels",
+				"Legend when there are two or more groups",
+				"Details popover: the record's name and both values, with a link to it"
+			],
+			"whenToUse": [
+				{
+					"t": "When the question is whether two measures move together across records: salary and applications per listing, or days open and applications.",
+					"s": []
+				},
+				{
+					"t": "When outliers matter: a listing with a high salary and few applications is worth opening.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "For change over time. Use the Line chart card.",
+					"s": []
+				},
+				{
+					"t": "For fewer than about ten records. Use a Breakdown table; a scatter of five dots shows no pattern.",
+					"s": []
+				},
+				{
+					"t": "To compare candidates. Plotting people by scores invites ranking them; candidate decisions stay with the hiring team and are never made from a chart.",
+					"s": []
+				},
+				{
+					"t": "To encode a third measure as dot size. Use a second scatter or a table instead.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Each axis has a title with its unit; axes may start above zero if the axis says so, because position, not length, carries the value.",
+					"s": []
+				},
+				{
+					"t": "Use at most three groups, coloured with categorical colours 1 to 3 and each with its own marker shape (circle, square, triangle), since any dot can touch any other.",
+					"s": []
+				},
+				{
+					"t": "Keep dots small (6px) with a 1px surface-colour outline so overlapping dots stay visible.",
+					"s": []
+				},
+				{
+					"t": "Selecting a dot opens the details popover with the listing's name, both values and a link to the record.",
+					"s": []
+				},
+				{
+					"t": "Do not draw a trend line unless the team asked for one and its method is named in the footer.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Title names both measures: \"Salary and applications by listing\". Subtitle gives the scope: \"Live listings, last 30 days\".",
+					"s": []
+				},
+				{
+					"t": "Axis titles are short with units: \"Salary (£k)\", \"Applications\".",
+					"s": []
+				},
+				{
+					"t": "Popover reads as key and value pairs: \"Junior Product Designer, Leeds\", \"Salary £32k\", \"Applications 46\".",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Description: \"Scatter chart showing salary and applications for 38 live listings, last 30 days.\" The Table view lists every record with both values.",
+					"s": []
+				},
+				{
+					"t": "Groups differ by marker shape as well as colour.",
+					"s": []
+				},
+				{
+					"t": "Arrow keys move from dot to dot in x order and open each popover; a pinned popover stays until Esc.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Focus the plot, then the legend"
+				},
+				{
+					"keys": "← →",
+					"action": "Move to the previous or next dot along the x-axis"
+				},
+				{
+					"keys": "Enter",
+					"action": "Pin the popover and reach its link"
+				},
+				{
+					"keys": "Esc",
+					"action": "Close the popover"
+				}
+			],
+			"related": [
+				"chart-card-line",
+				"breakdown-table",
+				"chart-colours",
+				"chart-drill-down",
+				"data-visualisation"
+			],
+			"references": []
+		},
+		{
+			"id": "items-palette",
+			"name": "Items palette",
+			"kind": "component",
+			"group": "Data visualisation",
+			"summary": "A searchable list, in a side panel beside a configurable dashboard, of the items a person can add, each with a title, a short description, its type and an Add to dashboard button.",
+			"structure": [
+				"Panel header: \"Add items\", item count and close",
+				"Search field that filters by title and description",
+				"Palette item: drag handle, title, one-line description, type tag (Chart, List, Key metrics), Add to dashboard button",
+				"Zero results: message with Clear search",
+				"Empty palette: \"All items are on your dashboard\""
+			],
+			"whenToUse": [
+				{
+					"t": "With a configurable dashboard, to add items that are not on the board yet.",
+					"s": []
+				},
+				{
+					"t": "As the place removed items return to, so people can add them back.",
+					"s": []
+				},
+				{
+					"t": "When new item types ship, so people find them without a layout being changed for them.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "On a static dashboard. There is nothing to add.",
+					"s": []
+				},
+				{
+					"t": "To pick records or templates. Use the command palette or the templates gallery.",
+					"s": []
+				},
+				{
+					"t": "To change what an item on the board shows. Use Preferences in that item's menu.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "List only items that are not on the board. When one is added it leaves the palette; when it is removed it comes back.",
+					"s": []
+				},
+				{
+					"t": "Palette items describe; they do not preview. No live numbers, charts or menus, only title, description and type.",
+					"s": []
+				},
+				{
+					"t": "Every palette item has an Add to dashboard button as well as its drag handle. The button adds the item at the end of the board in its default size. Keyboard users add with the button, then place the item with the board's own keyboard move; there is no separate keyboard drag from the palette.",
+					"s": []
+				},
+				{
+					"t": "While dragging, the palette item takes the shape of its default size on the board and shows a drop preview.",
+					"s": []
+				},
+				{
+					"t": "Add search once there are more than about ten items, and show a zero results message with Clear search.",
+					"s": []
+				},
+				{
+					"t": "The panel pushes the board, stays open while people add several items, and closes with Esc or Add items again.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Descriptions say what the item answers: \"Applications per week for the last 12 weeks, compared with the previous period.\"",
+					"s": []
+				},
+				{
+					"t": "Type tags use one word or two: Chart, List, Key metrics, Links, Alerts.",
+					"s": []
+				},
+				{
+					"t": "Zero results: \"No items match \\\"cost\\\".\" with Clear search.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "The panel is a complementary region labelled \"Add items\"; focus moves to its search field when it opens and returns to Add items when it closes.",
+					"s": []
+				},
+				{
+					"t": "Add to dashboard is named with the item: \"Add Applications this week to dashboard\".",
+					"s": []
+				},
+				{
+					"t": "After an add, announce \"Applications this week added to the end of the dashboard\" and keep focus in the palette on the next item.",
+					"s": []
+				},
+				{
+					"t": "Dragging from the palette is never required; the button covers the same result with a single action.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab / Shift+Tab",
+					"action": "Move between search, palette items and their Add buttons"
+				},
+				{
+					"keys": "Enter (Add button)",
+					"action": "Add the item to the end of the board"
+				},
+				{
+					"keys": "Esc",
+					"action": "Cancel a pick-up, or close the panel"
+				},
+				{
+					"keys": "Then, on the board",
+					"action": "Use the new item's handle (Enter, arrows, Enter) or its menu to move it"
+				}
+			],
+			"related": [
+				"board",
+				"configurable-dashboard",
+				"dashboard-items",
+				"side-panel"
+			],
+			"references": []
+		},
+		{
+			"id": "chart-share-bar",
+			"name": "Share bar",
+			"group": "Data visualisation",
+			"kind": "component",
+			"summary": "One whole split into up to six parts in a single horizontal bar, with each part's name and share in a legend above. Smaller parts fold into a grey Other.",
+			"structure": [
+				"Title and subtitle",
+				"Legend above the bar: swatch, name and share for each part",
+				"Bar: one block per part with a 2px surface gap",
+				"Other: the folded tail, in grey",
+				"Tooltip: name, share and amount"
+			],
+			"whenToUse": [
+				{
+					"t": "Showing how one total splits at one moment, read at a glance, such as recurring revenue by plan.",
+					"s": []
+				},
+				{
+					"t": "A card or table header has room for a line, not a chart: a thin bar takes 8px and the legend carries the numbers.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "To compare parts precisely or rank more than six of them. Use the TwoUX Bar chart, because bars on one baseline compare more exactly than segments end to end.",
+					"s": []
+				},
+				{
+					"t": "To show the split changing over time. Use the TwoUX Area chart.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Keep to six parts; the smallest fold into Other, which is always grey and always last.",
+					"s": []
+				},
+				{
+					"t": "Separate parts with a 2px gap in the surface colour, never a border.",
+					"s": []
+				},
+				{
+					"t": "Colours follow the order you pass, c1 first. Pass parts in a stable order so a part keeps its colour from one period to the next.",
+					"s": []
+				},
+				{
+					"t": "Thin bar: shares go in the legend above, not on the bar. Tall bar: the share prints inside each block only when it fits, and the legend gives names.",
+					"s": []
+				},
+				{
+					"t": "Use a share bar instead of a donut when space is a line, not a square.",
+					"s": []
+				},
+				{
+					"t": "Use ChartFrame for the four states: loading keeps the frame, an error says what failed with Try again, an empty period says so, and no match offers Clear filters.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Shares to one decimal place in the legend, whole percentages inside a tall bar.",
+					"s": []
+				},
+				{
+					"t": "Name the part people know (Business, Team), not an internal code.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "1.4.1 Use of Color: every part is named in the legend and in the generated summary, so colour is not the only way to tell parts apart.",
+					"s": []
+				},
+				{
+					"t": "1.1.1 and WAI complex images: the chart has a short generated summary as its accessible name and a Table view with every value.",
+					"s": []
+				},
+				{
+					"t": "2.1.1 Keyboard: the chart is one tab stop; arrow keys move between marks and show the same tooltip as hover.",
+					"s": []
+				},
+				{
+					"t": "1.4.13 Content on Hover or Focus: the tooltip never covers the mark it describes, stays while the pointer is over the chart and closes with Esc.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Focus the chart"
+				},
+				{
+					"keys": "← → ↑ ↓",
+					"action": "Move to the previous or next mark and show its values"
+				},
+				{
+					"keys": "Home End",
+					"action": "Jump to the first or last mark"
+				},
+				{
+					"keys": "Esc",
+					"action": "Hide the tooltip"
+				}
+			],
+			"related": [
+				"chart-donut",
+				"chart-bar",
+				"chart-treemap"
+			],
+			"references": []
+		},
+		{
+			"id": "ranked-list",
+			"name": "Ranked list",
+			"group": "Data visualisation",
+			"kind": "component",
+			"summary": "Ranked rows with a series dot or icon, name, value and change, optionally a sparkline. Beside a stacked chart it is the chart's legend; each row links to the record.",
+			"structure": [
+				"Heading that names the moment, such as Top models on 28 Apr",
+				"Rank",
+				"Series dot (or icon)",
+				"Name",
+				"Optional sparkline",
+				"Value, tabular",
+				"Change: arrow, sign and percentage"
+			],
+			"whenToUse": [
+				{
+					"t": "As the legend of a stacked chart when people also need the ranking and values for the latest period.",
+					"s": []
+				},
+				{
+					"t": "A dashboard list of the top items by one measure, each opening its record.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "To compare many attributes per row or sort by them. Use the TwoUX List table.",
+					"s": []
+				},
+				{
+					"t": "For a price or index list where the code and unit matter. Use the TwoUX Change list.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Rank by the value shown, highest first, and say which period ranks it in the heading.",
+					"s": []
+				},
+				{
+					"t": "When the list is a legend, each dot keeps its series colour from the chart; never recolour by rank.",
+					"s": []
+				},
+				{
+					"t": "Show change with an arrow and a sign; colour it green or red only when the direction means good or bad, otherwise grey.",
+					"s": []
+				},
+				{
+					"t": "Hovering or focusing a row highlights that series in the chart, and the chart's crosshair can highlight the row.",
+					"s": []
+				},
+				{
+					"t": "Each row is one link or one button for the whole row, never several actions.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Values carry their unit (bn tokens, £); changes say the comparison in the heading or subtitle.",
+					"s": []
+				},
+				{
+					"t": "Keep names short enough to fit; the full name goes in the record.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "1.4.1 Use of Color: change is an arrow, a sign and a word read out (up or down), not colour.",
+					"s": []
+				},
+				{
+					"t": "1.3.1 Info and Relationships: the list is an ordered list, so rank is announced.",
+					"s": []
+				},
+				{
+					"t": "4.1.2 Name, Role, Value: each row is a single link or button whose name includes the label, value and change.",
+					"s": []
+				},
+				{
+					"t": "2.4.7 Focus Visible: rows show the focus ring inside their edge.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Move to the next row"
+				},
+				{
+					"keys": "Enter",
+					"action": "Open the row's record"
+				}
+			],
+			"related": [
+				"chart-area",
+				"change-list",
+				"stat-compare"
+			],
+			"references": []
+		},
+		{
+			"id": "change-list",
+			"name": "Change list",
+			"group": "Data visualisation",
+			"kind": "component",
+			"summary": "Ticker rows for indices, prices or rates: name and code, value with unit, change by arrow, sign and colour, an optional sparkline, and a See all link.",
+			"structure": [
+				"Title and subtitle (period, delay)",
+				"Row: name and code",
+				"Optional sparkline of the period",
+				"Value with unit, tabular",
+				"Change: arrow, sign and percentage",
+				"Footer: See all link"
+			],
+			"whenToUse": [
+				{
+					"t": "A short dashboard list of instruments or metrics where today's level and change matter most.",
+					"s": []
+				},
+				{
+					"t": "Several numbers that move together, each too small for its own stat tile.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "For one headline number. Use the TwoUX Stat compare.",
+					"s": []
+				},
+				{
+					"t": "To rank items by a share of a total. Use the TwoUX Ranked list.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Keep to about five to seven rows and link to the full list with See all.",
+					"s": []
+				},
+				{
+					"t": "Change shows an arrow, a sign and a colour; colour alone is never the signal.",
+					"s": []
+				},
+				{
+					"t": "Values align in tabular figures with their unit after the number.",
+					"s": []
+				},
+				{
+					"t": "Sparklines use one colour and no axis; they show shape, the number gives the level.",
+					"s": []
+				},
+				{
+					"t": "Say how fresh the data is in the subtitle, such as 15 minutes delayed.",
+					"s": []
+				},
+				{
+					"t": "Use ChartFrame for the four states: loading keeps the frame, an error says what failed with Try again, an empty period says so, and no match offers Clear filters.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Name first, code second in smaller text: people scan names, specialists scan codes.",
+					"s": []
+				},
+				{
+					"t": "Use a real minus sign for falls and two decimals for percentage change.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "1.4.1 Use of Color: arrow and sign carry direction; screen readers hear up or down with the value.",
+					"s": []
+				},
+				{
+					"t": "1.4.11 Non-text Contrast: arrows use the status text colours, which meet 4.5:1.",
+					"s": []
+				},
+				{
+					"t": "4.1.2 Name, Role, Value: each row is one link named by its whole content.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Move to the next row, then See all"
+				},
+				{
+					"keys": "Enter",
+					"action": "Open the row"
+				}
+			],
+			"related": [
+				"ranked-list",
+				"stat-compare",
+				"chart-price"
+			],
+			"references": []
+		},
+		{
+			"id": "chart-price",
+			"name": "Price chart",
+			"group": "Data visualisation",
+			"kind": "component",
+			"summary": "One price over a session: a line with a light wash, the last value tagged on the right axis, the previous close as a dashed reference, a live dot, and an axis that says when it does not start at zero.",
+			"structure": [
+				"Title and subtitle (unit, delay)",
+				"Plot: line with a 10% wash down to the axis floor",
+				"Right axis with ticks and the last-value tag",
+				"Dashed reference line with label (previous close)",
+				"Live dot at the last point",
+				"Time axis across the whole session",
+				"Note under the axis when it does not start at zero",
+				"Crosshair tooltip: time, price, change against the reference"
+			],
+			"whenToUse": [
+				{
+					"t": "A price or rate that moves within a narrow band, where the movement is the point, such as a share price today.",
+					"s": []
+				},
+				{
+					"t": "A live value where people need the latest level and where it stands against a reference.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "For amounts that should be compared from zero, such as revenue. Use the TwoUX Line chart card, which always starts at zero.",
+					"s": []
+				},
+				{
+					"t": "For open, high, low and close per day. Use the TwoUX Candlestick chart.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Start the axis at zero unless the range is narrow; when it does not, say so under the axis.",
+					"s": []
+				},
+				{
+					"t": "Lay out the whole session on the time axis so the empty part of the day stays visible.",
+					"s": []
+				},
+				{
+					"t": "Tag the last value on the right axis and hide ticks that would collide with it.",
+					"s": []
+				},
+				{
+					"t": "Draw the reference as a dashed grey line with a text label, never a series.",
+					"s": []
+				},
+				{
+					"t": "Fill under the line with a light wash of the series colour, not a solid block.",
+					"s": []
+				},
+				{
+					"t": "The live dot pulses only while the market is open, and never under reduced motion.",
+					"s": []
+				},
+				{
+					"t": "Use ChartFrame for the four states: loading keeps the frame, an error says what failed with Try again, an empty period says so, and no match offers Clear filters.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Put the unit and delay in the subtitle, such as In pence, 15 minutes delayed.",
+					"s": []
+				},
+				{
+					"t": "Label the reference by what it is (Previous close), with its value.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "1.1.1 and WAI complex images: the chart has a short generated summary as its accessible name and a Table view with every value.",
+					"s": []
+				},
+				{
+					"t": "2.1.1 Keyboard: the chart is one tab stop; arrow keys move between marks and show the same tooltip as hover.",
+					"s": []
+				},
+				{
+					"t": "1.4.13 Content on Hover or Focus: the tooltip never covers the mark it describes, stays while the pointer is over the chart and closes with Esc.",
+					"s": []
+				},
+				{
+					"t": "Accessible description: \"Line chart showing Ashdown plc share price today in pence.\"",
+					"s": []
+				},
+				{
+					"t": "2.2.2 and 2.3.3: the pulsing dot is under five seconds per cycle and stops under prefers-reduced-motion.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Focus the chart"
+				},
+				{
+					"keys": "← → ↑ ↓",
+					"action": "Move to the previous or next mark and show its values"
+				},
+				{
+					"keys": "Home End",
+					"action": "Jump to the first or last mark"
+				},
+				{
+					"keys": "Esc",
+					"action": "Hide the tooltip"
+				}
+			],
+			"related": [
+				"chart-card-line",
+				"chart-candlestick",
+				"change-list"
+			],
+			"references": []
+		},
+		{
+			"id": "chart-waterfall",
+			"name": "Waterfall chart",
+			"group": "Data visualisation",
+			"kind": "component",
+			"summary": "How an opening amount becomes a closing amount: each increase and decrease floats from the running total, joined by connectors, with totals in grey from zero.",
+			"structure": [
+				"Title and subtitle",
+				"Y axis from zero (or below, when totals go negative)",
+				"Total bars in grey from zero",
+				"Increase and decrease bars floating from the running total",
+				"Connector lines between bars",
+				"Value labels with + or − where they fit",
+				"Legend: increase, decrease, total",
+				"Tooltip: change and running total"
+			],
+			"whenToUse": [
+				{
+					"t": "Explaining how a balance or profit moved from one figure to another, such as cash flow for a month.",
+					"s": []
+				},
+				{
+					"t": "A bridge between two totals where each step matters, such as budget to actual.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "To show a series over time. Use the TwoUX Line chart card.",
+					"s": []
+				},
+				{
+					"t": "For parts of one total with no order. Use the TwoUX Share bar or Bar chart.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Increases and decreases take two categorical colours (c1 and c2), never green and red; the + or − on each label carries direction.",
+					"s": []
+				},
+				{
+					"t": "Totals are grey and start from zero, so they read as levels, not changes.",
+					"s": []
+				},
+				{
+					"t": "Join bars with thin connectors at the running total.",
+					"s": []
+				},
+				{
+					"t": "Print a value only where it fits; the tooltip and table always have it.",
+					"s": []
+				},
+				{
+					"t": "Order steps as the money moved: opening, money in, money out, closing.",
+					"s": []
+				},
+				{
+					"t": "Use ChartFrame for the four states: loading keeps the frame, an error says what failed with Try again, an empty period says so, and no match offers Clear filters.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Use a real minus sign and a plus sign on every change; totals have no sign.",
+					"s": []
+				},
+				{
+					"t": "Name the legend by meaning (Money in, Money out, Balance), not by colour.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "1.4.1 Use of Color: direction is carried by the sign on each label, in the tooltip and in the table, not by colour.",
+					"s": []
+				},
+				{
+					"t": "1.1.1 and WAI complex images: the chart has a short generated summary as its accessible name and a Table view with every value.",
+					"s": []
+				},
+				{
+					"t": "2.1.1 Keyboard: the chart is one tab stop; arrow keys move between marks and show the same tooltip as hover.",
+					"s": []
+				},
+				{
+					"t": "1.4.13 Content on Hover or Focus: the tooltip never covers the mark it describes, stays while the pointer is over the chart and closes with Esc.",
+					"s": []
+				},
+				{
+					"t": "Accessible description: \"Waterfall chart showing cash flow for October 2026.\"",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Focus the chart"
+				},
+				{
+					"keys": "← → ↑ ↓",
+					"action": "Move to the previous or next mark and show its values"
+				},
+				{
+					"keys": "Home End",
+					"action": "Jump to the first or last mark"
+				},
+				{
+					"keys": "Esc",
+					"action": "Hide the tooltip"
+				}
+			],
+			"related": [
+				"chart-bar",
+				"chart-bullet",
+				"stat-compare"
+			],
+			"references": []
+		},
+		{
+			"id": "chart-bullet",
+			"name": "Bullet chart",
+			"group": "Data visualisation",
+			"kind": "component",
+			"summary": "Actual against target for a few measures: a thin bar over grey qualitative bands with the target as a dark tick, in a fraction of a gauge's space.",
+			"structure": [
+				"Title and subtitle",
+				"Row: measure name, actual and target as text",
+				"Qualitative bands in neutral grey steps, darkest for the worst",
+				"Actual: thin bar in c1",
+				"Target: dark tick",
+				"Scale under each bar",
+				"Legend: actual, target, bands"
+			],
+			"whenToUse": [
+				{
+					"t": "Showing progress against a target for several measures in one card, such as bookings this quarter.",
+					"s": []
+				},
+				{
+					"t": "Where a gauge or dial was asked for: a bullet chart says the same in a line.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "For a single number with no target. Use the TwoUX Stat compare.",
+					"s": []
+				},
+				{
+					"t": "For usage against a hard limit. Use the TwoUX Usage meter.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Use a bullet chart, never a gauge or dial.",
+					"s": []
+				},
+				{
+					"t": "Bands are neutral grey steps, darkest for the worst range; they never use status colours.",
+					"s": []
+				},
+				{
+					"t": "The actual is a thin bar in the first series colour, the target a dark tick across it.",
+					"s": []
+				},
+				{
+					"t": "Print actual and target as text on each row, so the bar is never the only way to read them.",
+					"s": []
+				},
+				{
+					"t": "Each row has its own scale; never compare bar lengths between rows with different scales.",
+					"s": []
+				},
+				{
+					"t": "Use ChartFrame for the four states: loading keeps the frame, an error says what failed with Try again, an empty period says so, and no match offers Clear filters.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Name the bands by meaning (Poor, Satisfactory, Good), worst first.",
+					"s": []
+				},
+				{
+					"t": "Write actual of target, such as £412k of £450k.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "1.4.1 Use of Color: values are printed; bands are named in the legend and in each row's name.",
+					"s": []
+				},
+				{
+					"t": "1.1.1 and WAI complex images: each row's accessible name gives the actual, target, percentage of target and band.",
+					"s": []
+				},
+				{
+					"t": "2.1.1 Keyboard: each row is focusable and shows the same tooltip as hover.",
+					"s": []
+				},
+				{
+					"t": "1.4.11 Non-text Contrast: the actual bar and target tick meet 3:1 against every band.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Move to the next measure"
+				},
+				{
+					"keys": "Esc",
+					"action": "Hide the tooltip"
+				}
+			],
+			"related": [
+				"stat-compare",
+				"chart-waterfall",
+				"chart-bar"
+			],
+			"references": []
+		},
+		{
+			"id": "chart-treemap",
+			"name": "Treemap",
+			"group": "Data visualisation",
+			"kind": "component",
+			"summary": "Parts of a total as nested rectangles sized by value: squarified so tiles stay readable, names only where they fit, and the tail folded into Other after 12 tiles.",
+			"structure": [
+				"Title and subtitle",
+				"Tiles sized by value, with 2px surface gaps",
+				"Name and share inside tiles that can hold them",
+				"Other tile in grey",
+				"Legend of groups when there are two or more",
+				"Tooltip: name, value, share, group"
+			],
+			"whenToUse": [
+				{
+					"t": "Showing which of many items make up most of a total, such as cloud spend by service.",
+					"s": []
+				},
+				{
+					"t": "A total with one level of grouping, where the groups matter as well as the items.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "To compare items precisely. Use the TwoUX Bar chart, because areas are read less exactly than lengths.",
+					"s": []
+				},
+				{
+					"t": "For five parts or fewer. Use the TwoUX Share bar.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Keep to 12 tiles; the rest fold into a grey Other.",
+					"s": []
+				},
+				{
+					"t": "Use the squarified layout so tiles stay close to square and readable.",
+					"s": []
+				},
+				{
+					"t": "Without groups every tile is one colour; with groups each group takes its series colour and a legend. Never colour tiles by value.",
+					"s": []
+				},
+				{
+					"t": "Print a name only where it fits and a share only where there is room; never clip text.",
+					"s": []
+				},
+				{
+					"t": "Values go in the tooltip and the Table view.",
+					"s": []
+				},
+				{
+					"t": "Use ChartFrame for the four states: loading keeps the frame, an error says what failed with Try again, an empty period says so, and no match offers Clear filters.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Short tile names; the full name is in the tooltip and table.",
+					"s": []
+				},
+				{
+					"t": "Subtitle gives the period and scope, such as October 2026, all projects.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "1.4.1 Use of Color: groups are named in the legend and the tooltip; every value is in the table.",
+					"s": []
+				},
+				{
+					"t": "1.1.1 and WAI complex images: the chart has a short generated summary as its accessible name and a Table view with every value.",
+					"s": []
+				},
+				{
+					"t": "2.1.1 Keyboard: the chart is one tab stop; arrow keys move between marks and show the same tooltip as hover.",
+					"s": []
+				},
+				{
+					"t": "1.4.13 Content on Hover or Focus: the tooltip never covers the mark it describes, stays while the pointer is over the chart and closes with Esc.",
+					"s": []
+				},
+				{
+					"t": "Accessible description: \"Treemap showing cloud spend by service, October 2026.\"",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Focus the chart"
+				},
+				{
+					"keys": "← → ↑ ↓",
+					"action": "Move to the previous or next mark and show its values"
+				},
+				{
+					"keys": "Home End",
+					"action": "Jump to the first or last mark"
+				},
+				{
+					"keys": "Esc",
+					"action": "Hide the tooltip"
+				}
+			],
+			"related": [
+				"chart-share-bar",
+				"chart-bar",
+				"chart-donut"
+			],
+			"references": []
+		},
+		{
+			"id": "chart-sankey",
+			"name": "Sankey chart",
+			"group": "Data visualisation",
+			"kind": "component",
+			"summary": "Flows from left to right across two or three columns, such as traffic sources to pages to outcomes. Link width shows value; hover or focus highlights a path.",
+			"structure": [
+				"Title and subtitle",
+				"Columns of nodes",
+				"Links, width by value",
+				"Labels: name, value and share of column",
+				"Highlighted path on hover or focus",
+				"Tooltip: from, to, value, share of source"
+			],
+			"whenToUse": [
+				{
+					"t": "Showing how a quantity splits and recombines across stages, such as visits from sources to pages to outcomes.",
+					"s": []
+				},
+				{
+					"t": "Finding the largest flows into a loss, such as where people leave.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "For ordered stages where each is a subset of the last. Use the TwoUX Funnel.",
+					"s": []
+				},
+				{
+					"t": "For more than three columns or about 12 nodes; split it or use a table.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Keep to two or three columns and about 12 nodes.",
+					"s": []
+				},
+				{
+					"t": "Link width is proportional to value; links use one hue at low opacity so overlaps stay readable.",
+					"s": []
+				},
+				{
+					"t": "Hovering a node lights every flow through it; hovering a link lights that link.",
+					"s": []
+				},
+				{
+					"t": "Labels give name, value and share of the column when there is room; on narrow screens names only.",
+					"s": []
+				},
+				{
+					"t": "The Table view lists every flow as from, to and value.",
+					"s": []
+				},
+				{
+					"t": "Use ChartFrame for the four states: loading keeps the frame, an error says what failed with Try again, an empty period says so, and no match offers Clear filters.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Name the last column by outcome (Started trial, Left), not by page.",
+					"s": []
+				},
+				{
+					"t": "Shares are of the column, so each column adds to 100%.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "1.1.1 and WAI complex images: the chart has a short generated summary as its accessible name and a Table view with every value.",
+					"s": []
+				},
+				{
+					"t": "2.1.1 Keyboard: the chart is one tab stop; arrow keys move between marks and show the same tooltip as hover.",
+					"s": []
+				},
+				{
+					"t": "1.4.13 Content on Hover or Focus: the tooltip never covers the mark it describes, stays while the pointer is over the chart and closes with Esc.",
+					"s": []
+				},
+				{
+					"t": "Accessible description: \"Sankey chart showing visits from source to page to outcome, last 30 days.\"",
+					"s": []
+				},
+				{
+					"t": "1.4.1 Use of Color: links are one hue; their values are in labels, tooltips and the table.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Focus the chart"
+				},
+				{
+					"keys": "← → ↑ ↓",
+					"action": "Move to the previous or next mark and show its values"
+				},
+				{
+					"keys": "Home End",
+					"action": "Jump to the first or last mark"
+				},
+				{
+					"keys": "Esc",
+					"action": "Hide the tooltip"
+				}
+			],
+			"related": [
+				"chart-funnel",
+				"chart-bar",
+				"breakdown-table"
+			],
+			"references": []
+		},
+		{
+			"id": "chart-histogram",
+			"name": "Histogram",
+			"group": "Data visualisation",
+			"kind": "component",
+			"summary": "How values spread: touching columns, one per equal bin, counted on one axis, with an optional dashed marker such as the median.",
+			"structure": [
+				"Title and subtitle",
+				"Y axis: count",
+				"Columns, one per bin, 2px gaps",
+				"X axis: bin edges and title with unit",
+				"Optional dashed marker with label",
+				"Tooltip: range, count, share"
+			],
+			"whenToUse": [
+				{
+					"t": "Seeing the shape of a distribution, such as salary offers, where an average hides the tail.",
+					"s": []
+				},
+				{
+					"t": "Checking whether most values sit in a range before setting a threshold.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "To compare distributions of several groups. Use the TwoUX Box plot.",
+					"s": []
+				},
+				{
+					"t": "For counts by named category. Use the TwoUX Bar chart.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Use equal, round bin widths and say the width in the subtitle or table.",
+					"s": []
+				},
+				{
+					"t": "Columns touch with a 2px surface gap, because bins are continuous.",
+					"s": []
+				},
+				{
+					"t": "The y axis starts at zero and counts; there is one axis only.",
+					"s": []
+				},
+				{
+					"t": "Mark the median or a threshold with a dashed grey line and a text label.",
+					"s": []
+				},
+				{
+					"t": "Use ChartFrame for the four states: loading keeps the frame, an error says what failed with Try again, an empty period says so, and no match offers Clear filters.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "X axis title names the measure and unit, such as Annual salary offered.",
+					"s": []
+				},
+				{
+					"t": "Count label is the plural noun of what is counted (offers).",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "1.1.1 and WAI complex images: the chart has a short generated summary as its accessible name and a Table view with every value.",
+					"s": []
+				},
+				{
+					"t": "2.1.1 Keyboard: the chart is one tab stop; arrow keys move between marks and show the same tooltip as hover.",
+					"s": []
+				},
+				{
+					"t": "1.4.13 Content on Hover or Focus: the tooltip never covers the mark it describes, stays while the pointer is over the chart and closes with Esc.",
+					"s": []
+				},
+				{
+					"t": "Accessible description: \"Histogram showing salary offers in £5k bins, last 12 months.\"",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Focus the chart"
+				},
+				{
+					"keys": "← → ↑ ↓",
+					"action": "Move to the previous or next mark and show its values"
+				},
+				{
+					"keys": "Home End",
+					"action": "Jump to the first or last mark"
+				},
+				{
+					"keys": "Esc",
+					"action": "Hide the tooltip"
+				}
+			],
+			"related": [
+				"chart-box-plot",
+				"chart-bar",
+				"chart-scatter"
+			],
+			"references": []
+		},
+		{
+			"id": "chart-box-plot",
+			"name": "Box plot",
+			"group": "Data visualisation",
+			"kind": "component",
+			"summary": "Distributions of several groups on one axis: a box for the middle half, a line for the median, whiskers to 1.5 times the IQR and dots for outliers.",
+			"structure": [
+				"Title and subtitle",
+				"Group labels",
+				"Shared value axis with title and unit",
+				"Box from Q1 to Q3",
+				"Median line",
+				"Whiskers with caps",
+				"Outlier dots",
+				"Legend explaining the parts",
+				"Tooltip: median, middle half, whiskers, outliers"
+			],
+			"whenToUse": [
+				{
+					"t": "Comparing how spread out several groups are, such as response times by team.",
+					"s": []
+				},
+				{
+					"t": "Finding outliers worth opening, such as the slowest tickets.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "For one group's shape. Use the TwoUX Histogram.",
+					"s": []
+				},
+				{
+					"t": "For audiences new to statistics; show median and range in a table or a range plot instead.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Put every group on one shared axis.",
+					"s": []
+				},
+				{
+					"t": "Whiskers reach the furthest value within 1.5 times the IQR; values beyond are outlier dots.",
+					"s": []
+				},
+				{
+					"t": "Always show the legend explaining box, median, whiskers and outliers.",
+					"s": []
+				},
+				{
+					"t": "Order groups by meaning or by median, not alphabetically by default.",
+					"s": []
+				},
+				{
+					"t": "Use ChartFrame for the four states: loading keeps the frame, an error says what failed with Try again, an empty period says so, and no match offers Clear filters.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Say Middle half (Q1 to Q3) rather than only IQR.",
+					"s": []
+				},
+				{
+					"t": "Axis title gives the measure and unit, such as Hours to first response.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "1.1.1 and WAI complex images: the chart has a short generated summary as its accessible name and a Table view with every value.",
+					"s": []
+				},
+				{
+					"t": "2.1.1 Keyboard: the chart is one tab stop; arrow keys move between marks and show the same tooltip as hover.",
+					"s": []
+				},
+				{
+					"t": "1.4.13 Content on Hover or Focus: the tooltip never covers the mark it describes, stays while the pointer is over the chart and closes with Esc.",
+					"s": []
+				},
+				{
+					"t": "Accessible description: \"Box plot showing first response time by team, last 40 tickets.\"",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Focus the chart"
+				},
+				{
+					"keys": "← → ↑ ↓",
+					"action": "Move to the previous or next mark and show its values"
+				},
+				{
+					"keys": "Home End",
+					"action": "Jump to the first or last mark"
+				},
+				{
+					"keys": "Esc",
+					"action": "Hide the tooltip"
+				}
+			],
+			"related": [
+				"chart-histogram",
+				"chart-scatter",
+				"breakdown-table"
+			],
+			"references": []
+		},
+		{
+			"id": "chart-candlestick",
+			"name": "Candlestick chart",
+			"group": "Data visualisation",
+			"kind": "component",
+			"summary": "Open, high, low and close per period for a price. Up candles are hollow and down candles filled, in two categorical colours, or green and red on trading screens; volume is its own chart below.",
+			"structure": [
+				"Title and subtitle",
+				"Price axis on the right, not from zero, with a note",
+				"Candles: wick for high and low, body for open and close",
+				"Optional last-price tag on the axis, with a dashed line",
+				"Up: hollow c1; down: filled c2 (green and red with colors=\"market\")",
+				"Volume chart below with its own axis, sharing the crosshair",
+				"Legend: up and down",
+				"Tooltip: change, open, high, low, close, volume"
+			],
+			"whenToUse": [
+				{
+					"t": "Showing how a traded price moved each day, including its range, for people who read markets.",
+					"s": []
+				},
+				{
+					"t": "Spotting days with wide ranges or large volume.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "For a general audience or one price over time. Use the TwoUX Price chart or Line chart card.",
+					"s": []
+				},
+				{
+					"t": "For anything that is not open, high, low and close.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Up and down take two categorical colours and differ in fill too: up hollow, down filled.",
+					"s": []
+				},
+				{
+					"t": "Use two categorical colours by default. On trading screens, where people expect it, use green for up and red for down (colors=\"market\"); the hollow and filled bodies stay, so colour is never the only cue.",
+					"s": []
+				},
+				{
+					"t": "Put volume in its own chart below with its own axis; never a second y axis.",
+					"s": []
+				},
+				{
+					"t": "The price axis need not start at zero, and says so.",
+					"s": []
+				},
+				{
+					"t": "One crosshair for both charts, so a day's price and volume read together.",
+					"s": []
+				},
+				{
+					"t": "Use ChartFrame for the four states: loading keeps the frame, an error says what failed with Try again, an empty period says so, and no match offers Clear filters.",
+					"s": []
+				},
+				{
+					"t": "On a live market, tag the last price on the axis (showLast) and move only the forming candle as prices arrive.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Dates as day and short month (5 Nov); the unit in the subtitle.",
+					"s": []
+				},
+				{
+					"t": "Legend says what up means: Up (close above open).",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "1.4.1 Use of Color: direction is carried by hollow or filled bodies, the tooltip and the table.",
+					"s": []
+				},
+				{
+					"t": "1.1.1 and WAI complex images: the chart has a short generated summary as its accessible name and a Table view with every value.",
+					"s": []
+				},
+				{
+					"t": "2.1.1 Keyboard: the chart is one tab stop; arrow keys move between marks and show the same tooltip as hover.",
+					"s": []
+				},
+				{
+					"t": "1.4.13 Content on Hover or Focus: the tooltip never covers the mark it describes, stays while the pointer is over the chart and closes with Esc.",
+					"s": []
+				},
+				{
+					"t": "Accessible description: \"Candlestick chart showing Ashdown plc daily prices, last 30 trading days.\"",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Focus the chart"
+				},
+				{
+					"keys": "← → ↑ ↓",
+					"action": "Move to the previous or next mark and show its values"
+				},
+				{
+					"keys": "Home End",
+					"action": "Jump to the first or last mark"
+				},
+				{
+					"keys": "Esc",
+					"action": "Hide the tooltip"
+				}
+			],
+			"related": [
+				"chart-price",
+				"chart-card-line",
+				"chart-bar",
+				"order-book"
+			],
+			"references": []
+		},
+		{
+			"id": "order-book",
+			"name": "Order book",
+			"group": "Data visualisation",
+			"summary": "Resting sell and buy orders either side of the spread, each with a bar for the running total, so people see where the price is likely to meet resistance and can pick a price to trade at.",
+			"structure": [
+				"Group by: − and + to widen or narrow price groups",
+				"Column headings with units: Price, Amount, Total",
+				"Sell orders above, best (lowest) price next to the spread",
+				"Middle line: last price with its direction, and the spread",
+				"Buy orders below, best (highest) price next to the spread",
+				"Depth bar behind each row: running total against the deeper side"
+			],
+			"whenToUse": [
+				{
+					"t": "A trading screen where people place limit orders and need the prices other people are offering.",
+					"s": []
+				},
+				{
+					"t": "Showing how much can be bought or sold before the price moves, through the running totals.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "For a price over time. Use the TwoUX Candlestick chart or Price chart.",
+					"s": []
+				},
+				{
+					"t": "For a short list of prices with today's change. Use the TwoUX Change list.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Sells above, buys below, best prices next to the spread; side is carried by position, the row's name and colour together.",
+					"s": []
+				},
+				{
+					"t": "Sell prices are red and buy prices green, the way depth charts draw asks and bids.",
+					"s": []
+				},
+				{
+					"t": "Bars show the running total against the deeper side, so walls stand out.",
+					"s": []
+				},
+				{
+					"t": "Choosing a row puts its price in the order form; it never places an order.",
+					"s": []
+				},
+				{
+					"t": "Rows keep their place as prices update and never flash; only the values change.",
+					"s": []
+				},
+				{
+					"t": "Group sell prices up and buy prices down, so a group never shows a better price than its orders.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Put the unit in each heading: Price (USDC), Amount (BTC).",
+					"s": []
+				},
+				{
+					"t": "Say Spread, not a symbol, and give it in the price's unit.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "1.4.1 Use of Color: each row is named Sell or Buy with its amount, price and total, and the two sides are separate lists.",
+					"s": []
+				},
+				{
+					"t": "2.1.1 Keyboard: the book is one tab stop; arrow keys move between rows and Enter uses the price.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Focus the book"
+				},
+				{
+					"keys": "↑ ↓",
+					"action": "Move to the previous or next price"
+				},
+				{
+					"keys": "Page Up Page Down",
+					"action": "Move five prices"
+				},
+				{
+					"keys": "Home End",
+					"action": "Jump to the first or last price"
+				},
+				{
+					"keys": "Enter Space",
+					"action": "Use the price in the order form"
+				}
+			],
+			"related": [
+				"chart-candlestick",
+				"change-list",
+				"chart-price"
+			],
+			"references": []
+		},
+		{
+			"id": "chart-map",
+			"name": "Map chart",
+			"group": "Data visualisation",
+			"kind": "component",
+			"summary": "Regions shaded by a rate in five steps of one hue, or circles sized by an amount at places. For questions where location itself matters; missing regions are hatched and labelled No data.",
+			"structure": [
+				"Title and subtitle",
+				"Regions from your TopoJSON, thin borders",
+				"Shading in five classed steps, or circles sized by value",
+				"Hatched fill for regions with no data",
+				"Legend: bin ranges and No data",
+				"Details: name, value, share of total, rank",
+				"Pinned details with a drill-down button",
+				"Note listing values with no shape on the map"
+			],
+			"whenToUse": [
+				{
+					"t": "When where something happens is the question: clusters, neighbours, regions with nothing, such as trial conversion by country.",
+					"s": []
+				},
+				{
+					"t": "Placing amounts at locations, such as ARR by customer head office city, with circles sized by value.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "To compare amounts or rank countries. Use a Bar chart or a Ranked list: lengths are read more exactly than shades, and small countries don't disappear.",
+					"s": []
+				},
+				{
+					"t": "For raw counts across regions of very different size or population, as shading. Normalise to a rate or per head, or use markers.",
+					"s": []
+				},
+				{
+					"t": "For change over time. Use a Line chart card; a map shows one moment.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Shade by a rate, a share or a per-head figure; put raw counts and amounts on markers, where circle area grows with value.",
+					"s": []
+				},
+				{
+					"t": "One measure per map: values or markers, never both.",
+					"s": []
+				},
+				{
+					"t": "Colour is five classed steps of one hue (q1 to q5), darkest for the highest in light, lightest in dark. The legend shows the range of each step.",
+					"s": []
+				},
+				{
+					"t": "Regions with no value are hatched and labelled No data in the legend. Never draw them as zero or in the lowest step.",
+					"s": []
+				},
+				{
+					"t": "Join values by feature id (ISO 3166-1 numeric in world-atlas), not by name; names differ between sources.",
+					"s": []
+				},
+				{
+					"t": "Values with no shape on the map, such as Singapore at 1:110m, are listed under the map and stay in the table.",
+					"s": []
+				},
+				{
+					"t": "Use Equal Earth for the world so areas are not inflated towards the poles; leave Antarctica out unless it matters.",
+					"s": []
+				},
+				{
+					"t": "For drill-down, a pinned region offers one button that says where the filter lands (Filter page) and adds a pill to the filter bar.",
+					"s": []
+				},
+				{
+					"t": "Use ChartFrame for the four states and the Table view (mapTable).",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Title names the measure and period: \"Trial conversion by country\", subtitle \"Paid accounts per 100 trials, July to September\".",
+					"s": []
+				},
+				{
+					"t": "Legend ranges read \"Under 5%\", \"5% to 10%\", \"20% and over\". Missing regions read \"No data\".",
+					"s": []
+				},
+				{
+					"t": "Turn off share of total for rates and averages; a share of a sum of rates means nothing.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "1.1.1 and WAI complex images: the map's accessible name is a generated summary (label, number of regions, top three, how many have no data), and the Table view lists every value.",
+					"s": []
+				},
+				{
+					"t": "2.1.1 Keyboard: the map is one tab stop; arrow keys move between regions with data, highest value first, and show the same details as hover.",
+					"s": []
+				},
+				{
+					"t": "1.4.13 Content on Hover or Focus: details sit beside the region, stay while the pointer is over the map and close with Esc.",
+					"s": []
+				},
+				{
+					"t": "1.4.1 Use of Color: values are in the details, legend ranges and table; No data has a pattern as well as a colour.",
+					"s": []
+				},
+				{
+					"t": "Accessible description: \"Map showing trial conversion by country, July to September.\"",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Focus the map"
+				},
+				{
+					"keys": "← → ↑ ↓",
+					"action": "Move to the next or previous region with data, highest value first, and show its details"
+				},
+				{
+					"keys": "Home End",
+					"action": "Jump to the highest or lowest value"
+				},
+				{
+					"keys": "Enter",
+					"action": "Pin the details; focus moves to the drill-down button when there is one"
+				},
+				{
+					"keys": "Esc",
+					"action": "Close the details and return focus to the map"
+				}
+			],
+			"related": [
+				"chart-bar",
+				"ranked-list",
+				"chart-heatmap",
+				"chart-drill-down",
+				"filter-bar"
+			],
+			"references": []
+		},
+		{
+			"id": "timeline",
+			"name": "Timeline",
+			"group": "Data",
+			"kind": "component",
+			"summary": "Scheduled work across a few tracks on one time ruler, such as releases and maintenance per service or hiring campaigns per team. Spans and instants, a labelled Now line, four zoom levels; selecting an event opens it in the side panel.",
+			"structure": [
+				"Toolbar: period, Go to now, zoom",
+				"Ruler with UK date ticks",
+				"Sticky track label column",
+				"Spans (start to end) and instants (diamond)",
+				"Lanes for overlapping events in a track",
+				"Now line labelled with the time",
+				"Tooltip: track, status word, start, end, length"
+			],
+			"whenToUse": [
+				{
+					"t": "Seeing what runs in parallel across services, teams or resources, such as release and maintenance windows, and where it overlaps.",
+					"s": []
+				},
+				{
+					"t": "Planning or reviewing phases with a start and an end, such as hiring campaigns per team, with deadlines as instants.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "For what happened, one item after another, in one stream. Use the Agent activity log or a Grouped list.",
+					"s": []
+				},
+				{
+					"t": "For amounts over time. Use the Line chart card or a Bar chart.",
+					"s": []
+				},
+				{
+					"t": "For editing dates by dragging. The Timeline is read-only; change dates in the record's side panel.",
+					"s": []
+				},
+				{
+					"t": "For more than about 12 tracks or when people compare exact dates. Use a List table with start and end columns.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Keep to about 12 tracks and one period people plan in, such as two weeks or a quarter.",
+					"s": []
+				},
+				{
+					"t": "Give every event a status word with statusLabel (Done, At risk, Blocked); the tint repeats it, never replaces it.",
+					"s": []
+				},
+				{
+					"t": "Selecting an event opens its record in the SidePanel; pass its id back as selectedId so the timeline marks it.",
+					"s": []
+				},
+				{
+					"t": "Pass now for current and future periods; leave it out for past ones. Go to now appears only when Now is in the period.",
+					"s": []
+				},
+				{
+					"t": "Offer the zoom levels that fit the period with zooms: hour and day for a week, week and month for a quarter.",
+					"s": []
+				},
+				{
+					"t": "Wrap it in ChartFrame for the title, the Table view (timelineTable) and the loading, error and no match states.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Dates are UK format, \"Wed 11 Nov, 09:00\"; the tooltip and table give the full date with zone, as Timestamp does.",
+					"s": []
+				},
+				{
+					"t": "Name tracks with nouns (Payments API, Engineering) and events by what happens (Release 4.13, Database upgrade).",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "2.1.1 Keyboard and the APG grid: one tab stop, arrow keys move between events, Enter or Space opens one.",
+					"s": []
+				},
+				{
+					"t": "Each event is a gridcell named \"Label, track, start to end, status\"; each track is a row with a row header.",
+					"s": []
+				},
+				{
+					"t": "1.4.1 Use of Color: status is a word in the tooltip, accessible name and table view, not the tint alone.",
+					"s": []
+				},
+				{
+					"t": "1.4.10 Reflow: only the time area scrolls, inside its own box, with the track column sticky.",
+					"s": []
+				},
+				{
+					"t": "2.1.4 Character Key Shortcuts: + and − zoom only while the timeline has focus.",
+					"s": []
+				},
+				{
+					"t": "1.1.1 and complex images: a description gives tracks, events, period and current time, and the Table view lists every event.",
+					"s": []
+				},
+				{
+					"t": "1.4.13 Content on Hover or Focus: the tooltip follows hover and focus and closes with Esc.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Focus the timeline"
+				},
+				{
+					"keys": "← →",
+					"action": "Previous or next event in the track"
+				},
+				{
+					"keys": "↑ ↓",
+					"action": "Nearest event in time on the track above or below"
+				},
+				{
+					"keys": "Home End",
+					"action": "First or last event in the track (with Ctrl, overall)"
+				},
+				{
+					"keys": "Enter Space",
+					"action": "Open the event in the side panel"
+				},
+				{
+					"keys": "+ −",
+					"action": "Zoom in or out (off when single-key shortcuts are turned off)"
+				},
+				{
+					"keys": "Esc",
+					"action": "Clear the focused event and hide the tooltip"
+				}
+			],
+			"related": [
+				"side-panel",
+				"list-table",
+				"agent-activity-log",
+				"timestamp",
+				"segmented-control",
+				"chart-card-line"
+			],
+			"references": []
+		},
+		{
+			"id": "chart-radial-bars",
+			"name": "Radial bars",
+			"group": "Data visualisation",
+			"kind": "component",
+			"summary": "One to four small concentric rings, each the share of a fixed limit such as seats, credits or storage, with used of limit always written beside them. Never actual against target: that stays the bullet chart.",
+			"structure": [
+				"Rings, outermost first: grey track and an arc from 12 o'clock clockwise",
+				"Zero tick at 12 o'clock",
+				"Share in the centre when there is one ring",
+				"List: colour key, measure name, used of limit and share",
+				"Status badge when a ring is at or over its limit",
+				"Tooltip under the rings on hover or focus"
+			],
+			"whenToUse": [
+				{
+					"t": "Showing two to four limits of a plan together in the space of a stat card, such as seats, assistant credits and storage this month.",
+					"s": []
+				},
+				{
+					"t": "One budget that resets, such as an SLA error budget, where a ring with the share in the centre fits a small tile.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "For actual against a target, such as bookings against plan. Use the TwoUX Bullet chart: angles are read less exactly than lengths.",
+					"s": []
+				},
+				{
+					"t": "For a single limit with a reset date and what stops at the limit. Use the TwoUX Usage meter.",
+					"s": []
+				},
+				{
+					"t": "To compare amounts across categories around a circle. Use a Bar chart: outer rings look longer than inner ones for the same value.",
+					"s": []
+				},
+				{
+					"t": "For parts of one total. Use a Donut chart or Share bar.",
+					"s": []
+				},
+				{
+					"t": "For a value with no fixed maximum, or for the progress of a task. A ring needs a real limit.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Use radial bars only for share of a fixed limit, 0 to 100% of capacity, quota or budget.",
+					"s": []
+				},
+				{
+					"t": "Show at most four rings, at 96 to 160px. Extra items are not drawn.",
+					"s": []
+				},
+				{
+					"t": "Write used of limit and the share as text beside the rings; the ring only repeats it.",
+					"s": []
+				},
+				{
+					"t": "Start every ring at 12 o'clock and run clockwise from zero. A value over the limit fills the ring; it never wraps round twice.",
+					"s": []
+				},
+				{
+					"t": "Colour rings in series order. A ring at or over its limit adds At limit or Over limit as a badge; never recolour a ring as the only cue.",
+					"s": []
+				},
+				{
+					"t": "No needle, no half-circle dial and no thresholds on the ring.",
+					"s": []
+				},
+				{
+					"t": "Use ChartFrame for the four states: loading keeps the frame, an error says what failed with Try again, an empty period says so, and no match offers Clear filters.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Name each ring by what it measures, as a noun: Seats, Assistant credits, Storage.",
+					"s": []
+				},
+				{
+					"t": "Write used of limit with the unit, then the share: 38 of 50 seats · 76%.",
+					"s": []
+				},
+				{
+					"t": "Put the plan and reset date in the chart description: Growth plan · resets 1 Dec.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "1.1.1 and WAI complex images: the chart's accessible name lists each measure as used of limit, share and status.",
+					"s": []
+				},
+				{
+					"t": "1.4.1 Use of Color: every value and status is printed in the list; colour only links a ring to its row.",
+					"s": []
+				},
+				{
+					"t": "1.4.11 Non-text Contrast: arcs meet 3:1 against the grey track.",
+					"s": []
+				},
+				{
+					"t": "2.1.1 Keyboard: one tab stop, arrow keys move between rings and show the same tooltip as hover.",
+					"s": []
+				},
+				{
+					"t": "1.4.10 Reflow: the list moves under the rings on narrow screens.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Focus the chart"
+				},
+				{
+					"keys": "← → ↑ ↓",
+					"action": "Move to the previous or next ring"
+				},
+				{
+					"keys": "Home End",
+					"action": "Go to the outer or inner ring"
+				},
+				{
+					"keys": "Esc",
+					"action": "Hide the tooltip"
+				}
+			],
+			"related": [
+				"usage-meter",
+				"chart-bullet",
+				"chart-donut",
+				"stat-compare"
+			],
+			"references": []
+		},
+		{
+			"id": "chart-radial-lines",
+			"name": "Radial lines",
+			"group": "Data visualisation",
+			"kind": "component",
+			"summary": "A line chart wrapped round a circle for cyclical periods (hour of day, day of week, month), so the last period runs into the first. One to three series, values from zero, gaps for missing data.",
+			"structure": [
+				"Title and subtitle with the period averaged and time zone",
+				"Value rings from zero, three or four, labelled along the top spoke",
+				"One spoke per period, labels round the outside",
+				"Lines in series colours, joined from the last period to the first",
+				"Gaps for missing data",
+				"Legend for two or more series",
+				"Tooltip for the nearest period on hover or focus"
+			],
+			"whenToUse": [
+				{
+					"t": "Showing how a measure rises and falls through a repeating cycle where the wrap-around matters, such as support tickets by hour of day across two queues.",
+					"s": []
+				},
+				{
+					"t": "Daily or weekly rhythms, such as sign-ins by day of week, where Sunday into Monday should read as one stretch.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "For time that does not repeat, such as revenue by month over two years. Use the TwoUX Line chart card.",
+					"s": []
+				},
+				{
+					"t": "For exact comparisons between periods. Use a Bar chart: values near the centre are hard to compare.",
+					"s": []
+				},
+				{
+					"t": "For a cycle against a second dimension, such as hour by weekday. Use the TwoUX Heatmap.",
+					"s": []
+				},
+				{
+					"t": "For more than three series. Split them into small charts side by side.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Use radial lines only for cyclical periods: hour of day, day of week, month of year.",
+					"s": []
+				},
+				{
+					"t": "Start the first period at 12 o'clock and run clockwise.",
+					"s": []
+				},
+				{
+					"t": "Start the value axis at zero with three or four labelled rings; never crop the centre.",
+					"s": []
+				},
+				{
+					"t": "Draw missing data as a gap, never as zero. Join the last period to the first only when both have values.",
+					"s": []
+				},
+				{
+					"t": "Show one to three series as lines; no area fill.",
+					"s": []
+				},
+				{
+					"t": "Show a legend only for two or more series; legend keys hide series without changing colours.",
+					"s": []
+				},
+				{
+					"t": "Use ChartFrame for the four states: loading keeps the frame, an error says what failed with Try again, an empty period says so, and no match offers Clear filters.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Name the measure and the cycle in the title: Tickets opened by hour.",
+					"s": []
+				},
+				{
+					"t": "Say what was averaged and the time zone in the description: Average per day, last 30 days, UK time.",
+					"s": []
+				},
+				{
+					"t": "Write periods as people read them: 00:00 to 23:00, Mon to Sun, Jan to Dec.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "1.1.1 and WAI complex images: the accessible name gives the cycle, where it starts, and each series' highest and lowest period and gaps.",
+					"s": []
+				},
+				{
+					"t": "2.1.1 Keyboard: one tab stop; arrow keys move round the cycle and wrap, showing the same tooltip as hover.",
+					"s": []
+				},
+				{
+					"t": "1.4.13 Content on Hover or Focus: the tooltip stays while the period is active and Esc hides it.",
+					"s": []
+				},
+				{
+					"t": "1.4.11 Non-text Contrast: lines meet 3:1 against the surface.",
+					"s": []
+				},
+				{
+					"t": "1.4.10 Reflow: the chart shrinks to its container and the table view lists every value.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Focus the chart"
+				},
+				{
+					"keys": "→ ↓",
+					"action": "Next period, clockwise; wraps from the last to the first"
+				},
+				{
+					"keys": "← ↑",
+					"action": "Previous period, anticlockwise"
+				},
+				{
+					"keys": "Home End",
+					"action": "Go to the first or last period"
+				},
+				{
+					"keys": "Esc",
+					"action": "Hide the tooltip"
+				}
+			],
+			"related": [
+				"chart-card-line",
+				"chart-heatmap",
+				"chart-bar",
+				"data-visualisation"
+			],
+			"references": []
+		},
+		{
+			"id": "scheduler",
+			"name": "Scheduler",
+			"group": "Data",
+			"kind": "component",
+			"summary": "Interviews, shifts or bookings on a day, week or month grid, with people or rooms as resources. Click a free time to add, click an event to open it, and drag, use the keyboard or the event menu to move it. Below 768px it becomes an agenda list.",
+			"structure": [
+				"Toolbar: Today, Previous, Next, period heading, time zone, Day / Week / Month",
+				"Resource legend: stripe and name",
+				"Time gutter, 24-hour, with a labelled now line",
+				"Column headers: days, or resources in day view",
+				"All-day row",
+				"30-minute slots",
+				"Event: resource stripe, title, detail, time, resource, status badge, ⋮ menu",
+				"Month cells with up to three events and +N more",
+				"Agenda list grouped by day, below 768px"
+			],
+			"whenToUse": [
+				{
+					"t": "Booking and arranging time-bound records where free time matters, such as interviews across several interviewers, shifts or room bookings.",
+					"s": []
+				},
+				{
+					"t": "Seeing who is busy when, side by side, before choosing a time.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "For a list of upcoming items with no need to see free time; use a Grouped list or List table with Timestamps.",
+					"s": []
+				},
+				{
+					"t": "For a record's history of changes; use Timeline.",
+					"s": []
+				},
+				{
+					"t": "For picking one date in a form; use a date field.",
+					"s": []
+				},
+				{
+					"t": "For editing recurring series; the Scheduler shows events the app has already expanded and has no recurrence editor.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Switch Day, Week and Month with the segmented control; they are views of the same data.",
+					"s": []
+				},
+				{
+					"t": "Open an event in the side panel with onSelectEvent, so people keep their place in the schedule.",
+					"s": []
+				},
+				{
+					"t": "Create from a free time with onCreate and a dialog of up to three fields; the time comes from the slot.",
+					"s": []
+				},
+				{
+					"t": "Apply every move at once with a toast offering Undo. Confirm first only if the move contacts someone outside the workspace, such as re-sending a candidate invite.",
+					"s": []
+				},
+				{
+					"t": "Every drag has a keyboard path (Space, arrows, Enter, Esc) and a menu path (the event's ⋮: earlier, later, other day, longer, shorter, another resource).",
+					"s": []
+				},
+				{
+					"t": "Resource colour is a left stripe from the series colours; text stays ink and the resource is always named.",
+					"s": []
+				},
+				{
+					"t": "Keep day and week views to working hours (dayStart, dayEnd) and use workWeek when weekends are never booked.",
+					"s": []
+				},
+				{
+					"t": "Below 768px the grid becomes an agenda grouped by day, so the schedule reflows to 320px without sideways scrolling.",
+					"s": []
+				},
+				{
+					"t": "Loading shows skeleton rows inside the frame; an error says what failed with Try again; an empty period says so and stays clickable.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Times are 24-hour with an en dash: 09:30–10:15. Weeks start on Monday. Day headings read Thursday 12 November.",
+					"s": []
+				},
+				{
+					"t": "Write the time zone once in the toolbar: Times in GMT. Details in the side panel use Timestamp in absolute format.",
+					"s": []
+				},
+				{
+					"t": "Name the noun in the empty message: No interviews this week. Choose a free time to add one.",
+					"s": []
+				},
+				{
+					"t": "Status is a word in a Badge (Confirmed, Tentative), never a colour alone.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "2.1.1 Keyboard: the grid is one tab stop with roving focus; arrows walk free times and events in time order, and Enter opens or adds.",
+					"s": []
+				},
+				{
+					"t": "2.5.7 Dragging Movements: moving and resizing also work with Space and arrows, and from the event menu with single clicks.",
+					"s": []
+				},
+				{
+					"t": "4.1.3 Status Messages: pick-up, each step, drop and cancel are announced in a polite live region.",
+					"s": []
+				},
+				{
+					"t": "Month view follows the APG calendar grid: arrows by day and week, Enter lists the day's events.",
+					"s": []
+				},
+				{
+					"t": "1.4.1 Use of Color: resources and status are written in words; colour repeats them.",
+					"s": []
+				},
+				{
+					"t": "1.4.10 Reflow: the agenda replaces the grid below 768px.",
+					"s": []
+				},
+				{
+					"t": "2.1.4 Character Key Shortcuts: T, J, K, D, W and M stop when single-key shortcuts are turned off; keys inside the focused grid are not affected.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "T",
+					"action": "Go to today"
+				},
+				{
+					"keys": "J K",
+					"action": "Next or previous day, week or month"
+				},
+				{
+					"keys": "D W M",
+					"action": "Day, week or month view"
+				},
+				{
+					"keys": "↑ ↓",
+					"action": "Previous or next free time or event in the column"
+				},
+				{
+					"keys": "← →",
+					"action": "Same time in the previous or next column"
+				},
+				{
+					"keys": "Home End",
+					"action": "First or last time in the column"
+				},
+				{
+					"keys": "Page up Page down",
+					"action": "Previous or next period"
+				},
+				{
+					"keys": "Enter",
+					"action": "Open the event, or add one at the free time"
+				},
+				{
+					"keys": "Space",
+					"action": "Pick up the event to move it"
+				},
+				{
+					"keys": "↑ ↓ ← → (moving)",
+					"action": "Move by one slot, or to the next day or interviewer"
+				},
+				{
+					"keys": "⇧↑ ⇧↓ (moving)",
+					"action": "Make it shorter or longer"
+				},
+				{
+					"keys": "Enter Space (moving)",
+					"action": "Drop it here"
+				},
+				{
+					"keys": "Esc",
+					"action": "Cancel the move and put it back"
+				},
+				{
+					"keys": "⇧F10",
+					"action": "Open the event menu"
+				}
+			],
+			"related": [
+				"side-panel",
+				"segmented-control",
+				"grouped-list",
+				"list-table",
+				"dropdown-menu",
+				"confirmation-dialog"
+			],
+			"references": []
+		}
+	]
+}

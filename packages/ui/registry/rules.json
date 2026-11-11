@@ -1,0 +1,913 @@
+{
+  "$comment": "Source of truth for the rules every builder follows, human or AI. Read by the docs site (/for-agents), AGENTS.md and llms.txt. Edit here only.",
+  "before": [
+    {
+      "rule": "Find the job in the job table. Use the component it names, and read that component's page, including “When not to use”.",
+      "why": "Same job, same component, everywhere."
+    },
+    {
+      "rule": "If a pattern covers the flow (filtering, bulk actions, propose then apply, record detail…), follow its steps in order.",
+      "why": "Patterns keep whole flows consistent, not just parts."
+    },
+    {
+      "rule": "If the component is planned or missing, do not build a local version, a lookalike or a partial one. Use the closest existing TwoUX component and tell the person what is missing.",
+      "why": "A local copy is how drift starts, and it never gets the fixes the real component does."
+    },
+    {
+      "rule": "When you suggest a new component, layout or flow, base it on the patterns here, WAI-ARIA APG and WCAG 2.2. Use the closest existing component meanwhile.",
+      "why": "Suggestions grounded in tested patterns and standards beat taste."
+    },
+    {
+      "rule": "Before you finish, run `npx twoux check` and fix every error it reports.",
+      "why": "The check catches raw colours, one-off sizes, direct primitive imports, local copies and edits to TwoUX itself."
+    }
+  ],
+  "groups": [
+    {
+      "title": "Code",
+      "rules": [
+        {
+          "rule": "Import components from the TwoUX package. Never copy, restyle or rebuild a primitive locally.",
+          "why": "One implementation means one behaviour and one accessibility fix for everyone.",
+          "use": [
+            [
+              "Package",
+              [
+                "@twoux/ui"
+              ]
+            ]
+          ],
+          "scope": "twoux"
+        },
+        {
+          "rule": "Use shadcn's component names and props exactly. TwoUX only adds a few props, such as loading and shortcut on Button, and the warning variant.",
+          "why": "TwoUX is generated from shadcn's source, so shadcn knowledge applies directly and agents do not invent variants.",
+          "use": [
+            [
+              "Button variants",
+              [
+                "default",
+                "outline",
+                "secondary",
+                "ghost",
+                "warning",
+                "destructive",
+                "link"
+              ]
+            ],
+            [
+              "Button sizes",
+              [
+                "xs",
+                "sm",
+                "default",
+                "lg",
+                "icon",
+                "icon-sm",
+                "icon-xs"
+              ]
+            ]
+          ],
+          "scope": "twoux"
+        },
+        {
+          "rule": "Support light and dark by using role tokens only (bg-surface, text-ink-2, border-line, bg-ok-bg…). Never write dark: variants, a second set of classes, or a colour that only works on white. Light is the default; offer ThemeSwitcher (Light, Dark, Match system) in the header or account menu, and add THEME_SCRIPT to <head> so the page doesn't flash.",
+          "why": "Each role holds a light and a dark value (CSS light-dark()), chosen and contrast-checked per theme, so code written once works in both. Charts use their own dark selection, not an inverted one.",
+          "use": [
+            [
+              "Switch",
+              [
+                "ThemeSwitcher",
+                "useTheme",
+                "setTheme",
+                "THEME_SCRIPT"
+              ]
+            ],
+            [
+              "Root attribute",
+              [
+                "<html data-theme=\"dark\">",
+                "<html data-theme=\"system\">"
+              ]
+            ]
+          ],
+          "scope": "twoux"
+        },
+        {
+          "rule": "Keep shadcn's own motion for overlays (dialogs, sheets, menus, popovers, tooltips, toasts); never retime it. For changes inside a screen use TwoUX's motion helpers, never a hand-written animation: Swap for an icon or label that changes state (Copy → Copied, Save → Saved), Count for a number that changes, RollingNumber for a figure on a stat card, ShimmerText for a working status line, StreamingText for AI text as it arrives, AnimateHeight for a card that changes size.",
+          "why": "shadcn's timing is tuned and familiar, and one set of helpers keeps motion consistent, short and off under reduced motion. Motion confirms a change; it never decorates.",
+          "use": [
+            [
+              "Helpers",
+              [
+                "Swap",
+                "Count",
+                "RollingNumber",
+                "ShimmerText",
+                "StreamingText",
+                "AnimateHeight"
+              ]
+            ],
+            [
+              "Easing",
+              [
+                "--ease-standard",
+                "--ease-entrance",
+                "--ease-move",
+                "--ease-exit",
+                "--ease-pop (pops only)"
+              ]
+            ]
+          ],
+          "scope": "twoux"
+        },
+        {
+          "rule": "Never import Radix or a shadcn file directly in app code. Import from @twoux/ui, where the tailored versions live.",
+          "why": "TwoUX wraps them with its tokens and restrictions; going around it bypasses both.",
+          "scope": "twoux"
+        },
+        {
+          "rule": "Style only with TwoUX role tokens and the utilities they generate.",
+          "why": "Roles can be re-pointed in one place; raw values cannot.",
+          "use": [
+            [
+              "Examples",
+              [
+                "bg-surface",
+                "text-ink-2",
+                "border-control",
+                "h-control",
+                "rounded-md"
+              ]
+            ]
+          ],
+          "scope": "twoux"
+        },
+        {
+          "rule": "No hex colours, pixel values, inline styles or arbitrary Tailwind values.",
+          "why": "Every raw value is a decision nobody reviewed. Tailwind's default palette is switched off, so bg-slate-500 fails to build.",
+          "use": [
+            [
+              "Blocked",
+              [
+                "#5753E0",
+                "w-[37px]",
+                "style={…}",
+                "bg-slate-500"
+              ]
+            ]
+          ],
+          "scope": "twoux"
+        },
+        {
+          "rule": "Use range tokens only in charts and reviewed illustrations, never in components.",
+          "why": "Components say what a colour is for, not which colour it is.",
+          "use": [
+            [
+              "Range token",
+              [
+                "--color-indigo-600"
+              ]
+            ]
+          ],
+          "scope": "twoux"
+        },
+        {
+          "rule": "Show third-party services with ProviderLogo: official marks only for services people sign in with or connect (Google, Microsoft, Slack…), unaltered and beside the service's name. Never draw, recolour or crop a mark, and never use the marks of reference or competing products. New providers are added in scripts/provider-logos.mjs.",
+          "why": "Brand guidelines allow a mark only to identify that service, unchanged; one generated source keeps licences and versions traceable.",
+          "use": [
+            [
+              "Component",
+              [
+                "ProviderLogo",
+                "PROVIDERS"
+              ]
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Changing TwoUX",
+      "rules": [
+        {
+          "rule": "Never edit TwoUX itself during app work: nothing under `packages/ui/src`, `packages/ui/registry` or `node_modules/@twoux`.",
+          "why": "TwoUX components are generated from shadcn source by a script; a hand edit is lost on the next run and silently forks behaviour for everyone.",
+          "use": [
+            [
+              "Protected",
+              [
+                "packages/ui/src/components",
+                "packages/ui/src/shadcn",
+                "packages/ui/src/styles"
+              ]
+            ],
+            [
+              "Instead",
+              [
+                "props · on the component",
+                "composition · in app code",
+                "request · ask the person to request it"
+              ]
+            ]
+          ],
+          "scope": "twoux"
+        },
+        {
+          "rule": "To change how the whole product looks (brand colour, corners, button shape, font, motion tempo), edit `twoux.theme.json` (in the TwoUX repo, `packages/ui/theme.json`) and run `npx twoux theme`. Never restyle or retime a component on one page, not even with valid tokens such as `px-3` or `rounded-full` on a Button or menu item.",
+          "why": "One theme file keeps every screen consistent, and the generator refuses colours that would fail WCAG contrast.",
+          "use": [
+            [
+              "File",
+              [
+                "twoux.theme.json"
+              ]
+            ],
+            [
+              "Fields",
+              [
+                "primary · palette name or #RRGGBB",
+                "radius · xs, sm, md in px",
+                "radius.button · px or \"pill\"",
+                "font",
+                "motion.tempo · 0.75 to 1.25",
+                "motion.character · standard or crisp"
+              ]
+            ],
+            [
+              "Command",
+              [
+                "npx twoux theme"
+              ]
+            ]
+          ],
+          "scope": "twoux"
+        },
+        {
+          "rule": "If a component needs a behaviour it lacks, first look for a prop or composition (for example onSelect with preventDefault to keep a menu open). If there is none, use the component as it is and tell the person what is missing; don't patch the component.",
+          "why": "Props and composition keep the shared behaviour intact; patches fork it.",
+          "scope": "twoux"
+        }
+      ]
+    },
+    {
+      "title": "Layout and density",
+      "rules": [
+        {
+          "rule": "Compact density only. No other sizes, except size=\"dense\" on tables and sheets for spreadsheet-like data.",
+          "why": "Power users scan dense data; a fixed set of sizes keeps every screen aligned.",
+          "use": [
+            [
+              "Controls",
+              [
+                "input · 32px",
+                "row · 36px"
+              ]
+            ],
+            [
+              "Buttons",
+              [
+                "xs · 24px",
+                "sm · 28px",
+                "md · 32px",
+                "lg · 36px"
+              ]
+            ],
+            [
+              "Dense tables and sheets",
+              [
+                "row · 28px, spreadsheet-like data only"
+              ]
+            ]
+          ],
+          "scope": "twoux"
+        },
+        {
+          "rule": "Use workspace density only on tool pages that pass all three tests: people watch and act on several regions at once, experts work in it for long repeated sessions, and the content is mostly numbers or tables scanned across many rows (trading, operations consoles, data workspaces, editors). Workspace density removes chrome and gaps, never size: AppShell frame=\"flush\" with the sidebar as a rail, regions in PaneLayout divided by 1px lines, panes padded 8px, charts flush, size=\"dense\" for spreadsheet-like tables. Forms, settings, onboarding, record detail, list pages and glance dashboards keep the inset canvas.",
+          "why": "Removing gaps and frames is what puts every region in view on a trading or operations screen; shrinking text or targets would make the same screen slower and fail WCAG 2.5.8. Text stays on TwoUX's type scale (13px body, 12px meta, never smaller), targets at 24px or more, and alerts, validation and empty states keep their size.",
+          "use": [
+            [
+              "Shell",
+              [
+                "AppShell frame=\"flush\"",
+                "sidebarRail"
+              ]
+            ],
+            [
+              "Regions",
+              [
+                "PaneLayout",
+                "usePaneSize"
+              ]
+            ],
+            [
+              "Inside a pane",
+              [
+                "ChartFrame frame=\"flush\" (default in a flush shell)",
+                "Table size=\"dense\" for spreadsheet-like data"
+              ]
+            ]
+          ],
+          "scope": "twoux"
+        },
+        {
+          "rule": "One primary button per view.",
+          "why": "The next step is obvious when only one action is primary."
+        },
+        {
+          "rule": "Show record detail in the side panel (push by default), not a modal or a new page.",
+          "why": "People keep their place in the list."
+        },
+        {
+          "rule": "Animate only to show what changed, such as panels, tabs, menus and content swaps. Never animate decoration or row hover. Pick the duration by job and the easing by role: arrivals decelerate, movement eases both ends, exits are shorter and accelerate.",
+          "why": "Short, consistent motion helps people follow a change; anything longer slows power users down. Everything stops when the system asks for reduced motion (WCAG 2.3.3).",
+          "use": [
+            [
+              "Durations",
+              [
+                "duration-fast · 120ms",
+                "duration-base · 180ms",
+                "duration-move · 200ms",
+                "duration-slow · 260ms",
+                "duration-long · 480ms (rolling figures only)",
+                "duration-exit · 120ms"
+              ]
+            ],
+            [
+              "Easing",
+              [
+                "ease-standard",
+                "ease-entrance",
+                "ease-move",
+                "ease-exit"
+              ]
+            ],
+            [
+              "Utilities",
+              [
+                "animate-fade-in",
+                "animate-rise-in",
+                "animate-pop-in",
+                "animate-fade-out"
+              ]
+            ]
+          ]
+        },
+        {
+          "rule": "Every screen reflows down to 320px wide without sideways scrolling. Wide tables, code and charts scroll inside their own box; navigation collapses behind a menu button.",
+          "why": "People zoom, split screens and use phones. WCAG 1.4.10 Reflow.",
+          "use": [
+            [
+              "Breakpoints",
+              [
+                "md · 768px",
+                "lg · 1024px",
+                "xl · 1280px"
+              ]
+            ]
+          ]
+        },
+        {
+          "rule": "Icons stay smaller than the text they sit beside and are muted: 14px in menus, lists and small controls, 16px in buttons and default fields.",
+          "why": "Icons support the label; at full size and full contrast they compete with it.",
+          "use": [
+            [
+              "Menus and lists",
+              [
+                "size-3.5",
+                "text-ink-3"
+              ]
+            ],
+            [
+              "Buttons and fields",
+              [
+                "size-4"
+              ]
+            ]
+          ],
+          "scope": "twoux"
+        },
+        {
+          "rule": "Open at most one right-hand panel at a time; opening record detail, the assistant or help replaces the open one, and closing restores it. Workspace pages built with PaneLayout keep their regions as panes instead, and still open at most one right-hand panel.",
+          "why": "Two side panels leave the table too narrow to use; a workspace gives each region its own pane that people size and arrange."
+        }
+      ]
+    },
+    {
+      "title": "Separation and hierarchy",
+      "rules": [
+        {
+          "rule": "Use three elevations, each a light border plus a shadow: flat for tables and previews, card for things on the page, float for things above it.",
+          "why": "The border gives a crisp edge, the soft shadow gives lift. Together they separate without heavy lines.",
+          "use": [
+            [
+              "Flat",
+              [
+                "border-line"
+              ]
+            ],
+            [
+              "Card",
+              [
+                "border-line",
+                "shadow-card"
+              ]
+            ],
+            [
+              "Float",
+              [
+                "shadow-pop"
+              ]
+            ]
+          ],
+          "scope": "twoux"
+        },
+        {
+          "rule": "Use a grey fill for quiet, supporting groups such as summaries, anatomy and sources. Not for primary content, and never with a shadow.",
+          "why": "Fills recede, so the page reads primary content first.",
+          "use": [
+            [
+              "Fill",
+              [
+                "bg-surface-2"
+              ]
+            ]
+          ],
+          "scope": "twoux"
+        },
+        {
+          "rule": "Use a tint only when it carries meaning: green for do, red for don't, primary for selection or the recommended path.",
+          "why": "Colour that always means something is colour people learn."
+        },
+        {
+          "rule": "Selected items get a fill, not a heavier border.",
+          "why": "A fill reads as state at a glance and keeps edges aligned.",
+          "use": [
+            [
+              "Fill",
+              [
+                "bg-selected"
+              ]
+            ]
+          ]
+        },
+        {
+          "rule": "Text fields and selects use a light edge with a hairline shadow, and always have a visible label. Checkboxes, radios and switches keep the stronger edge, because nothing else marks them.",
+          "why": "WCAG 1.4.11 needs 3:1 for the visual that identifies a control. A field is identified by its label and shadow; a checkbox only by its edge.",
+          "use": [
+            [
+              "Fields",
+              [
+                "border-input",
+                "shadow-xs",
+                "hover:border-input-hover"
+              ]
+            ],
+            [
+              "Focus",
+              [
+                "border-primary",
+                "ring-3 ring-primary/20"
+              ]
+            ],
+            [
+              "Small controls",
+              [
+                "border-control · 3.59:1"
+              ]
+            ]
+          ]
+        },
+        {
+          "rule": "Corners are tight and follow role: 4px inside a control, 6px for controls and cards, 8px for what floats. Inner radius is the outer radius minus the padding.",
+          "why": "Tight corners read as precise in a dense tool; matched nested corners make an element read as one object.",
+          "use": [
+            [
+              "Inside",
+              [
+                "rounded-xs · badge, checkbox, menu item, segment"
+              ]
+            ],
+            [
+              "Controls",
+              [
+                "rounded-sm · button, input, toggle, banner, card"
+              ]
+            ],
+            [
+              "Floating",
+              [
+                "rounded-md · menu, popover, palette, toast, dialog"
+              ]
+            ]
+          ],
+          "scope": "twoux"
+        }
+      ]
+    },
+    {
+      "title": "Content",
+      "rules": [
+        {
+          "rule": "UK English, sentence case, verb-first labels: Publish listing, Export 2 rows.",
+          "why": "Labels that say what happens are faster to act on."
+        },
+        {
+          "rule": "Before writing any label, message, empty state or assistant text, read docs-md/writing.md and docs-md/voice-and-tone.md (in Claude Code, /twoux-write); they override any general UX writing or design skill where the two differ. One voice everywhere, product and assistant alike: precise, calm, candid, respectful of expertise. The tone follows the moment (inform by default, empower at decisions, encourage when stuck, motivate only when starting, satisfy on routine work). Never humour, exclamation marks, celebration, \"we\", or effort words such as just, simply or easy.",
+          "why": "Trust drives recommendation far more than friendliness, and power users see the same message hundreds of times; what amuses once annoys by the tenth."
+        },
+        {
+          "rule": "Say what happened and what to do next. No apologies, no vague errors.",
+          "why": "People recover faster from errors that explain the fix."
+        },
+        {
+          "rule": "Never write “AI-powered”, “magic” or “smart”. Say what the assistant did.",
+          "why": "Plain words build trust; hype erodes it."
+        },
+        {
+          "rule": "Status is always a word in a Badge; colour is never the only cue.",
+          "why": "WCAG 1.4.1 Use of colour."
+        },
+        {
+          "rule": "Write every error as what happened plus what to do next, with raw codes only in a collapsed Details section.",
+          "why": "Raw API text gives people nothing to act on."
+        },
+        {
+          "rule": "Render every date and time with the Timestamp component: relative in lists, absolute UK format with zone in details and deadlines, ISO 8601 in exports, always labelled.",
+          "why": "Hand-formatted dates drift in format and leave out the zone and the event they refer to."
+        },
+        {
+          "rule": "If an action can't be undone, say so before it runs, in the button's confirmation or next to it, never only afterwards.",
+          "why": "People decide differently when they know there is no way back."
+        }
+      ]
+    },
+    {
+      "title": "Keyboard and accessibility",
+      "rules": [
+        {
+          "rule": "Every action is reachable by keyboard, and shows its shortcut on the button. A button that opens a menu shows its shortcut inside the menu instead, beside the menu's heading.",
+          "why": "Keyboard-first users learn shortcuts by seeing them. On a menu button the hint competes with the label and the menu's own options, so it moves to where people look once the menu is open.",
+          "use": [
+            [
+              "Prop",
+              [
+                "shortcut=\"C\""
+              ]
+            ]
+          ]
+        },
+        {
+          "rule": "Single-key shortcuts must respect the setting that turns them off.",
+          "why": "WCAG 2.1.4 Character key shortcuts."
+        },
+        {
+          "rule": "Meet WCAG 2.2 AA: 4.5:1 text, 3:1 control edges and icons, 24px minimum targets, visible focus.",
+          "why": "The baseline TwoUX is tested against."
+        },
+        {
+          "rule": "Only one popover open at a time, and never cut off by its container.",
+          "why": "Stacked or clipped popovers hide information and trap focus."
+        },
+        {
+          "rule": "When an action is unavailable but could become available, use aria-disabled and give a one-sentence reason in a tooltip; hide actions the person's role can never use.",
+          "why": "A natively disabled button can't take focus, so keyboard users never see why."
+        },
+        {
+          "rule": "Ship every drag-and-drop with a keyboard path (pick up, arrows, drop, Esc) and a menu or button alternative that does the same move.",
+          "why": "WCAG 2.2 requires a way to complete dragging tasks without dragging."
+        }
+      ]
+    },
+    {
+      "title": "AI and agents",
+      "rules": [
+        {
+          "rule": "The assistant changes data only through a proposal the person applies, with Undo.",
+          "why": "People stay in control of what changes."
+        },
+        {
+          "rule": "Decisions about candidates are never set to Allow, and are reviewed one at a time with a recorded reason.",
+          "why": "UK GDPR Article 22 and ICO guidance: rubber-stamped AI decisions about people count as solely automated."
+        },
+        {
+          "rule": "Mark AI-written content with the origin label and cite the records it used.",
+          "why": "People can check where an answer came from."
+        },
+        {
+          "rule": "Every run can be stopped, and shows what it is doing.",
+          "why": "Visible progress and a way out keep people in charge."
+        },
+        {
+          "rule": "Never give AI features their own colour, gradient, glow or sparkle icon; mark generated output only with `AiOrigin` (\"Assistant · from …\").",
+          "why": "A separate AI style competes with status colours and labels the feature instead of telling people where the output came from."
+        },
+        {
+          "rule": "Show Regenerate only on the latest answer, keep the previous version reachable with a version switch, and never let it undo or repeat changes already applied.",
+          "why": "Regenerating an earlier answer silently drops later turns, and applied changes are reversed only through Undo."
+        },
+        {
+          "rule": "Route any generated draft that would change a record through `SuggestedChanges`; a generated file card may offer Open, Copy, Download or Suggest, never Save.",
+          "why": "TwoUX's only path for the assistant to change data is a proposal the person applies, with Undo."
+        },
+        {
+          "rule": "Collect values needed to act in an inline input card with at most five required, prefilled fields that produces a proposal; use `ClarifyingQuestion` only to settle intent.",
+          "why": "Mixing the two makes people type values into free text or answer forms about what they meant."
+        },
+        {
+          "rule": "After every approval request, leave a resolved line in the thread (Approved, Rejected, Approved automatically, Expired) and have the assistant acknowledge a rejection.",
+          "why": "The decision is part of the record, and a closed card with no trace leaves people unsure what ran."
+        },
+        {
+          "rule": "Never offer Always allow, or the Allow level, for actions that decide on candidates or that reach people outside the workspace.",
+          "why": "Candidate decisions stay with a person under UK GDPR Article 22, and outside contact can't be undone."
+        },
+        {
+          "rule": "Show no loading state for waits under one second, stream only prose, and render tables, record lists and files as a skeleton until they arrive whole.",
+          "why": "Flicker and half-built tables mislead more than a short wait does."
+        },
+        {
+          "rule": "Never count failed or stopped steps as done, and end a summary that didn't finish with the reason: \"2 of 5 steps · stopped\".",
+          "why": "A bare percentage reads as work still in progress and contradicts the list under it."
+        },
+        {
+          "rule": "Keep the composer pinned and never auto-scroll the thread or an activity log while the person is reading earlier content.",
+          "why": "Jumping to new output loses the person's place and breaks copying."
+        },
+        {
+          "rule": "Never switch off or delete an agent automatically; mark it Needs attention and send its owner an Inbox item.",
+          "why": "Agents that vanish silently break schedules and trust."
+        },
+        {
+          "rule": "Before a multi-step or costly run, show the plan with PlanCard: steps people can remove, steps that reach people outside the workspace or can't be undone marked, nothing running until approved and never on a timeout. If the plan changes mid-run, add a PlanChange line saying what changed and why.",
+          "why": "Agreeing the plan first is cheaper than undoing the work, and a silent reroute breaks trust."
+        },
+        {
+          "rule": "Approvals for steps that send to people outside the workspace or move money show Approve and Cancel at equal weight (both outline). This is the only exception to one primary action per view.",
+          "why": "A highlighted Approve nudges people to rubber-stamp the actions that are hardest to take back."
+        },
+        {
+          "rule": "Any change an agent proposes to records, procedures, prompts, tools or another agent arrives as a ChangeRequest: the reason in plain words, its origin, the diff (DiffView) and simulation results (SimulationResults). Nothing goes live until a person approves; rejecting asks for a reason; every decision leaves who and when.",
+          "why": "Agents can change faster than people can read; review, test evidence and an attributable log keep a person accountable."
+        },
+        {
+          "rule": "When the agent is unsure, say so in words with ConfidenceNote, never as a percentage: what caused it and a safer option or a way to check. If it's unclear whether a change applies to one item, all items or future items, ask before acting.",
+          "why": "People misread probabilities; a named cause and an alternative tell them what to do."
+        },
+        {
+          "rule": "Offer WhyChoice next to a choice the agent made on someone's behalf: the deciding factors, the options that lost, any requirement it couldn't meet, then Change this or Keep it. Explain on demand, not by default.",
+          "why": "An explanation is only useful if it can be acted on and still matches the choice later."
+        },
+        {
+          "rule": "Cite every key claim next to the claim. Say when an answer rests on one source and how fresh time-sensitive facts are, keep what came from a source, from the person's own data and what was inferred apart, and label promoted or partner options every time.",
+          "why": "Polished output hides weak evidence; people need to see how much to trust each part."
+        },
+        {
+          "rule": "Write the assistant's caveat as one specific limit and one thing to check, shown in the flow (AssistantPanel caveat), never a generic \"can make mistakes\".",
+          "why": "A generic disclaimer is ignored; a specific limit tells people where to look."
+        },
+        {
+          "rule": "Decline out-of-scope requests in one sentence that names the boundary, then offer what the agent can do or where to get help.",
+          "why": "A short, specific decline keeps people moving without making them feel they asked something wrong."
+        },
+        {
+          "rule": "Use one set of words for agent work everywhere: agent (the thing that acts), run (one piece of work), step (part of a run), plan (steps agreed before a run), proposal (changes waiting to be applied), change request (a proposed change to how something works), handoff (passing to a person), instructions (standing guidance people write), memory (facts the agent kept). Never task, job or workflow for a run.",
+          "why": "Mixed words for the same thing make people think there are two features."
+        },
+        {
+          "rule": "Show the cost of a computed column before it runs and the running total while it runs; Stop is always available, and paid columns test on a few rows before running on all of them.",
+          "why": "People decide differently when they see the price, and a run they can't stop spends credits they never agreed to."
+        }
+      ]
+    },
+    {
+      "title": "Data and charts",
+      "rules": [
+        {
+          "rule": "Choose the chart from the question: change over time is a line, amounts are bars, parts of a total over time are a stacked area, two to five parts at one moment are a donut, ordered stages are a funnel, two measures across records are a scatter.",
+          "why": "A fixed mapping stops agents picking charts for looks and keeps every dashboard readable the same way."
+        },
+        {
+          "rule": "Never add a second y-axis; put a measure with a different unit in its own chart beside the first.",
+          "why": "Dual scales make the relationship between series depend on the chosen scales and mislead readers."
+        },
+        {
+          "rule": "Build all four states for every chart (loading, empty, no match with Clear filters, error with Try again) inside the chart card, using TwoUX's state copy.",
+          "why": "A blank or zeroed plot is read as real data."
+        },
+        {
+          "rule": "Plot missing data as a gap, never as zero, and start bars and areas at zero.",
+          "why": "Both errors invent drops or exaggerate change that the data does not show."
+        },
+        {
+          "rule": "Give each chart an accessible name equal to its visible title, a description \"[Chart type] showing [data], [period].\", and a Table view.",
+          "why": "Screen reader users and anyone who reads numbers better than shapes get the same information."
+        },
+        {
+          "rule": "Show a legend only for two or more series and a series filter only for three or more; legend items toggle series without changing any colour.",
+          "why": "Extra controls on simple charts add noise, and repainting series on toggle breaks recognition."
+        },
+        {
+          "rule": "Make chart popovers pin on select or Enter, close on Esc, hold at most seven breakdown items and two buttons, and link a row's name or value, never both.",
+          "why": "Hover-only popovers fail keyboard and touch, and crowded popovers hide the point."
+        },
+        {
+          "rule": "Use either chart drill-down or page drill-down on a page, never both, and show every drill-down filter as a removable pill in the filter bar.",
+          "why": "Two levels of filters conflict, and hidden filters make people trust numbers that are narrowed without them knowing."
+        },
+        {
+          "rule": "Draw targets and limits as a dashed threshold line with a text label, not as a series and not in a status colour alone.",
+          "why": "A threshold is a reference, and status colours are reserved for status meaning."
+        },
+        {
+          "rule": "Never plot individual candidates against each other on a chart, and never put candidate actions in a chart popover.",
+          "why": "Charts of people read as rankings, and candidate decisions must stay with a person reviewing each record."
+        },
+        {
+          "rule": "Use a bullet chart for actual against target, never a gauge or dial. Use RadialBars only for share of a fixed limit (seats, credits, storage, a budget), with one to four rings at small size and used of limit written beside them.",
+          "why": "Gauges spend a large area on one number and angles are read less exactly than lengths; a ring is acceptable only when the value is already in words and the limit is real."
+        },
+        {
+          "rule": "In a waterfall, draw increases and decreases in two categorical colours with + and − labels, and totals in neutral grey from zero.",
+          "why": "Green and red would claim a judgement the chart cannot make, and the signs keep direction readable without colour."
+        },
+        {
+          "rule": "Fold parts past six in a share bar, or past twelve in a treemap, into a grey Other; never add colours to fit more.",
+          "why": "Past that, parts cannot be told apart, and a colour on Other would make it read as one more series."
+        },
+        {
+          "rule": "When a price or candlestick axis does not start at zero, say so under the axis; every other chart starts at zero.",
+          "why": "A cropped axis exaggerates change unless the reader is told."
+        },
+        {
+          "rule": "Give every sheet column a type shown by its icon, and show computed columns' state in words: in each cell (Waiting, Writing, Failed with the reason, Not found) and in a status row under the header.",
+          "why": "People recognise a column by its type at a glance, and a word tells them what to do where a colour or spinner can't."
+        },
+        {
+          "rule": "Use size=\"dense\" (28px rows) on Table or SheetGrid only for spreadsheet-like data people scan many rows of: inventories, ledgers, bills of materials, imports and field mappings. Everything else keeps 36px rows.",
+          "why": "Dense rows put more of a sheet in view where people compare many rows; elsewhere they only cost readability.",
+          "scope": "twoux"
+        },
+        {
+          "rule": "An in-cell button (TableCellAction, or SheetGrid's Open) shows on row hover and keyboard focus, always on touch screens, and repeats an action that is also in the row's ⋮ menu. It is never the only way to do the action.",
+          "why": "Hover-revealed controls are missed by some people and can't be hovered on touch; the menu is the dependable path."
+        },
+        {
+          "rule": "Spreadsheet keys follow Excel and Google Sheets: Shift+arrows extend the selection, ⌘ or Ctrl+arrows jump to the edge of the data, ⌘C and ⌘V copy and paste tab-separated values, ⌘D and ⌘R fill, Delete clears, ⌘Z and ⌘⇧Z (or Ctrl+Y) undo and redo. Use SheetGrid for this; never write another keyboard handler for these actions.",
+          "why": "People bring years of spreadsheet habits, and copy and paste must work across the tools they already use."
+        },
+        {
+          "rule": "A paste checks every value against its column. Rejected cells keep their value, are marked on the cell with the reason, and the status line says how many were left and why; a value is never dropped silently or written in part.",
+          "why": "Pastes from other tools often carry text into number or date columns; people can only fix what they are told about."
+        },
+        {
+          "rule": "Use SplitButton when one action is the usual choice and a few close variants exist (Import data, then Import all and Import selection). Never join a Button and a menu trigger by hand.",
+          "why": "One component keeps the parts, divider, names and menu the same everywhere.",
+          "scope": "twoux"
+        },
+        {
+          "rule": "Use a map only when location itself is the question; to compare amounts use a bar chart or ranked list. Shade regions only by a rate or per-head figure, put raw counts on sized markers, and draw regions with no data hatched and labelled No data, never as zero.",
+          "why": "Large regions draw the eye whatever their value, and shading raw counts mostly maps where people live; a missing value painted as zero invents a result."
+        },
+        {
+          "rule": "Use RadialLines only for cyclical periods (hour of day, day of week, month of year) where the last period runs into the first: one to three series, values from zero, missing data as a gap. For any other time use a line chart.",
+          "why": "Polar coordinates help only when the end of the scale meets the start; elsewhere angles and a crowded centre read less exactly than a line."
+        },
+        {
+          "rule": "Show records people book or rearrange in time (interviews, shifts, rooms) in Scheduler: Day, Week and Month in its segmented control, open events in the side panel, create in a dialog, and move with drag, keyboard (Space, arrows, Enter) or the event menu, each with Undo. Never build a calendar grid by hand.",
+          "why": "One scheduler keeps the keyboard and menu paths every drag needs (WCAG 2.5.7), UK 24-hour times and the agenda that reflows to 320px."
+        }
+      ]
+    },
+    {
+      "title": "Patterns",
+      "rules": [
+        {
+          "rule": "Before adding anything to a dashboard, pick one item type from Dashboard items (key metrics, chart, list, status and alerts, quick links, getting started, feature news) and give it one job.",
+          "why": "A fixed catalogue stops items growing into mini reports with their own filters and tables."
+        },
+        {
+          "rule": "Make a dashboard either fully static or fully configurable; never mix fixed and movable items on one page.",
+          "why": "Mixed layouts confuse people about what they can change."
+        },
+        {
+          "rule": "Keep a dashboard to about seven items and link every chart or list item to the page with the full data.",
+          "why": "The page must answer its questions in seconds; detail belongs on report and list pages."
+        },
+        {
+          "rule": "Give a board item at most one header action and put the rest in its more menu, ordered Preferences first and Remove from dashboard last.",
+          "why": "Consistent menus let people find Remove and settings in the same place on every item."
+        },
+        {
+          "rule": "Provide a keyboard and single-click alternative for every drag on a board or items palette: menu moves, step resizes and an Add to dashboard button.",
+          "why": "WCAG 2.2 2.5.7 requires it and TwoUX is keyboard-first."
+        },
+        {
+          "rule": "Remove dashboard items and reset layouts at once with an Undo toast, never with a confirmation dialog.",
+          "why": "Both are reversible, so TwoUX's Undo rule applies."
+        },
+        {
+          "rule": "Save configurable dashboard layouts on the server per person, never only in localStorage, and never change another person's layout or the workspace default.",
+          "why": "People expect their layout on every device, and a personal change must not move a colleague's dashboard."
+        },
+        {
+          "rule": "Give each dashboard item its own loading, empty and error state inside its frame instead of one page-level spinner or error.",
+          "why": "One failing source must not hide the numbers that did load."
+        },
+        {
+          "rule": "Never disable a form's submit button; keep it enabled and run validation when it is pressed.",
+          "why": "A disabled submit hides which field is wrong and leaves people stuck."
+        },
+        {
+          "rule": "Show every error at the smallest scope that contains it (field, form banner, region error state, page) and never in a toast.",
+          "why": "Errors far from their cause are missed, and TwoUX toasts disappear after 6 seconds."
+        },
+        {
+          "rule": "Ask before discarding unsaved changes only while the form is dirty, register beforeunload only while it is dirty, and autosave drafts of long text instead of asking.",
+          "why": "Prompts that appear when nothing changed train people to click through the one that matters."
+        },
+        {
+          "rule": "Keep every row action also reachable from a selection (bulk bar) and ⌘K, and show at most two quick actions plus a More actions menu on each row.",
+          "why": "Actions that exist only on one row's hover are missed and can't be applied in bulk."
+        },
+        {
+          "rule": "Choose selection controls by rule: up to seven options shown as radios or checkboxes, eight or more in a select, switch only for changes that apply at once.",
+          "why": "Agents otherwise default to dropdowns everywhere, which hides short option sets."
+        },
+        {
+          "rule": "Choose the create surface by size: a dialog for up to three short fields, one page for most records, the Stepper only for more than about 15 main fields or steps that depend on each other.",
+          "why": "Wizards slow short tasks down and dialogs cannot hold long ones."
+        },
+        {
+          "rule": "Never disable a Create or Save changes button for an incomplete form; validate on submit and focus the first error.",
+          "why": "A disabled button gives no reason and hides what is missing."
+        },
+        {
+          "rule": "Put only required fields without a good default, and fields most people need, in the main section; put the rest under a collapsed Additional settings with their defaults filled in.",
+          "why": "Short forms are finished faster and visible defaults let people create in one step."
+        },
+        {
+          "rule": "Build the edit page from the create form component, with the same fields, order and headings.",
+          "why": "Two forms for one record drift apart and confuse people."
+        },
+        {
+          "rule": "Make delete move records to Deleted with Undo; use a confirmation dialog only for permanent deletes, and a typed name only when the permanent delete also removes other records.",
+          "why": "Friction must match severity or people click through every warning."
+        },
+        {
+          "rule": "Never add a sidebar item for a single record, a create page or an edit page; keep the record's type active instead.",
+          "why": "The sidebar shows where people can go, not where they have been."
+        },
+        {
+          "rule": "Put global destinations and utilities in the sidebar and keep the top bar for the breadcrumb and page-level controls.",
+          "why": "Splitting the same kind of thing across two places makes both harder to find."
+        },
+        {
+          "rule": "Announce features only with a New or Beta text label (FeatureLabel: plain in the sidebar via SidebarItem tag, a popover on request after the page title via PageHeader titleAddon), removed after 30 days for New; never with a toast, banner or auto-opening popover. A feature that spans several controls may offer Show me in its popover, which starts a GuideCue of at most three steps.",
+          "why": "Announcements must not compete with status messages people need to act on; a guide the person starts shows where the feature lives without interrupting anyone else."
+        },
+        {
+          "rule": "Never use a hero header, gradient banner or marketing-style title block inside the product.",
+          "why": "It pushes the work below the fold and draws attention away from the task."
+        },
+        {
+          "rule": "TwoUX has one density for the app: never build a density setting, comfortable mode or row height preference. Tables and sheets also offer size=\"dense\" (28px rows) only for spreadsheet-like data (inventories, ledgers, imports, mapping), never as a user preference or app-wide switch.",
+          "why": "One density keeps every screen consistent; dense rows exist only where people scan many rows of tabular data, as in a spreadsheet.",
+          "scope": "twoux"
+        },
+        {
+          "rule": "Sign in with SignInOptions: provider buttons first, then a work email that switches to single sign-on when the domain requires it, otherwise sends an email link. Errors go under the field and say what to do next.",
+          "why": "People pick the method they already use; SSO detection saves a failed attempt; a specific error gets them in."
+        },
+        {
+          "rule": "First-run setup is three to five OnboardingStep screens on a plain page: each says why it asks, optional steps say Optional and offer Skip, Continue is never disabled, progress is written as \"Step 2 of 5\", and Back keeps what was entered. No tours, auto-playing videos or gradient backgrounds; the only in-product guide is GuideCue, one to three steps, started by the person.",
+          "why": "Short, explained steps get finished; skippable questions respect people's time; text progress is read out by screen readers. Guides people ask for get followed; tours that start on their own get skipped."
+        },
+        {
+          "rule": "Connect services with ConnectorPicker and ConnectDialog: say what each connection lets the product do and who it is shared with before connecting, open OAuth in a new window, test API keys before saving and never show them again, and mark expired connections Needs attention with Reconnect.",
+          "why": "People grant access they understand; a tested key fails at setup, not in the middle of a run."
+        },
+        {
+          "rule": "After onboarding, keep a SetupChecklist of three to five useful tasks in the sidebar until done or dismissed, never as a modal.",
+          "why": "A checklist people can return to finishes setup without interrupting work."
+        },
+        {
+          "rule": "Show credits, seats or storage with UsageMeter: used of limit, when it resets and what used it. Warn from 80% and say what stops at the limit; show the upgrade link only then, never a permanent bright button. Show the cost of an action before it runs.",
+          "why": "People manage what they can see; surprise limits and constant upsell erode trust."
+        },
+        {
+          "rule": "Announce what changed on a What's new page or panel opened from the Help menu, with a FeatureLabel on the changed item. Never open it, a changelog modal or a video on load.",
+          "why": "Updates people ask for get read; ones that interrupt get dismissed unread."
+        },
+        {
+          "rule": "Imports show problems before importing and say what happens to bad rows (skipped, or imported with the cell left empty), and the Import button states how many rows it will add.",
+          "why": "Finding bad rows after an import means cleaning up data that is already in use."
+        },
+        {
+          "rule": "Show people where a task's controls are only with GuideCue, opened from something they pressed (SetupChecklist Start, Help menu, HelpPanel link, FeatureLabel Show me), never on load, a timer or hover: one to three steps on real targets, missing targets skipped, no overlay or beacon, Esc closes and focus returns.",
+          "why": "Pulled guidance is followed and remembered; pushed tours interrupt (WCAG 2.2.4) and are dismissed unread."
+        }
+      ]
+    }
+  ]
+}

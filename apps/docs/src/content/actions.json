@@ -1,0 +1,3199 @@
+{
+	"components": [
+		{
+			"id": "button",
+			"name": "Button",
+			"group": "Actions and inputs",
+			"summary": "Starts an action on the current page, such as saving, exporting or opening a menu.",
+			"structure": [
+				"Container",
+				"Icon (optional)",
+				"Label",
+				"Shortcut hint (optional)",
+				"Chevron (menu buttons only)"
+			],
+			"whenToUse": [
+				{
+					"t": "To start an action on the current page: New listing, Export, Save view.",
+					"s": []
+				},
+				{
+					"t": "To open a menu or popover of more actions, with a chevron on the right.",
+					"s": []
+				},
+				{
+					"t": "For the one step most people take next in a view, using the primary style.",
+					"s": []
+				},
+				{
+					"t": "As an icon-only ghost button for frequent, well-known row actions where space is tight.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "To go to another page or URL. Use a link (button-link style) instead.",
+					"s": []
+				},
+				{
+					"t": "To switch between views of the same data. Use the Segmented control.",
+					"s": []
+				},
+				{
+					"t": "To turn a setting on or off. Use a Switch, not a button whose label flips.",
+					"s": []
+				},
+				{
+					"t": "For a long set of secondary actions on one object. Group them in a Dropdown menu.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Seven variants, using shadcn names: default (the primary), outline (white with a light border), secondary (grey fill), ghost (no fill until hover), warning (risky but reversible, a TwoUX addition), destructive (red, inside a confirmation) and link. Pick by importance in the view, not by looks.",
+					"s": []
+				},
+				{
+					"t": "Only one primary button per view. In a dialog or side panel with its own task, that container may have its own primary.",
+					"s": []
+				},
+				{
+					"t": "Four sizes: 24px inside rows, 28px in toolbars and filter bars, 32px by default, 36px only for the single action of an empty state or sign-in page. Icon-only buttons are square at the same height.",
+					"s": []
+				},
+				{
+					"t": "States: default, hover, focus (2px primary ring with a 2px white gap), pressed, disabled (45% opacity), loading.",
+					"s": []
+				},
+				{
+					"t": "Avoid disabled buttons in forms. Keep Publish pressable and show what is missing through validation.",
+					"s": []
+				},
+				{
+					"t": "When a button must be disabled, give the reason in a tooltip or nearby text.",
+					"s": []
+				},
+				{
+					"t": "While an action runs, use loading: the spinner replaces the leading icon, the button ignores clicks and stays focusable, so it cannot be pressed twice and keyboard users keep their place.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Start with a verb and say what happens: Publish listing, Export 2 rows, Close listings.",
+					"s": []
+				},
+				{
+					"t": "Sentence case, no full stop, no articles: Save view, not Save The View.",
+					"s": []
+				},
+				{
+					"t": "Two to four words. Add the object for destructive actions: Delete listing, not Delete.",
+					"s": []
+				},
+				{
+					"t": "Add an ellipsis when the action needs more input before it runs: Extend to a date…",
+					"s": []
+				},
+				{
+					"t": "Never OK or Yes in a dialog. Name both outcomes: Close listings and Keep open.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Use a native button element. Enter and Space activate it.",
+					"s": []
+				},
+				{
+					"t": "Icon-only buttons need an aria-label naming the action, plus a tooltip showing the same words.",
+					"s": []
+				},
+				{
+					"t": "The accessible name must contain the visible label so voice users can say what they see.",
+					"s": []
+				},
+				{
+					"t": "Focus ring and secondary border need at least 3:1 against the background; label text at least 4.5:1, white on primary included.",
+					"s": []
+				},
+				{
+					"t": "The 28px small button meets the 24px minimum target. Do not shrink icon buttons below 24px.",
+					"s": []
+				},
+				{
+					"t": "Menu buttons set aria-haspopup and aria-expanded.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Enter / Space",
+					"action": "Activate the focused button"
+				},
+				{
+					"keys": "Shortcut shown on the button",
+					"action": "Run the action from anywhere in the view"
+				}
+			],
+			"related": [
+				"keyboard-shortcut-hint",
+				"dropdown-menu",
+				"tooltip",
+				"form-validation"
+			],
+			"references": []
+		},
+		{
+			"id": "split-button",
+			"name": "Split button",
+			"group": "Actions and inputs",
+			"summary": "A button joined to a chevron: the button runs the usual action (Import data), the chevron opens its variants (Import all, Import selection).",
+			"structure": [
+				"Main part: icon (optional) and label",
+				"Divider",
+				"Chevron part with its own name, opening a menu"
+			],
+			"whenToUse": [
+				{
+					"t": "One action is the usual choice and a few close variants of it are needed now and then, such as Import data with Import all and Import selection.",
+					"s": []
+				},
+				{
+					"t": "Space is tight and the variants belong together, as in a table header toolbar.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "For unrelated actions. Use separate buttons, or a Dropdown menu behind More actions.",
+					"s": []
+				},
+				{
+					"t": "When no option is clearly the usual one. Use a menu button (Button with a chevron) so people choose every time.",
+					"s": []
+				},
+				{
+					"t": "For a destructive main action. Put destructive variants in the menu, never on the main part.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Use SplitButton instead of joining a Button and a menu by hand, so the parts, divider, names and menu alignment are the same everywhere.",
+					"s": []
+				},
+				{
+					"t": "The main part runs the action at once; the chevron only opens the menu. Repeat the main action first in the menu so the list is complete.",
+					"s": []
+				},
+				{
+					"t": "Outline by default. Use the primary variant only when it is the view's one primary action.",
+					"s": []
+				},
+				{
+					"t": "Disable a variant that can't run yet (Import selection with nothing selected) rather than hiding it, and say why nearby.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Main label: a verb and an object, Import data. Menu items: short variants, Import all, Import selection.",
+					"s": []
+				},
+				{
+					"t": "Name the chevron by what it opens: More import options.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Two buttons in a group: the main button, then a menu button with aria-haspopup, aria-expanded and its own accessible name.",
+					"s": []
+				},
+				{
+					"t": "2.5.8 Target size: the chevron part is at least 24px wide.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Move from the main part to the chevron"
+				},
+				{
+					"keys": "Enter / Space",
+					"action": "Run the main action, or open the menu from the chevron"
+				},
+				{
+					"keys": "↓ (chevron)",
+					"action": "Open the menu on the first item"
+				},
+				{
+					"keys": "Esc",
+					"action": "Close the menu and return to the chevron"
+				}
+			],
+			"related": [
+				"button",
+				"dropdown-menu",
+				"dense-table",
+				"csv-import"
+			],
+			"references": []
+		},
+		{
+			"id": "text-input",
+			"name": "Text input",
+			"group": "Actions and inputs",
+			"summary": "Lets people type a single line of text, such as a job title, a salary or a search term.",
+			"structure": [
+				"Label",
+				"Required marker (optional)",
+				"Field with prefix/suffix (optional)",
+				"Hint text (optional)",
+				"Error message (when invalid)"
+			],
+			"whenToUse": [
+				{
+					"t": "For short free text that cannot be listed in advance: job title, salary, a reference number. For dates use the Date picker (date-picker).",
+					"s": []
+				},
+				{
+					"t": "For search inside a view, with a search icon and an accessible label.",
+					"s": []
+				},
+				{
+					"t": "With a prefix or suffix for units the person should not type: £ and per year.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "To pick one option from a short known list. Use Radio buttons (up to seven) or a select.",
+					"s": []
+				},
+				{
+					"t": "For a yes/no setting. Use a Checkbox or Switch.",
+					"s": []
+				},
+				{
+					"t": "For choosing from existing categories. Use Combobox (combobox) so people choose instead of type; for several free values use Tag input (tag-input).",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "32px high, 6px radius, 13px text. Label sits above the field, left-aligned, 6px gap.",
+					"s": []
+				},
+				{
+					"t": "Hint text sits under the field and stays visible while typing. Use it for format and examples.",
+					"s": []
+				},
+				{
+					"t": "No placeholder in place of a label. Use placeholders only for a short example, or not at all.",
+					"s": []
+				},
+				{
+					"t": "Focus shows an primary border and a soft 3px ring. Invalid shows a red border plus a text message under the field.",
+					"s": []
+				},
+				{
+					"t": "Check the value when the person leaves the field, not while they type. Clear the error as soon as the value is fixed.",
+					"s": []
+				},
+				{
+					"t": "Accept common variations (18000, 18,000, £18k) and convert them, then show the cleaned value.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Labels are short nouns in sentence case without a colon: Job title, Salary, Closing date.",
+					"s": []
+				},
+				{
+					"t": "Hint text says why or in what format: Shown on the listing and in search results.",
+					"s": []
+				},
+				{
+					"t": "Mark required fields with an asterisk after the label.",
+					"s": []
+				},
+				{
+					"t": "Error text uses UK English and says how to fix it: Enter at least £23,400.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Every field has a visible label tied to it with for/id. A placeholder is not a label.",
+					"s": []
+				},
+				{
+					"t": "Link hint and error to the field with aria-describedby; set aria-invalid=\"true\" when it fails.",
+					"s": []
+				},
+				{
+					"t": "Field border needs 3:1 against the surface; typed text and hint text 4.5:1.",
+					"s": []
+				},
+				{
+					"t": "The asterisk is decorative (aria-hidden). Use the required attribute so screen readers announce it.",
+					"s": []
+				},
+				{
+					"t": "Error is not shown by colour alone: red border plus written message.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab / Shift+Tab",
+					"action": "Move into and out of the field"
+				},
+				{
+					"keys": "/",
+					"action": "Focus the search field of the current view (single-key shortcut, can be turned off)"
+				},
+				{
+					"keys": "Esc",
+					"action": "Leave the search field"
+				}
+			],
+			"related": [
+				"form-validation",
+				"date-picker",
+				"combobox",
+				"tag-input",
+				"tooltip",
+				"keyboard-shortcut-hint",
+				"sign-in",
+				"onboarding-step",
+				"file-drop"
+			],
+			"references": []
+		},
+		{
+			"id": "date-picker",
+			"name": "Date picker",
+			"group": "Actions and inputs",
+			"summary": "Enter a calendar date, or a range of dates, by typing it or choosing it on a calendar: a closing date, a start date, a reporting period.",
+			"structure": [
+				"Label",
+				"Field: the date as dd/mm/yyyy (From and To for a range)",
+				"Calendar button (\"Choose date\")",
+				"Popover: preset periods (range, optional), month heading, previous and next month, grid starting on Monday",
+				"Footer: why some dates are unavailable (optional)",
+				"Hint or error under the field"
+			],
+			"whenToUse": [
+				{
+					"t": "For a date people set on a record: closing date, start date, contract end.",
+					"s": []
+				},
+				{
+					"t": "For a period that narrows a list or a chart: applications in the last 30 days, a quarter for a report.",
+					"s": []
+				},
+				{
+					"t": "When people need to see the weekday or the week around a date, such as booking around weekends.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "For a date people know by heart and never browse to, such as a date of birth. Use a Text input (text-input) with the hint dd/mm/yyyy.",
+					"s": []
+				},
+				{
+					"t": "For booking or moving events in time. Use the Scheduler (scheduler).",
+					"s": []
+				},
+				{
+					"t": "For a chart's fixed period options such as Daily or Weekly. Use a Segmented control (segmented-control).",
+					"s": []
+				},
+				{
+					"t": "To show a date. Use Timestamp (timestamp).",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Typing is the main path: the field accepts 12/03/2026, 12/3/26, 12 Mar 2026 and 2026-03-12, and rewrites the value as 12/03/2026 when people leave it, so they see how it was read.",
+					"s": []
+				},
+				{
+					"t": "The calendar is the second path: the button at the end of the field, or Alt+↓ in the field. It opens on the value's month, otherwise today's.",
+					"s": []
+				},
+				{
+					"t": "Values are ISO calendar dates (\"2026-03-12\"), never a Date at midnight UTC, so they match Timestamp and don't land on the day before west of London.",
+					"s": []
+				},
+				{
+					"t": "Weeks start on Monday and month and weekday names are UK English.",
+					"s": []
+				},
+				{
+					"t": "Say why dates are unavailable in the footer, such as \"Closing dates must be on a weekday.\" Unavailable days are skipped by the arrow keys.",
+					"s": []
+				},
+				{
+					"t": "A range shows two months side by side from 768px, one below. The first pick sets the start, the second the end; days between are filled as people point or move.",
+					"s": []
+				},
+				{
+					"t": "Preset periods (Last 7 days, Last 30 days, This month…) apply at once. In a filter they are stored by name, so a saved view still means \"last 30 days\" next month. In a filter bar use DateFilterPill, which reads as a sentence like other filter pills: Applied is in Last 30 days.",
+					"s": []
+				},
+				{
+					"t": "Check the value when people leave the field and on submit; show the error under the field, never in a toast.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "The hint is the format: dd/mm/yyyy. Add a reason only when it helps: \"The last day applications are accepted.\"",
+					"s": []
+				},
+				{
+					"t": "Errors say what to do: \"Enter the closing date as dd/mm/yyyy, such as 12/03/2026.\", \"Choose a date on or after 7 December 2026.\", \"The end date is before the start date. Change one of them.\"",
+					"s": []
+				},
+				{
+					"t": "Preset names say the period: Last 7 days, This month, Last quarter.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "The popover is a dialog named \"Choose date\". The grid's day buttons have full names: \"Thursday 12 March 2026\", with \"Today\" and \"selected\" added.",
+					"s": []
+				},
+				{
+					"t": "The month heading is a polite live region, so changing month is read out.",
+					"s": []
+				},
+				{
+					"t": "Focus moves to the selected day, or today, when the calendar opens, and back to the field when it closes.",
+					"s": []
+				},
+				{
+					"t": "Today has a ring and the selected day a fill, and both are named, so neither relies on colour alone.",
+					"s": []
+				},
+				{
+					"t": "Day cells are 32px, above the 24px minimum target.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Alt+↓",
+					"action": "Open the calendar from the field"
+				},
+				{
+					"keys": "Enter (in the field)",
+					"action": "Read the typed date"
+				},
+				{
+					"keys": "← → ↑ ↓",
+					"action": "Previous or next day; same day in the previous or next week"
+				},
+				{
+					"keys": "Home / End",
+					"action": "Start or end of the week"
+				},
+				{
+					"keys": "Page Up / Page Down",
+					"action": "Previous or next month (Shift for the year)"
+				},
+				{
+					"keys": "Enter or Space",
+					"action": "Choose the focused day"
+				},
+				{
+					"keys": "Esc",
+					"action": "Close the calendar without changing the value; focus returns to the field"
+				}
+			],
+			"related": [
+				"text-input",
+				"timestamp",
+				"filter-bar",
+				"scheduler",
+				"form-validation"
+			],
+			"references": []
+		},
+		{
+			"id": "combobox",
+			"name": "Combobox",
+			"group": "Actions and inputs",
+			"summary": "Pick one or several values from a long list by typing a few letters, and add a missing one without leaving the form: a location, skills, an owner.",
+			"structure": [
+				"Label",
+				"Trigger: the value, or chosen values as tags then +N more",
+				"Popover: search field",
+				"Options, grouped (optional), with a check for chosen ones and secondary text",
+				"Status: searching, no match, or failed with Try again",
+				"Create \"…\" (optional)",
+				"Footer for several: count, limit and Clear"
+			],
+			"whenToUse": [
+				{
+					"t": "One value from eight or more options, such as a location from 40 offices.",
+					"s": []
+				},
+				{
+					"t": "Several values from eight or more options, such as skills from a long list (multiple).",
+					"s": []
+				},
+				{
+					"t": "Options the server searches, such as people in a large company (filter={null} with onSearch).",
+					"s": []
+				},
+				{
+					"t": "When a missing option can be created on the spot: Create \"Leeds office\".",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "Up to seven options. Show them all as Radio buttons (radio) or Checkboxes (checkbox).",
+					"s": []
+				},
+				{
+					"t": "Free values with no list, such as email addresses. Use Tag input (tag-input).",
+					"s": []
+				},
+				{
+					"t": "Narrowing a list or a table. Use Filter pills (filter-bar).",
+					"s": []
+				},
+				{
+					"t": "Running commands or jumping anywhere. Use the Command palette (command-palette).",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Matching ignores case and accents and looks at the label and the secondary text.",
+					"s": []
+				},
+				{
+					"t": "With several values, chosen options are listed first when the list opens and keep their place while people tick, so rows don't jump.",
+					"s": []
+				},
+				{
+					"t": "For server search, results replace the list in one go. \"Searching…\" shows only if the wait passes one second.",
+					"s": []
+				},
+				{
+					"t": "If options fail to load, say so inside the list with Try again; the rest of the form keeps working.",
+					"s": []
+				},
+				{
+					"t": "Offer Create only when nothing matches exactly. A name-only record is created and selected at once; anything more opens an overlay side panel and is selected when saved.",
+					"s": []
+				},
+				{
+					"t": "Up to three chosen values show as tags in the trigger, then +N more. The footer states the count and any limit.",
+					"s": []
+				},
+				{
+					"t": "A required combobox shows its error under the field on submit; the submit button is never disabled.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "The placeholder names the action and the thing: Choose a location. The search field says Search locations.",
+					"s": []
+				},
+				{
+					"t": "No match names the text: No locations match \"lee\".",
+					"s": []
+				},
+				{
+					"t": "Create repeats the text in quotes: Create \"Leeds office\".",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "The search field is a combobox controlling a listbox; options are named and the highlighted one is announced with aria-activedescendant.",
+					"s": []
+				},
+				{
+					"t": "The trigger is named by the label and the value: \"Location, Leeds\" or \"Skills, 3 selected\".",
+					"s": []
+				},
+				{
+					"t": "Result counts and the searching state are announced politely.",
+					"s": []
+				},
+				{
+					"t": "Each tag's remove button is named \"Remove Python\" and has a 24px target.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Enter, Space or ↓ (trigger)",
+					"action": "Open the list"
+				},
+				{
+					"keys": "A letter (trigger)",
+					"action": "Open the list with that letter in the search"
+				},
+				{
+					"keys": "↑ ↓",
+					"action": "Move through options"
+				},
+				{
+					"keys": "Enter",
+					"action": "Choose the option; with several values it ticks and the list stays open"
+				},
+				{
+					"keys": "Esc",
+					"action": "Close without changing the value; focus returns to the trigger"
+				},
+				{
+					"keys": "Backspace (trigger)",
+					"action": "Move to the last chosen tag; Backspace again removes it"
+				}
+			],
+			"related": [
+				"checkbox",
+				"radio",
+				"tag-input",
+				"choosing-selection-control",
+				"create-record"
+			],
+			"references": []
+		},
+		{
+			"id": "tag-input",
+			"name": "Tag input",
+			"group": "Actions and inputs",
+			"summary": "Enter several short values that don't come from a list, typed or pasted, and see at once which are wrong: email addresses to invite, allowed domains, keywords.",
+			"structure": [
+				"Label",
+				"Field holding the tags, then the text input",
+				"Tag: text and remove button; an invalid tag adds an alert icon and its reason",
+				"Hint, or what just happened (added, already added, not added)",
+				"Count when there is a limit: 3 of 10",
+				"Error under the field"
+			],
+			"whenToUse": [
+				{
+					"t": "For free values with no list to pick from: invite emails, allowed domains, search keywords.",
+					"s": []
+				},
+				{
+					"t": "When people paste a list from a spreadsheet, an email client or another tool.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "When the values come from a list, such as skills or locations. Use Combobox (combobox) with multiple.",
+					"s": []
+				},
+				{
+					"t": "For one value. Use a Text input (text-input).",
+					"s": []
+				},
+				{
+					"t": "For labels on a record that people only read. Use Tag (tag).",
+					"s": []
+				},
+				{
+					"t": "For many rows of values with several fields each. Use a Sheet grid (sheet-grid).",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Enter, comma or leaving the field adds the typed text. Tab adds it only when there is text, so the field never traps focus.",
+					"s": []
+				},
+				{
+					"t": "Pasted text is split on commas, semicolons, new lines and tabs, so a column from Excel or a list from Outlook works.",
+					"s": []
+				},
+				{
+					"t": "A duplicate (ignoring case) isn't added again: the existing tag is highlighted and the hint line says it is already added.",
+					"s": []
+				},
+				{
+					"t": "An invalid value stays as a marked tag with its reason; the error under the field counts them. Nothing is dropped without saying so.",
+					"s": []
+				},
+				{
+					"t": "Values past the limit stay in the input, and the hint line says how many weren't added.",
+					"s": []
+				},
+				{
+					"t": "Fix a value by pressing Enter on its tag, or double-clicking it: the text goes back into the input.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "The hint names the separators and the thing: Separate addresses with commas or new lines.",
+					"s": []
+				},
+				{
+					"t": "Messages say what happened and what to do: \"anna@acme.co.uk is already added.\", \"Not an email address.\", \"2 addresses aren't valid. Fix or remove them.\"",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "The tags are a list named by the field label. Each tag's name includes its reason when it isn't valid.",
+					"s": []
+				},
+				{
+					"t": "Adding, removing and paste summaries (\"12 added, 2 not valid\") are announced politely.",
+					"s": []
+				},
+				{
+					"t": "The field is one tab stop; arrow keys move between tags, so long lists don't flood the tab order.",
+					"s": []
+				},
+				{
+					"t": "Error is shown with an icon and words as well as colour.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Enter or comma",
+					"action": "Add the typed text"
+				},
+				{
+					"keys": "← or Backspace at the start of the input",
+					"action": "Move to the last tag"
+				},
+				{
+					"keys": "← →",
+					"action": "Move between tags; → from the last tag returns to the input"
+				},
+				{
+					"keys": "Backspace / Delete (on a tag)",
+					"action": "Remove it; focus moves to the tag before or after"
+				},
+				{
+					"keys": "Enter (on a tag)",
+					"action": "Put its text back in the input to fix it"
+				},
+				{
+					"keys": "Esc (on a tag)",
+					"action": "Return to the input"
+				}
+			],
+			"related": [
+				"tag",
+				"combobox",
+				"text-input",
+				"sheet-grid",
+				"form-validation"
+			],
+			"references": []
+		},
+		{
+			"id": "form-validation",
+			"name": "Form validation",
+			"group": "Actions and inputs",
+			"summary": "Tells people which fields need fixing and how, at the field and in a summary at the top on submit.",
+			"structure": [
+				"Error summary strip (on submit)",
+				"Count of problems",
+				"Go to first link",
+				"Field with red border",
+				"Inline error message"
+			],
+			"whenToUse": [
+				{
+					"t": "On any form where a value can be wrong or missing: a new listing, a salary, a closing date.",
+					"s": []
+				},
+				{
+					"t": "Field errors as soon as the person leaves a field with a wrong value.",
+					"s": []
+				},
+				{
+					"t": "The summary strip when someone submits and one or more fields fail.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "For errors not tied to a field, such as a server failure. Use a banner above the form or the table error state.",
+					"s": []
+				},
+				{
+					"t": "To confirm success on every field. Use a Toast for the completed action instead.",
+					"s": []
+				},
+				{
+					"t": "Before the person has touched the field. Leave untouched fields neutral until submit.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Check a field when the person leaves it. Recheck on each keystroke once it is in error, and clear the error when fixed.",
+					"s": []
+				},
+				{
+					"t": "On submit, check the whole form. Show the red strip at the top: 2 fields need fixing before you can publish.",
+					"s": []
+				},
+				{
+					"t": "The strip has a Go to first link that scrolls to and focuses the first field in error.",
+					"s": []
+				},
+				{
+					"t": "The summary adds to inline errors; it never replaces them.",
+					"s": []
+				},
+				{
+					"t": "Message sits directly under the field, replacing the hint, in 12px red text.",
+					"s": []
+				},
+				{
+					"t": "Keep everything the person typed. Never clear a form on error.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Say what to do, not what went wrong in system terms: Pick a date after today.",
+					"s": []
+				},
+				{
+					"t": "For empty fields, instruct: Enter a job title. For wrong values, describe the limit: Enter at least £23,400.",
+					"s": []
+				},
+				{
+					"t": "No please, sorry, oops, invalid or blaming words.",
+					"s": []
+				},
+				{
+					"t": "Use the field label in the message so it reads as one thing, and use the same words in the summary.",
+					"s": []
+				},
+				{
+					"t": "The summary counts problems in plain words: 2 fields need fixing before you can publish.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Each failed field has aria-invalid=\"true\" and aria-describedby pointing at its message.",
+					"s": []
+				},
+				{
+					"t": "Errors are in text, not only red. The border colour is a second cue.",
+					"s": []
+				},
+				{
+					"t": "The strip uses role=\"alert\" so it is announced at once; Go to first moves focus to the field.",
+					"s": []
+				},
+				{
+					"t": "Messages suggest a fix whenever the system knows one.",
+					"s": []
+				},
+				{
+					"t": "Red text and the red border meet 4.5:1 and 3:1 on white.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Leave a field and trigger its check"
+				},
+				{
+					"keys": "Enter on Go to first",
+					"action": "Move focus to the first field in error"
+				}
+			],
+			"related": [
+				"text-input",
+				"button",
+				"checkbox",
+				"radio",
+				"sign-in",
+				"file-drop"
+			],
+			"references": []
+		},
+		{
+			"id": "checkbox",
+			"name": "Checkbox",
+			"group": "Actions and inputs",
+			"summary": "Lets people choose any number of options, or confirm one setting that is applied when they save.",
+			"structure": [
+				"Box (15px)",
+				"Check or dash mark",
+				"Label",
+				"Hint (optional)",
+				"Group label (for sets)"
+			],
+			"whenToUse": [
+				{
+					"t": "To pick any number of options from a list, including none.",
+					"s": []
+				},
+				{
+					"t": "To select table rows for bulk actions, with a header checkbox that selects all.",
+					"s": []
+				},
+				{
+					"t": "For a single setting in a form that is applied when the person saves: Show salary on listing.",
+					"s": []
+				},
+				{
+					"t": "As a parent with an indeterminate dash when only some children are selected.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "For one choice out of several. Use Radio.",
+					"s": []
+				},
+				{
+					"t": "For a setting that takes effect at once. Use Switch.",
+					"s": []
+				},
+				{
+					"t": "To switch the view of other content. Use Segmented control.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Box is 15px, 4px radius. Checked and indeterminate fill with primary.",
+					"s": []
+				},
+				{
+					"t": "The label is part of the click target. Clicking either toggles the box.",
+					"s": []
+				},
+				{
+					"t": "List options vertically, one per line. Horizontal only for two short options with clear spacing.",
+					"s": []
+				},
+				{
+					"t": "Indeterminate is visual only; clicking it selects all rows.",
+					"s": []
+				},
+				{
+					"t": "Opt-in checkboxes start unticked.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Write labels positively: Accept CVs by email, not Don't accept CVs by email.",
+					"s": []
+				},
+				{
+					"t": "Keep labels short, sentence case, no end punctuation.",
+					"s": []
+				},
+				{
+					"t": "Group labels say what to choose: Columns to show.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Use a native input type=\"checkbox\" with a label element. Space toggles it.",
+					"s": []
+				},
+				{
+					"t": "Parent checkboxes expose aria-checked=\"mixed\" when partly selected.",
+					"s": []
+				},
+				{
+					"t": "Wrap related checkboxes in a fieldset with a legend, or role=\"group\" with aria-labelledby.",
+					"s": []
+				},
+				{
+					"t": "The 15px box is below 24px, so the label is clickable and rows are 36px apart to meet target spacing.",
+					"s": []
+				},
+				{
+					"t": "Unchecked border and checked fill need 3:1 against white.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Space",
+					"action": "Toggle the focused checkbox"
+				},
+				{
+					"keys": "X",
+					"action": "Select the focused table row (single-key shortcut, can be turned off)"
+				},
+				{
+					"keys": "Shift+J / Shift+K",
+					"action": "Extend row selection down or up"
+				}
+			],
+			"related": [
+				"radio",
+				"switch",
+				"form-validation"
+			],
+			"references": []
+		},
+		{
+			"id": "radio",
+			"name": "Radio",
+			"group": "Actions and inputs",
+			"summary": "Lets people choose exactly one option from a short, visible list in a form.",
+			"structure": [
+				"Group label (legend)",
+				"Radio circle (15px)",
+				"Option label",
+				"Option hint (optional)"
+			],
+			"whenToUse": [
+				{
+					"t": "To pick one option from two to seven, when seeing all options helps the decision: Full time or Part time.",
+					"s": []
+				},
+				{
+					"t": "When both choices need a visible explanation, which a single checkbox cannot give.",
+					"s": []
+				},
+				{
+					"t": "Inside a form that is applied with a Save or Publish button.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "For eight or more options. Use a select or Dropdown menu.",
+					"s": []
+				},
+				{
+					"t": "For several choices at once. Use Checkbox.",
+					"s": []
+				},
+				{
+					"t": "To switch the view of data outside a form. Use Segmented control.",
+					"s": []
+				},
+				{
+					"t": "For a single on/off setting. Use Checkbox or Switch.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Circle is 15px; selected shows a thick primary ring.",
+					"s": []
+				},
+				{
+					"t": "Preselect the most likely or safest option. Never preselect a risky one.",
+					"s": []
+				},
+				{
+					"t": "Add None when no choice is valid, since a radio group cannot be cleared.",
+					"s": []
+				},
+				{
+					"t": "Stack options vertically. Inline is allowed for two short options, as in Full time / Part time.",
+					"s": []
+				},
+				{
+					"t": "Order from most to least likely, or least to most risky.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Labels short and parallel, ideally under three words.",
+					"s": []
+				},
+				{
+					"t": "The legend asks or names the choice: Contract type.",
+					"s": []
+				},
+				{
+					"t": "Avoid overlapping ranges in number options.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Native radios share a name, wrapped in fieldset and legend (or role=\"radiogroup\" with a label).",
+					"s": []
+				},
+				{
+					"t": "Tab enters the group on the selected option; arrow keys move and select.",
+					"s": []
+				},
+				{
+					"t": "Labels are clickable so the target exceeds the 15px circle.",
+					"s": []
+				},
+				{
+					"t": "Ring and border have 3:1 contrast against white.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Move into the group, onto the selected option"
+				},
+				{
+					"keys": "Arrow keys",
+					"action": "Move to and select the next or previous option"
+				},
+				{
+					"keys": "Space",
+					"action": "Select the focused option if not selected"
+				}
+			],
+			"related": [
+				"checkbox",
+				"segmented-control",
+				"form-validation"
+			],
+			"references": []
+		},
+		{
+			"id": "switch",
+			"name": "Switch",
+			"group": "Actions and inputs",
+			"summary": "Turns one setting on or off with immediate effect, without a Save button.",
+			"structure": [
+				"Track (28 x 16px)",
+				"Thumb",
+				"Label",
+				"Description (optional)"
+			],
+			"whenToUse": [
+				{
+					"t": "For a setting that applies the moment it is flipped: Email me when someone applies.",
+					"s": []
+				},
+				{
+					"t": "For preferences in popovers and panels: Wrap long text, Single-key shortcuts.",
+					"s": []
+				},
+				{
+					"t": "When the label describes the on state clearly enough on its own.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "In a form that needs Save or Publish. Use Checkbox.",
+					"s": []
+				},
+				{
+					"t": "When both states need explaining, such as cost differences. Use Radio.",
+					"s": []
+				},
+				{
+					"t": "For more than two options. Use Radio or Segmented control.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Track 28 x 16px, thumb 12px. On fills primary; off is grey.",
+					"s": []
+				},
+				{
+					"t": "The change applies at once. Confirm it with a short toast when the effect is not visible on screen.",
+					"s": []
+				},
+				{
+					"t": "Label to the left in settings rows, right of the switch in inline lists; keep one pattern per surface.",
+					"s": []
+				},
+				{
+					"t": "If disabled, say why nearby.",
+					"s": []
+				},
+				{
+					"t": "Movement of the thumb is the main cue; colour is the second.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Label says what is on when the switch is on. Read it with on/off after it to test.",
+					"s": []
+				},
+				{
+					"t": "The label never changes with the state.",
+					"s": []
+				},
+				{
+					"t": "Lead with the key word, no question: Single-key shortcuts, not Do you want single-key shortcuts?",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Use role=\"switch\" (or a native checkbox) with aria-checked true/false.",
+					"s": []
+				},
+				{
+					"t": "Space toggles; Enter may also toggle.",
+					"s": []
+				},
+				{
+					"t": "Label tied with for/id so the label row is part of the target; the 28 x 16 track alone is under 24px high.",
+					"s": []
+				},
+				{
+					"t": "Off track and on fill need 3:1 against the surface.",
+					"s": []
+				},
+				{
+					"t": "Changing a switch must not move focus or open a new view.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Space",
+					"action": "Toggle the focused switch"
+				},
+				{
+					"keys": "Enter",
+					"action": "Also toggles (optional)"
+				}
+			],
+			"related": [
+				"checkbox",
+				"segmented-control",
+				"keyboard-shortcut-hint"
+			],
+			"references": []
+		},
+		{
+			"id": "status-badge",
+			"name": "Status badge",
+			"group": "Actions and inputs",
+			"summary": "Shows the system state of a record, such as Live, Draft or Closed early, in one short word or phrase.",
+			"structure": [
+				"Bordered container (20px)",
+				"Status text",
+				"Dot or icon (optional)"
+			],
+			"whenToUse": [
+				{
+					"t": "To show workflow or system state of a listing or candidate: Live, Expires in 3 days, Closed early, Draft.",
+					"s": []
+				},
+				{
+					"t": "In table rows, where a word reads faster than an icon alone.",
+					"s": []
+				},
+				{
+					"t": "Next to the object it describes, never floating on its own.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "For user-made categories such as Design or Graduate scheme. Use Tag.",
+					"s": []
+				},
+				{
+					"t": "To start an action or change state. Use a Dropdown menu or Button; the badge is static.",
+					"s": []
+				},
+				{
+					"t": "For counts on tabs or filters. Use a plain count next to the label.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "20px high, 4px radius, 12px medium text, 1px border in the tone colour on a tinted background.",
+					"s": []
+				},
+				{
+					"t": "Five tones with fixed meaning: ok (green), warn (amber), bad (red), mute (grey), accent (primary, for Featured).",
+					"s": []
+				},
+				{
+					"t": "Match the tone to the meaning, not to how much attention you want.",
+					"s": []
+				},
+				{
+					"t": "Keep the same tone for the same status everywhere in the product.",
+					"s": []
+				},
+				{
+					"t": "Do not truncate. If the text is long, rewrite it; badges cannot be focused to reveal the rest.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "One to three words, sentence case: Expires in 3 days, not EXPIRING SOON.",
+					"s": []
+				},
+				{
+					"t": "Use plain words people use, not system codes.",
+					"s": []
+				},
+				{
+					"t": "Prefer a specific state over a vague one: Closed early, not Inactive.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "The text carries the meaning; colour only reinforces it.",
+					"s": []
+				},
+				{
+					"t": "Text on the tinted background needs 4.5:1; the border 3:1 is not required because the text identifies it.",
+					"s": []
+				},
+				{
+					"t": "Badges are not interactive: no tabindex, no tooltip that holds needed information.",
+					"s": []
+				},
+				{
+					"t": "When a status changes live (for example after an agent run), announce it with a status message.",
+					"s": []
+				}
+			],
+			"keyboard": [],
+			"related": [
+				"tag",
+				"tooltip",
+				"tabs"
+			],
+			"references": []
+		},
+		{
+			"id": "tag",
+			"name": "Tag",
+			"group": "Actions and inputs",
+			"summary": "Labels a record with a category people chose, such as Design, Hybrid or Graduate scheme.",
+			"structure": [
+				"Container (22px, 4px corners)",
+				"Colour dot (optional)",
+				"Text",
+				"Remove button (optional)"
+			],
+			"whenToUse": [
+				{
+					"t": "For descriptive categories that classify or group records: team, contract type, work mode.",
+					"s": []
+				},
+				{
+					"t": "For user-defined values that people add and remove.",
+					"s": []
+				},
+				{
+					"t": "When one record belongs to several categories.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "For system state such as Live or Closed. Use Status badge.",
+					"s": []
+				},
+				{
+					"t": "As a button. Use Button or a selectable control.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "22px high, 4px corners, white with a 1px grey border, 12px text, so it reads quieter than a status badge. Not fully round: in TwoUX a pill means a filter you can remove.",
+					"s": []
+				},
+				{
+					"t": "Add a colour dot only when the colour means something, such as the team.",
+					"s": []
+				},
+				{
+					"t": "Removable tags put a small x after the text.",
+					"s": []
+				},
+				{
+					"t": "Show up to three in a table cell; summarise the rest as +N so the row stays scannable.",
+					"s": []
+				},
+				{
+					"t": "Never wrap a tag over two lines. Truncate with a tooltip showing the full text.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "One or two words, ideally under 20 characters.",
+					"s": []
+				},
+				{
+					"t": "Sentence case unless a proper noun: Graduate scheme, not Graduate Scheme.",
+					"s": []
+				},
+				{
+					"t": "Use the same wording everywhere so filters match.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Text contrast 4.5:1 on white; the dot is decorative and hidden from assistive technology.",
+					"s": []
+				},
+				{
+					"t": "The remove button is a real button named Remove Design.",
+					"s": []
+				},
+				{
+					"t": "Remove buttons need a 24px target or enough spacing from neighbours.",
+					"s": []
+				},
+				{
+					"t": "Colour never carries the only meaning; the text names the category.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Move to a removable tag's remove button"
+				},
+				{
+					"keys": "Enter / Space",
+					"action": "Remove the tag"
+				}
+			],
+			"related": [
+				"status-badge",
+				"avatar",
+				"tag-input",
+				"combobox"
+			],
+			"references": []
+		},
+		{
+			"id": "tabs",
+			"name": "Tabs (underline)",
+			"group": "Actions and inputs",
+			"summary": "Splits one record or page into sections such as Overview, Candidates and Activity, one visible at a time.",
+			"structure": [
+				"Tab list with bottom rule",
+				"Tab label",
+				"Count (optional)",
+				"Active underline (2px primary)",
+				"Tab panel"
+			],
+			"whenToUse": [
+				{
+					"t": "To split a record into separate sections people do not need side by side: Overview, Candidates, Activity.",
+					"s": []
+				},
+				{
+					"t": "When each section is substantial and can have its own URL.",
+					"s": []
+				},
+				{
+					"t": "With a count when the number helps people decide to open the tab: Candidates 42.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "To switch between views of the same data, such as All / Active. Use Segmented control.",
+					"s": []
+				},
+				{
+					"t": "For steps in a flow. Use a stepper or separate pages.",
+					"s": []
+				},
+				{
+					"t": "When people must compare content across sections. Show it on one page.",
+					"s": []
+				},
+				{
+					"t": "For app navigation. Use the sidebar.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Single row, 20px gap, 13px medium labels. Active tab gets primary text and a 2px primary underline: two cues, not one.",
+					"s": []
+				},
+				{
+					"t": "Two to seven tabs. Order by use, most used first; the first tab is the default.",
+					"s": []
+				},
+				{
+					"t": "No nested tabs and no disabled tabs; hide a tab that does not apply.",
+					"s": []
+				},
+				{
+					"t": "If tabs overflow on narrow screens, the list scrolls sideways; it never wraps to a second row.",
+					"s": []
+				},
+				{
+					"t": "Put shared headings and actions above the tab list, not inside one panel.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "One or two words, nouns, sentence case: Activity, not View all activity.",
+					"s": []
+				},
+				{
+					"t": "Labels must not overlap in meaning.",
+					"s": []
+				},
+				{
+					"t": "Counts need screen reader text: 42 candidates, not just 42.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "role=\"tablist\" with a label, role=\"tab\" with aria-selected and aria-controls, role=\"tabpanel\" labelled by its tab.",
+					"s": []
+				},
+				{
+					"t": "Tab enters the list on the active tab; Left and Right arrows move between tabs; Home and End jump.",
+					"s": []
+				},
+				{
+					"t": "Panels load instantly, so tabs activate on focus (automatic activation).",
+					"s": []
+				},
+				{
+					"t": "The underline indicator has 3:1 against white.",
+					"s": []
+				},
+				{
+					"t": "Tab hit area is the full label height (about 36px), above the 24px minimum.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Left / Right",
+					"action": "Previous or next tab"
+				},
+				{
+					"keys": "Home / End",
+					"action": "First or last tab"
+				},
+				{
+					"keys": "Tab",
+					"action": "Move from the tab list into the panel"
+				}
+			],
+			"related": [
+				"segmented-control",
+				"status-badge"
+			],
+			"references": []
+		},
+		{
+			"id": "segmented-control",
+			"name": "Segmented control",
+			"group": "Actions and inputs",
+			"summary": "Switches between two or three views or settings of the same content, such as All, Active and Backlog.",
+			"structure": [
+				"Group label (often visually hidden)",
+				"Track",
+				"Segment buttons",
+				"Selected segment (white, raised)"
+			],
+			"whenToUse": [
+				{
+					"t": "To switch how the same data is shown or filtered: All / Active / Backlog, Chart / Table.",
+					"s": []
+				},
+				{
+					"t": "For a view setting that always has a value: Rows per page 25 / 50 / 100, Daily / Weekly.",
+					"s": []
+				},
+				{
+					"t": "When there are two or three short options and room to show them.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "For separate sections of a record. Use Tabs.",
+					"s": []
+				},
+				{
+					"t": "For more than three options. Use a Dropdown menu or select.",
+					"s": []
+				},
+				{
+					"t": "For an on/off setting. Use Switch.",
+					"s": []
+				},
+				{
+					"t": "For choices inside a form that is saved later. Use Radio.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Track is grey with a 2px inset; segments are 24px high, 12px medium text; selected segment is white with a hairline shadow.",
+					"s": []
+				},
+				{
+					"t": "The change applies immediately, like a switch.",
+					"s": []
+				},
+				{
+					"t": "Equal weight for all segments; one is always selected.",
+					"s": []
+				},
+				{
+					"t": "Deactivate at most one segment, and give the reason in a tooltip.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "One word per segment where possible.",
+					"s": []
+				},
+				{
+					"t": "Sentence case, parallel words: All, Active, Backlog.",
+					"s": []
+				},
+				{
+					"t": "Icon-only segments need alternative text naming the view.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "TwoUX renders it as a group of toggle buttons: role=\"group\" with aria-label, each button with aria-pressed.",
+					"s": []
+				},
+				{
+					"t": "Every segment label stays the same when pressed; state comes from aria-pressed.",
+					"s": []
+				},
+				{
+					"t": "Segments are 24px high, exactly the WCAG 2.5.8 minimum; do not make them smaller.",
+					"s": []
+				},
+				{
+					"t": "The selected segment differs by fill and shadow, with 3:1 against the track.",
+					"s": []
+				},
+				{
+					"t": "Visible focus ring on each segment.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Move to each segment"
+				},
+				{
+					"keys": "Enter / Space",
+					"action": "Select the focused segment"
+				}
+			],
+			"related": [
+				"tabs",
+				"radio",
+				"switch"
+			],
+			"references": []
+		},
+		{
+			"id": "dropdown-menu",
+			"name": "Dropdown menu",
+			"group": "Actions and inputs",
+			"summary": "Opens a short list of actions or options from a button, with optional groups and one level of submenus.",
+			"structure": [
+				"Trigger button with chevron",
+				"Menu panel",
+				"Group label (optional)",
+				"Menu item: icon, label, shortcut or current value",
+				"Separator",
+				"Submenu caret",
+				"Destructive item (last)"
+			],
+			"whenToUse": [
+				{
+					"t": "To group related actions behind one button: Export, row actions, Add context.",
+					"s": []
+				},
+				{
+					"t": "For about 5 to 15 commands, ordered by how often they are used.",
+					"s": []
+				},
+				{
+					"t": "For settings with a current value, shown on the right and changed in a one-level submenu: Writing style Concise.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "For one or two actions. Show them as Buttons.",
+					"s": []
+				},
+				{
+					"t": "When people must search or pick from a long list of values. Use a select or combobox.",
+					"s": []
+				},
+				{
+					"t": "For the main action in a view. Use a primary Button.",
+					"s": []
+				},
+				{
+					"t": "For rich content or forms. Use a popover or dialog.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Panel 200px minimum, 10px radius, 4px padding, shadow. Items 30px high, 6px radius, hover in grey.",
+					"s": []
+				},
+				{
+					"t": "Group with uppercase group labels and separators; put destructive items last, in red, after a separator.",
+					"s": []
+				},
+				{
+					"t": "At most one level of submenu. Submenus open on hover, focus or Right arrow, and flip to the side with room.",
+					"s": []
+				},
+				{
+					"t": "Icons on items: none by default. Add them only when every item in a group has a well-known icon from the icon meaning table, and then on all items in that group; never on one item alone. The label always stays, and the icon is 14px and muted.",
+					"s": []
+				},
+				{
+					"t": "Show each item's shortcut on the right.",
+					"s": []
+				},
+				{
+					"t": "Disable items that do not apply rather than hide them, so people can still find them.",
+					"s": []
+				},
+				{
+					"t": "Keep the list under about 12 items.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Action items start with a verb; navigation items are nouns.",
+					"s": []
+				},
+				{
+					"t": "Sentence case, one line, no articles: Duplicate listing.",
+					"s": []
+				},
+				{
+					"t": "Front-load the key word so the list scans: Export CSV, Export PDF.",
+					"s": []
+				},
+				{
+					"t": "Ellipsis for items that open more input: Extend to a date…",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Trigger has aria-haspopup=\"menu\" and aria-expanded. Enter, Space or Down opens and focuses the first item.",
+					"s": []
+				},
+				{
+					"t": "role=\"menu\" with menuitem, menuitemcheckbox or menuitemradio; checked items use aria-checked.",
+					"s": []
+				},
+				{
+					"t": "Up and Down move, Right opens a submenu, Left closes it, Esc closes and returns focus to the trigger.",
+					"s": []
+				},
+				{
+					"t": "Items are 30px high, above the 24px target minimum.",
+					"s": []
+				},
+				{
+					"t": "Focus returns to the trigger on close, so the person is not lost.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Enter / Space / Down",
+					"action": "Open the menu and focus the first item"
+				},
+				{
+					"keys": "Up / Down",
+					"action": "Move between items"
+				},
+				{
+					"keys": "Right",
+					"action": "Open a submenu"
+				},
+				{
+					"keys": "Left",
+					"action": "Close a submenu"
+				},
+				{
+					"keys": "Home / End",
+					"action": "First or last item"
+				},
+				{
+					"keys": "Type a letter",
+					"action": "Jump to the next item starting with it"
+				},
+				{
+					"keys": "Esc",
+					"action": "Close and return focus to the trigger"
+				}
+			],
+			"related": [
+				"button",
+				"popover-rules",
+				"keyboard-shortcut-hint"
+			],
+			"references": []
+		},
+		{
+			"id": "tooltip",
+			"name": "Tooltip",
+			"group": "Actions and inputs",
+			"summary": "Shows a short, non-essential label or hint on hover or focus, such as an icon button's name and its shortcut.",
+			"structure": [
+				"Dark container (6px radius)",
+				"Text",
+				"Shortcut hint (optional)"
+			],
+			"whenToUse": [
+				{
+					"t": "To name an icon-only button: More, Add to Interviewing.",
+					"s": []
+				},
+				{
+					"t": "To show the shortcut for a control: Search listings /.",
+					"s": []
+				},
+				{
+					"t": "To show the full text of a truncated value, or the exact date behind a relative date.",
+					"s": []
+				},
+				{
+					"t": "To give a short reason why a control is disabled.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "For anything needed to finish the task, such as format rules. Use hint text under the field.",
+					"s": []
+				},
+				{
+					"t": "For links, buttons or more than a sentence. Use a popover.",
+					"s": []
+				},
+				{
+					"t": "On labelled buttons, repeating the label.",
+					"s": []
+				},
+				{
+					"t": "On status badges or other non-interactive elements.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Dark ink background, white 12px medium text, 5 x 8px padding, 6px radius.",
+					"s": []
+				},
+				{
+					"t": "Appears after a short delay (about 500ms) on hover or keyboard focus, so it does not flicker.",
+					"s": []
+				},
+				{
+					"t": "Stays while the pointer is over the trigger or the tooltip, until Esc or blur.",
+					"s": []
+				},
+				{
+					"t": "Placed so it never covers the thing it describes, and flips to stay on screen.",
+					"s": []
+				},
+				{
+					"t": "One line; never truncated.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "A few words, no full stop: Search listings.",
+					"s": []
+				},
+				{
+					"t": "For icon buttons, name the action in one or two words.",
+					"s": []
+				},
+				{
+					"t": "Use the same words as the accessible name.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "role=\"tooltip\", referenced by the trigger's aria-describedby. Focus stays on the trigger.",
+					"s": []
+				},
+				{
+					"t": "Esc dismisses it without moving focus; the pointer can move onto it; it does not time out.",
+					"s": []
+				},
+				{
+					"t": "A tooltip does not give an icon button its name; the button also needs aria-label.",
+					"s": []
+				},
+				{
+					"t": "Only on focusable triggers, so keyboard users see it too.",
+					"s": []
+				},
+				{
+					"t": "Shortcuts in tooltips are hidden from assistive technology; list them in the shortcut sheet as well.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab to trigger",
+					"action": "Show the tooltip"
+				},
+				{
+					"keys": "Esc",
+					"action": "Hide the tooltip"
+				}
+			],
+			"related": [
+				"button",
+				"keyboard-shortcut-hint",
+				"popover-rules"
+			],
+			"references": []
+		},
+		{
+			"id": "keyboard-shortcut-hint",
+			"name": "Keyboard shortcut hint",
+			"group": "Actions and inputs",
+			"summary": "Prints the key or keys that run an action, on its button, menu item or tooltip, so people learn shortcuts by using the product.",
+			"structure": [
+				"Key cap (18px, mono 10.5px)",
+				"Further key caps for chords or sequences"
+			],
+			"whenToUse": [
+				{
+					"t": "On buttons and menu items whose action has a shortcut: Try again R, Edit E.",
+					"s": []
+				},
+				{
+					"t": "In tooltips of icon-only buttons.",
+					"s": []
+				},
+				{
+					"t": "In the command palette, the ? shortcut sheet and footers that list navigation keys.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "For shortcuts that do not work in the current context. Leave the hint out.",
+					"s": []
+				},
+				{
+					"t": "As the only way to reach an action. Every shortcut duplicates a visible control.",
+					"s": []
+				},
+				{
+					"t": "Inside body text as decoration. Use plain text such as press Esc.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Key cap is 18px high, 4px radius, 2px bottom border, grey surface. On buttons it shrinks to 16px and sits after the label.",
+					"s": []
+				},
+				{
+					"t": "On primary buttons the cap is translucent white so it keeps contrast on primary.",
+					"s": []
+				},
+				{
+					"t": "Chords show keys side by side (⌘ K); sequences show them in order (G then L).",
+					"s": []
+				},
+				{
+					"t": "Render ⌘ on Mac and Ctrl elsewhere.",
+					"s": []
+				},
+				{
+					"t": "Reserve shortcuts for frequent actions; keep them to one or two keys and never override copy, paste or undo.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Use symbols for modifiers and capitals for letters: ⌘, ⇧, ↵, Esc, E.",
+					"s": []
+				},
+				{
+					"t": "Use mnemonic keys: E for Edit, C for Create, F for Filter.",
+					"s": []
+				},
+				{
+					"t": "The same action keeps the same key everywhere.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Single-key shortcuts (J, K, X, E, /) can be turned off in the shortcut sheet; ⌘ shortcuts stay on.",
+					"s": []
+				},
+				{
+					"t": "Shortcuts avoid keys used by screen readers, such as Caps Lock and Insert combinations.",
+					"s": []
+				},
+				{
+					"t": "The hint is visual. The full list is in the ? sheet so assistive technology users can find it.",
+					"s": []
+				},
+				{
+					"t": "Every action also works by Tab and Enter.",
+					"s": []
+				},
+				{
+					"t": "Key cap text has at least 4.5:1 contrast on its background.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "⌘K",
+					"action": "Open the command palette"
+				},
+				{
+					"keys": "?",
+					"action": "Open the shortcut sheet"
+				},
+				{
+					"keys": "G then L",
+					"action": "Go to listings"
+				},
+				{
+					"keys": "J / K",
+					"action": "Next or previous row"
+				},
+				{
+					"keys": "C",
+					"action": "New listing"
+				},
+				{
+					"keys": "E",
+					"action": "Edit"
+				}
+			],
+			"related": [
+				"button",
+				"dropdown-menu",
+				"tooltip",
+				"switch"
+			],
+			"references": []
+		},
+		{
+			"id": "avatar",
+			"name": "Avatar and avatar stack",
+			"group": "Actions and inputs",
+			"summary": "Shows who owns or is linked to a record, as a photo or initials, and several people as an overlapping stack with +N.",
+			"structure": [
+				"Circle (22px)",
+				"Photo or initials",
+				"Stack: overlapping avatars with 2px white ring",
+				"+N overflow count"
+			],
+			"whenToUse": [
+				{
+					"t": "To show the owner of a listing or the recruiter on a candidate, next to their name or in a table cell.",
+					"s": []
+				},
+				{
+					"t": "A stack when several people relate to one record and space is short.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "When each person must be clearly identified. List names in full.",
+					"s": []
+				},
+				{
+					"t": "For a single person in a stack. Use one avatar.",
+					"s": []
+				},
+				{
+					"t": "For teams or categories. Use Tag.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "22px circle, 10px semibold white initials on a colour assigned per person; photo when one exists.",
+					"s": []
+				},
+				{
+					"t": "Stack shows up to three, overlapping by 6px with a 2px white ring, then +N in small grey text.",
+					"s": []
+				},
+				{
+					"t": "+N reveals the hidden names on hover or focus.",
+					"s": []
+				},
+				{
+					"t": "Each person keeps the same colour everywhere.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Initials stand in when there is no photo, and are hidden from screen readers when the name is shown.",
+					"s": []
+				},
+				{
+					"t": "The +N count says how many people are hidden, not the total.",
+					"s": []
+				},
+				{
+					"t": "Tooltips on avatars show the full name, matching the alt text.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Standalone avatars have alt text with the person's name; next to a visible name they are decorative (empty alt).",
+					"s": []
+				},
+				{
+					"t": "A stack has a label (for example Candidates) and screen reader text for +N: 3 more candidates.",
+					"s": []
+				},
+				{
+					"t": "White initials need 4.5:1 on the assigned colour; pick colours that pass.",
+					"s": []
+				},
+				{
+					"t": "If the avatar opens a tooltip or popover it must be focusable.",
+					"s": []
+				},
+				{
+					"t": "Interactive avatars are 22px, so keep 24px spacing from other targets.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab to +N",
+					"action": "Focus the overflow count and show hidden names"
+				}
+			],
+			"related": [
+				"tag",
+				"tooltip",
+				"status-badge",
+				"provider-logo"
+			],
+			"references": []
+		},
+		{
+			"id": "popover-rules",
+			"name": "Popover rules",
+			"group": "Actions and inputs",
+			"summary": "Shared behaviour for every floating layer (menus, filters, snooze, selectors): one open at a time and never cut off.",
+			"structure": [
+				"Trigger (aria-expanded)",
+				"Floating panel (10px radius, shadow)",
+				"Header (when dismissible)",
+				"Body",
+				"Footer actions (optional)"
+			],
+			"whenToUse": [
+				{
+					"t": "For short supporting content or a small set of controls tied to a trigger: filter values, snooze times, column choices.",
+					"s": []
+				},
+				{
+					"t": "When the person must stay in context and the page behind stays usable.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "For long reading or a multi-step task. Use a dialog or side panel.",
+					"s": []
+				},
+				{
+					"t": "For a one-line label. Use Tooltip.",
+					"s": []
+				},
+				{
+					"t": "Inside another popover. Open a submenu (one level) or a dialog instead.",
+					"s": []
+				},
+				{
+					"t": "For required fields that would be lost on outside click. Use a dialog.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Only one popover is open at a time; opening a menu, filter, snooze or selector closes any other.",
+					"s": []
+				},
+				{
+					"t": "Popovers open on a user action, never on page load.",
+					"s": []
+				},
+				{
+					"t": "Placement flips and shifts to stay inside the panel and the screen, 8px from the edge. Nothing is ever cut off.",
+					"s": []
+				},
+				{
+					"t": "Open 4 to 6px from the trigger, aligned to its start edge.",
+					"s": []
+				},
+				{
+					"t": "Close on outside click, Esc, or when focus leaves; return focus to the trigger.",
+					"s": []
+				},
+				{
+					"t": "Only the body scrolls, never sideways.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Header in sentence case, one short line, when the popover can be dismissed.",
+					"s": []
+				},
+				{
+					"t": "No help articles or Learn more links inside; keep help at page level.",
+					"s": []
+				},
+				{
+					"t": "Footer buttons follow Button wording: Cancel and Apply.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Triggers set aria-expanded (and aria-haspopup for menus). Enter or Space opens.",
+					"s": []
+				},
+				{
+					"t": "Give the panel a role (menu or dialog) and a label.",
+					"s": []
+				},
+				{
+					"t": "Esc closes and focus returns to the trigger.",
+					"s": []
+				},
+				{
+					"t": "The popover must not hide the focused element.",
+					"s": []
+				},
+				{
+					"t": "At 320px width it fits without sideways scrolling.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Enter / Space",
+					"action": "Open or close from the trigger"
+				},
+				{
+					"keys": "Esc",
+					"action": "Close and return focus to the trigger"
+				},
+				{
+					"keys": "Tab",
+					"action": "Move through controls inside; leaving closes it"
+				}
+			],
+			"related": [
+				"dropdown-menu",
+				"tooltip",
+				"button"
+			],
+			"references": []
+		},
+		{
+			"id": "sign-in",
+			"name": "Sign in",
+			"kind": "component",
+			"group": "Actions and inputs",
+			"summary": "Provider buttons first, then email. Single sign-on is found from the email domain, and an email link means no password to remember.",
+			"structure": [
+				"Provider buttons (logo and \"Continue with\" name)",
+				"Divider (\"or\")",
+				"Work email field",
+				"Continue button (becomes \"Continue with SSO\" for SSO domains)",
+				"Error under the field"
+			],
+			"whenToUse": [
+				{
+					"t": "The first screen of an account: sign in and create account in one flow.",
+					"s": []
+				},
+				{
+					"t": "Letting people choose how they sign in: a provider, single sign-on or an email link.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "Asking for anything beyond how to sign in. Setup questions belong in Onboarding step (onboarding-step).",
+					"s": []
+				},
+				{
+					"t": "Gating content that people could read first. Show it before asking them to sign in.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Put provider buttons first, then email. One primary action: the email button.",
+					"s": []
+				},
+				{
+					"t": "Find single sign-on from the email domain. Say \"twoux.example signs in with single sign-on\" and change the button to Continue with SSO.",
+					"s": []
+				},
+				{
+					"t": "Use an email link so there is no password to remember or retype.",
+					"s": []
+				},
+				{
+					"t": "Put errors under the field and say what to do, for example \"This email uses Google to sign in. Continue with Google instead.\"",
+					"s": []
+				},
+				{
+					"t": "Do not reveal which part was wrong, or whether an account exists, unless the product already shows that elsewhere. Use the same message either way.",
+					"s": []
+				},
+				{
+					"t": "Set autocomplete on every field (email, current-password, one-time-code) so browsers and password managers can fill them.",
+					"s": []
+				},
+				{
+					"t": "Validate on press, not on every keystroke, and keep the email people typed after an error.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Button: \"Continue with Google\", \"Continue with email\", \"Continue with SSO\".",
+					"s": []
+				},
+				{
+					"t": "Field error: \"Enter your work email, for example sam@company.com.\"",
+					"s": []
+				},
+				{
+					"t": "Do not write \"Wrong password\" or \"No account found\". Write what to try next.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "The email field has a visible label and the right type and autocomplete values (SC 1.3.5, 3.3.2).",
+					"s": []
+				},
+				{
+					"t": "The error is linked to the field with aria-invalid and the field description, and is announced when it appears (SC 3.3.1, 4.1.3).",
+					"s": []
+				},
+				{
+					"t": "Signing in never depends on remembering or transcribing a password alone: providers and email links are alternatives (SC 3.3.8).",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Move through the provider buttons, the email field and the primary button"
+				},
+				{
+					"keys": "Enter",
+					"action": "In the email field, submit the form"
+				},
+				{
+					"keys": "Space or Enter",
+					"action": "Press the focused provider button"
+				}
+			],
+			"related": [
+				"provider-logo",
+				"onboarding-step",
+				"text-input",
+				"form-validation",
+				"error-messages"
+			],
+			"references": []
+		},
+		{
+			"id": "file-drop",
+			"name": "File drop",
+			"kind": "component",
+			"group": "Actions and inputs",
+			"summary": "Drop a file or choose one. Accepted types and the size limit show before choosing, and a preview replaces the icon once a file is picked.",
+			"structure": [
+				"Label",
+				"Drop area (icon or preview, \"Drop a file here\", accepted types and limit)",
+				"Remove and Replace or Upload buttons",
+				"Hidden native file input",
+				"Error under the area"
+			],
+			"whenToUse": [
+				{
+					"t": "A single file the product needs, such as a logo, an avatar or a CSV.",
+					"s": []
+				},
+				{
+					"t": "Where dragging a file in is a shortcut, not the only way.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "Attaching files to a message. Use the Message composer (message-composer).",
+					"s": []
+				},
+				{
+					"t": "Importing many files with progress. Use a list with a status per file.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Show accepted types and the size limit before anyone chooses a file.",
+					"s": []
+				},
+				{
+					"t": "Let people choose with a button as well as drop. Drag and drop is never the only way.",
+					"s": []
+				},
+				{
+					"t": "Errors name the file's size or type and say what to choose, for example \"That file is 14.2 MB. Choose one up to 10 MB.\"",
+					"s": []
+				},
+				{
+					"t": "The preview replaces the icon, with Remove and Replace beside it.",
+					"s": []
+				},
+				{
+					"t": "Use a visible label, and a native file input that is hidden visually but still labelled and focusable by the Upload button.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Hint: \"PNG or JPEG, up to 10 MB\".",
+					"s": []
+				},
+				{
+					"t": "Wrong type: \"That file type isn't supported. Choose PNG or JPEG.\"",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "The visible label is attached to the real input, which keeps its accessible name and value (SC 3.3.2, 4.1.2).",
+					"s": []
+				},
+				{
+					"t": "The error is linked to the field with aria-invalid and announced when it appears (SC 3.3.1, 4.1.3).",
+					"s": []
+				},
+				{
+					"t": "The drag state is not conveyed by colour alone: the text changes to \"Drop to upload\" (SC 1.4.1).",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Move to the Upload button"
+				},
+				{
+					"keys": "Enter or Space",
+					"action": "Open the system file chooser"
+				},
+				{
+					"keys": "Tab, then Enter",
+					"action": "Remove or replace the chosen file"
+				}
+			],
+			"related": [
+				"form-validation",
+				"text-input",
+				"message-composer",
+				"provider-logo"
+			],
+			"references": []
+		},
+		{
+			"id": "connector-picker",
+			"name": "Connector picker",
+			"kind": "component",
+			"group": "Actions and inputs",
+			"summary": "Search and connect outside services. Each row says what connecting lets the product do, and a dialog explains the access before anything is shared.",
+			"structure": [
+				"Search (with the number of services)",
+				"Connected group",
+				"All services group",
+				"Row (logo, name, what it lets the product do, Connect, Reconnect or Manage)",
+				"Connect dialog (access in plain words, who it is shared with, OAuth or API key, Cancel)"
+			],
+			"whenToUse": [
+				{
+					"t": "Connecting several outside services, from onboarding or from Settings.",
+					"s": []
+				},
+				{
+					"t": "Showing what is connected and what needs attention in one place.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "Setting what an agent may do with a tool. Use Agent permissions (agent-permissions).",
+					"s": []
+				},
+				{
+					"t": "Reviewing one tool in depth. Use the detail card in Connected tools (connected-tools).",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Add search with the count of services, and put Connected first.",
+					"s": []
+				},
+				{
+					"t": "Say what connecting lets the product do, in plain words, before connecting: \"Read and send email\".",
+					"s": []
+				},
+				{
+					"t": "Say who the connection is shared with, for example \"Only you\" or \"Everyone in TwoUX\".",
+					"s": []
+				},
+				{
+					"t": "OAuth opens the provider in a new window. Say so on the button (\"Continue to Slack\") and bring people back with a status message.",
+					"s": []
+				},
+				{
+					"t": "Test an API key before saving it, store it encrypted and never show it again. Say all three beside the field.",
+					"s": []
+				},
+				{
+					"t": "When a connection expires, show Needs attention with the reason and a Reconnect button, never colour alone.",
+					"s": []
+				},
+				{
+					"t": "Disconnecting lives in Settings and asks what stops working before it does.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "\"Read your calendar to find free times. Cannot change events.\"",
+					"s": []
+				},
+				{
+					"t": "\"Slack needs you to sign in again. Reconnect to resume the daily summary.\"",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Rows are a list under group headings; the group names are real headings (SC 1.3.1).",
+					"s": []
+				},
+				{
+					"t": "Buttons repeat the service name for assistive technology: \"Connect Slack\" (SC 2.4.6, 4.1.2).",
+					"s": []
+				},
+				{
+					"t": "The dialog traps focus, returns it to the button and announces success with role=\"status\" (APG dialog, SC 4.1.3).",
+					"s": []
+				},
+				{
+					"t": "Status is carried by words (Connected, Needs attention) as well as colour (SC 1.4.1).",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Move through the search, then each row's button"
+				},
+				{
+					"keys": "Enter or Space",
+					"action": "Connect, Reconnect or Manage"
+				},
+				{
+					"keys": "Esc",
+					"action": "Close the dialog without connecting"
+				}
+			],
+			"related": [
+				"connected-tools",
+				"agent-permissions",
+				"provider-logo",
+				"empty-state",
+				"confirmation-dialog"
+			],
+			"references": []
+		},
+		{
+			"id": "code-block",
+			"name": "Code block",
+			"kind": "component",
+			"group": "Content",
+			"summary": "Shows code, commands, IDs or log output exactly as written, so people can read and copy it. Inline Code marks a token inside a sentence.",
+			"structure": [
+				"Header (optional): file name or label",
+				"Actions: copy button, more if needed",
+				"Content: lines, with optional numbers",
+				"Line marks: highlighted, added (+), removed (−)",
+				"Footer (optional): show more, captions"
+			],
+			"whenToUse": [
+				{
+					"t": "To let people copy a command, token, API key name or snippet exactly.",
+					"s": []
+				},
+				{
+					"t": "To show a change as a diff, with added and removed lines.",
+					"s": []
+				},
+				{
+					"t": "To show tool or agent output, such as a run log, using the small size.",
+					"s": []
+				},
+				{
+					"t": "Inline Code for a prop, token or file name inside a sentence: `bg-surface`, `jobs.json`.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "When people need to edit the text. Use a Text input or the Prompt editor.",
+					"s": []
+				},
+				{
+					"t": "For ordinary values in a table, such as an ID column. Use the mono table cell.",
+					"s": []
+				},
+				{
+					"t": "Inline Code across several lines. Use a code block.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Long single-line commands scroll sideways rather than wrapping, so they stay copyable as one line. Use wrap for prose-like output.",
+					"s": []
+				},
+				{
+					"t": "Past about nine lines, cap the height and offer Show more in the footer.",
+					"s": []
+				},
+				{
+					"t": "Without a header, the copy button floats top right and appears on hover or focus, and always on touch screens.",
+					"s": []
+				},
+				{
+					"t": "Line numbers are optional, never copied and hidden from screen readers.",
+					"s": []
+				},
+				{
+					"t": "Use the destructive variant for errors and failed output.",
+					"s": []
+				},
+				{
+					"t": "Light border, grey fill: the block is read, not raised, so it takes no shadow.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Label the header with the file name or what the code is: “twoux.css”, “Install”, “Run log”.",
+					"s": []
+				},
+				{
+					"t": "Show code exactly as it should be typed. No ellipses inside commands.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "The scrolling area is focusable (tabindex 0) so keyboard users can scroll it.",
+					"s": []
+				},
+				{
+					"t": "Added and removed lines show + and − as well as colour.",
+					"s": []
+				},
+				{
+					"t": "Copying announces “Copied” through a status message without moving focus; focus stays on the button.",
+					"s": []
+				},
+				{
+					"t": "Wrapping is available so long output does not force two-dimensional scrolling at 320px.",
+					"s": []
+				},
+				{
+					"t": "Code text keeps 4.5:1 on the grey fill; line numbers use ink-3 (5.4:1 on surface-2).",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Focus the code area, then the copy button"
+				},
+				{
+					"keys": "Arrow keys",
+					"action": "Scroll the code area when it has focus"
+				},
+				{
+					"keys": "Enter or Space",
+					"action": "Copy, when the copy button has focus"
+				}
+			],
+			"related": [
+				"text-input",
+				"toast"
+			],
+			"references": []
+		},
+		{
+			"id": "card",
+			"name": "Card",
+			"kind": "component",
+			"group": "Content",
+			"summary": "A white container that groups one object or one task, such as a settings section, a sign-in form or a summary, with an optional header, actions and footer.",
+			"structure": [
+				"Container: white, light edge, 6px corners, resting shadow",
+				"Header: title and optional description",
+				"Action (optional): one button or menu, top right",
+				"Content",
+				"Footer (optional): actions on the right, or a tinted band with one secondary line"
+			],
+			"whenToUse": [
+				{
+					"t": "To group the fields and actions of one settings section or one form, so it reads as one unit.",
+					"s": []
+				},
+				{
+					"t": "To show one summary of an object, such as a listing's status and owner, on a page that holds several.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "For rows of a list or table. Use the List table; cards break scanning and comparison across rows.",
+					"s": []
+				},
+				{
+					"t": "Inside another card. Use a Separator or a heading to divide the content instead.",
+					"s": []
+				},
+				{
+					"t": "To make text stand out. Use a Banner for a condition, or plain hierarchy.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "One card is one object or one task. If the content splits into two jobs, use two cards.",
+					"s": []
+				},
+				{
+					"t": "Keep the header short: a title, an optional one-line description, and at most one action on the right.",
+					"s": []
+				},
+				{
+					"t": "Put primary actions in the footer, right-aligned, with the main action last.",
+					"s": []
+				},
+				{
+					"t": "Use the footer band for a single secondary line, such as “Already have an account? Sign in”.",
+					"s": []
+				},
+				{
+					"t": "Cards on a white page keep their edge; cards on the grey app background can drop the shadow but keep the edge.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Title in sentence case naming the object or task: “Notifications”, “Salary bands”.",
+					"s": []
+				},
+				{
+					"t": "The description says what the section controls, not how to use the card.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "When a card holds a section, give the title a real heading element at the right level, so it appears in the heading list.",
+					"s": []
+				},
+				{
+					"t": "Do not make the whole card clickable when it contains other controls; link the title instead, so each target has one purpose.",
+					"s": []
+				},
+				{
+					"t": "The card edge is decorative; the content does not rely on it to be understood.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Moves through the card's own controls in reading order; the card itself is not a stop"
+				}
+			],
+			"related": [
+				"banner",
+				"separator",
+				"empty-state"
+			],
+			"references": []
+		},
+		{
+			"id": "separator",
+			"name": "Separator",
+			"kind": "component",
+			"group": "Content",
+			"summary": "A thin line that divides groups of content or menu items. With a label, it separates two ways of doing the same thing, such as “or”.",
+			"structure": [
+				"Line: 1px, light edge colour",
+				"Label (optional): short word centred on the line, on the surface colour"
+			],
+			"whenToUse": [
+				{
+					"t": "To divide groups inside a card, panel or menu when spacing alone is not enough.",
+					"s": []
+				},
+				{
+					"t": "With a label, between two routes to the same result: “or” between sign in with Google and the email form.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "Between every row or field. Use spacing; lines everywhere add noise.",
+					"s": []
+				},
+				{
+					"t": "To separate sections of a page. Use headings and space.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Prefer space first. Add a line only where groups would otherwise run together.",
+					"s": []
+				},
+				{
+					"t": "Keep the label to one or two words in lower case: “or”, “or continue with”.",
+					"s": []
+				},
+				{
+					"t": "Lines run the full width of their container, or align with the content inset in menus.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Label in lower case with no full stop: “or”.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "A purely visual line is decorative, so screen readers skip it. Mark it as a separator only when it divides a menu or a toolbar.",
+					"s": []
+				},
+				{
+					"t": "The label is real text, so it is read in order between the two groups.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "None",
+					"action": "Not focusable"
+				}
+			],
+			"related": [
+				"card",
+				"dropdown-menu"
+			],
+			"references": []
+		},
+		{
+			"id": "timestamp",
+			"name": "Timestamp",
+			"kind": "component",
+			"group": "Content",
+			"summary": "One component for every date and time in the product: relative or absolute display, the exact value on hover and focus, and an optional \"by\" source.",
+			"structure": [
+				"Optional label, when not given by a column header or key: \"Last edited\"",
+				"Value: relative (\"3 hours ago\") or absolute (\"6 November 2026, 14:32 GMT\")",
+				"Optional source: \"by Priya Shah\", linked to the profile, with \"via Assistant\" when applied from a proposal",
+				"Tooltip with the absolute value on hover and focus"
+			],
+			"whenToUse": [
+				{
+					"t": "Every time a date or time appears: table columns, side panel details, activity, Inbox items, \"Last updated\" after a refresh.",
+					"s": []
+				},
+				{
+					"t": "format=\"relative\" for recent past events in lists; format=\"absolute\" for details and deadlines; format=\"iso\" for code and exports.",
+					"s": []
+				},
+				{
+					"t": "source=\"Priya Shah\" when it matters who made the change, such as Last edited on a listing.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "For date entry. Use a date input.",
+					"s": []
+				},
+				{
+					"t": "For durations, such as \"Time to hire: 18 days\"; that is a number with a unit, not a timestamp.",
+					"s": []
+				},
+				{
+					"t": "For a date with no time that is a property of the record, such as a start date. Show it as an absolute date.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Renders a <time> element with the ISO 8601 value in datetime.",
+					"s": []
+				},
+				{
+					"t": "Relative values tick over once a minute; they never animate or announce.",
+					"s": []
+				},
+				{
+					"t": "Time zone is the viewer's own and is always shown on absolute values.",
+					"s": []
+				},
+				{
+					"t": "In compact table cells, `short` shows \"3h ago\" or \"20 Nov\"; the tooltip and accessible name keep the full form.",
+					"s": []
+				},
+				{
+					"t": "Future deadlines use absolute dates, optionally followed by relative time in muted text.",
+					"s": []
+				},
+				{
+					"t": "Give deadlines, start dates and due dates as a date with no time (2026-12-07). They show as 7 December 2026, with no time or zone, and fall on the same day in every time zone.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Relative: \"Just now\", \"5 minutes ago\", \"3 hours ago\", \"2 days ago\", \"In 3 days\".",
+					"s": []
+				},
+				{
+					"t": "Absolute: day, month in full, year, 24-hour time, zone: \"6 November 2026, 14:32 GMT\".",
+					"s": []
+				},
+				{
+					"t": "Source: \"Edited 6 hours ago by Priya Shah\".",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "The accessible description carries the absolute value, so screen reader users don't need the tooltip.",
+					"s": []
+				},
+				{
+					"t": "The tooltip appears on focus of the cell or link that contains the timestamp, without adding a separate tab stop.",
+					"s": []
+				},
+				{
+					"t": "Never put a ticking relative time in a live region.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab or arrows (to the containing cell or link)",
+					"action": "Show the absolute time tooltip"
+				},
+				{
+					"keys": "Esc",
+					"action": "Hide the tooltip"
+				},
+				{
+					"keys": "Tab (to a source link)",
+					"action": "Move to the person's profile link"
+				}
+			],
+			"related": [
+				"timestamps",
+				"list-table",
+				"side-panel",
+				"tooltip",
+				"unsaved-changes"
+			],
+			"references": []
+		},
+		{
+			"id": "provider-logo",
+			"name": "Provider logo",
+			"kind": "component",
+			"group": "Content",
+			"summary": "The official mark of a service people sign in with or connect, shown unaltered on a white tile beside the service's name.",
+			"structure": [
+				"Tile (white in both themes, hairline border)",
+				"Official mark (unaltered)",
+				"Name or label beside it"
+			],
+			"whenToUse": [
+				{
+					"t": "Identifying a service someone signs in with, such as Google or Microsoft.",
+					"s": []
+				},
+				{
+					"t": "Identifying a service someone connects, such as Slack or Google Drive, in a list or a connection dialog.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "Marking a competitor or a product we studied as a reference. Those get a text name only.",
+					"s": []
+				},
+				{
+					"t": "Decoration, avatars or a stand-in for our own brand. Use Avatar (avatar) for people and the product mark for us.",
+					"s": []
+				},
+				{
+					"t": "Logos of services that are not connectable. A mark implies the connection exists.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Use the official mark only for third-party services people sign in with or connect. Never for competitors or reference products.",
+					"s": []
+				},
+				{
+					"t": "Show the mark unaltered: no recolouring, no cropping, no effects, no new background shapes.",
+					"s": []
+				},
+				{
+					"t": "Put the mark beside the service's name. When it stands alone, give it a label so the service is still named.",
+					"s": []
+				},
+				{
+					"t": "Keep the tile white in light and dark themes so dark marks, such as GitHub and Notion, stay visible.",
+					"s": []
+				},
+				{
+					"t": "To add a provider, add a line to the list in scripts/provider-logos.mjs and run node scripts/provider-logos.mjs. Check the brand's own page for permitted use first.",
+					"s": []
+				},
+				{
+					"t": "The icon sources are licensed for reuse: Iconify's logos set is CC0, vscode-icons and thesvg-color are MIT. Trademarks stay with their owners, so show a mark only to identify that service.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "\"Continue with Google\" and \"Connect Slack\": the name is always in words, never only in the mark.",
+					"s": []
+				},
+				{
+					"t": "When alone, label it with the service name only, for example \"Google Drive\".",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Beside a visible name the mark is decorative and hidden from assistive technology. Alone, it has role=\"img\" and an aria-label with the service name (SC 1.1.1).",
+					"s": []
+				},
+				{
+					"t": "The tile keeps the mark's edges distinct from either theme (SC 1.4.11).",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "None",
+					"action": "Not focusable. The button or row that contains it is the focus stop."
+				}
+			],
+			"related": [
+				"connector-picker",
+				"sign-in",
+				"connected-tools",
+				"avatar"
+			],
+			"references": []
+		}
+	]
+}

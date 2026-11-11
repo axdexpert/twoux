@@ -1,0 +1,1028 @@
+{
+  "$comment": "Source of truth: for each job, the ONE component or pattern to use, and the ones that are wrong for it. Read by the docs site, AGENTS.md, llms.txt and the lint checker. Edit here only.",
+  "jobs": [
+    {
+      "job": "Run the main action of a page or panel",
+      "use": "button",
+      "how": "`variant=\"default\"`, once per view",
+      "notThis": [
+        "a second primary button",
+        "a link styled as a button"
+      ]
+    },
+    {
+      "job": "Run any other action",
+      "use": "button",
+      "how": "`variant=\"outline\"`, or `\"ghost\"` in toolbars, rows and bars",
+      "notThis": [
+        "primary",
+        "link variant"
+      ]
+    },
+    {
+      "job": "Go to another page",
+      "use": "button",
+      "how": "`variant=\"link\"` or a plain link",
+      "notThis": [
+        "secondary button"
+      ]
+    },
+    {
+      "job": "Show a keyboard shortcut",
+      "use": "keyboard-shortcut-hint",
+      "how": "Button `shortcut` prop, or one `<Kbd>` per key",
+      "notThis": [
+        "plain text in brackets"
+      ]
+    },
+    {
+      "job": "Show code, a command or log output to copy",
+      "use": "code-block",
+      "how": "`<Code>` inside sentences, `<CodeBlock>` for anything longer",
+      "notThis": [
+        "text-input"
+      ]
+    },
+    {
+      "job": "Show the status of a record",
+      "use": "status-badge",
+      "how": "always a word, tone by meaning",
+      "notThis": [
+        "a coloured dot alone",
+        "tag",
+        "chart colours"
+      ]
+    },
+    {
+      "job": "Label or categorise a record",
+      "use": "tag",
+      "notThis": [
+        "status-badge"
+      ]
+    },
+    {
+      "job": "Switch between sections of a page",
+      "use": "tabs",
+      "notThis": [
+        "segmented-control"
+      ]
+    },
+    {
+      "job": "Switch between 2 or 3 views of the same data",
+      "use": "segmented-control",
+      "notThis": [
+        "tabs",
+        "dropdown-menu"
+      ]
+    },
+    {
+      "job": "Offer several actions on one record",
+      "use": "dropdown-menu",
+      "notThis": [
+        "a row of many buttons"
+      ]
+    },
+    {
+      "job": "Turn a setting on or off, applied immediately",
+      "use": "switch",
+      "notThis": [
+        "checkbox"
+      ]
+    },
+    {
+      "job": "Pick options in a form that is submitted later",
+      "use": "checkbox",
+      "notThis": [
+        "switch"
+      ]
+    },
+    {
+      "job": "Explain an icon-only button",
+      "use": "tooltip",
+      "notThis": [
+        "title attribute alone",
+        "popover"
+      ]
+    },
+    {
+      "job": "Confirm an action the person just took",
+      "use": "toast",
+      "how": "with Undo when reversible",
+      "notThis": [
+        "banner",
+        "dialog",
+        "inbox"
+      ]
+    },
+    {
+      "job": "Something on the page needs attention",
+      "use": "banner",
+      "notThis": [
+        "toast",
+        "dialog"
+      ]
+    },
+    {
+      "job": "Something needs a person to act, later",
+      "use": "inbox",
+      "notThis": [
+        "notification bell list",
+        "toast",
+        "email only"
+      ]
+    },
+    {
+      "job": "Stop before an irreversible action",
+      "use": "confirmation-dialog",
+      "how": "states the consequence, safe option first",
+      "notThis": [
+        "toast",
+        "browser confirm()"
+      ]
+    },
+    {
+      "job": "Show or edit one record next to the list",
+      "use": "side-panel",
+      "how": "`mode=\"push\"` by default, `\"overlay\"` below 1100px",
+      "notThis": [
+        "dialog",
+        "a new page"
+      ]
+    },
+    {
+      "job": "Show nothing yet, or no results",
+      "use": "empty-state",
+      "notThis": [
+        "an empty table with no message"
+      ]
+    },
+    {
+      "job": "Show content while it loads",
+      "use": "loading-skeleton",
+      "notThis": [
+        "a full-page spinner"
+      ]
+    },
+    {
+      "job": "Something failed to load",
+      "use": "error-state",
+      "how": "say what failed, keep filters, offer Try again",
+      "notThis": [
+        "toast",
+        "empty-state"
+      ]
+    },
+    {
+      "job": "Find anything or run a command",
+      "use": "command-palette",
+      "how": "`⌘K`"
+    },
+    {
+      "job": "Scan and triage records",
+      "use": "list-table",
+      "notThis": [
+        "data-grid"
+      ]
+    },
+    {
+      "job": "Edit, enrich or export many columns",
+      "use": "data-grid",
+      "notThis": [
+        "list-table"
+      ]
+    },
+    {
+      "job": "Show spreadsheet-like data people scan many rows of, such as an inventory, a ledger or a bill of materials",
+      "use": "dense-table",
+      "how": "`Table size=\"dense\"` with `TableGroupRow`, `TableRowNumber`, frozen columns (`data-pinned`) and `TableFilterRow`",
+      "notThis": [
+        "list-table at 36px rows",
+        "a density setting"
+      ]
+    },
+    {
+      "job": "Group a table's rows into sections, such as Inputs, Wastes and emissions and Products",
+      "use": "dense-table",
+      "how": "One `TableBody` per group with `TableGroupRow` (label, info tooltip, count, collapsible); in a sheet, `SheetGrid groupBy`",
+      "notThis": [
+        "grouped-list for tabular data"
+      ]
+    },
+    {
+      "job": "Offer a shortcut button inside a table row, such as Open or Share",
+      "use": "dense-table",
+      "how": "`TableCellAction` with an aria-label naming the row, and the same action in the `TableRowNumber` menu",
+      "notThis": [
+        "a hover-only action with no menu item"
+      ]
+    },
+    {
+      "job": "Let people select ranges, paste from Excel or Google Sheets, fill down and undo cell edits",
+      "use": "sheet-grid",
+      "how": "`SheetGrid` (`size=\"dense\"` for spreadsheet-like data) with `onCellsChange`; `ShortcutSheet` groups from `sheetGridShortcuts()`",
+      "notThis": [
+        "data-grid",
+        "a custom keyboard handler"
+      ]
+    },
+    {
+      "job": "Run the usual action with a few variants, such as Import data with Import all and Import selection",
+      "use": "split-button",
+      "how": "`SplitButton` with `menuLabel=\"More import options\"` and `DropdownMenuItem` variants",
+      "notThis": [
+        "a Button beside a hand-made menu trigger",
+        "two separate buttons"
+      ]
+    },
+    {
+      "job": "Filter a list by a few fields",
+      "use": "filter-bar",
+      "how": "pills: field, operator, value; apply on tick",
+      "notThis": [
+        "filter-panel",
+        "a filter row under each column"
+      ]
+    },
+    {
+      "job": "Search with many fields",
+      "use": "filter-panel",
+      "notThis": [
+        "filter-bar"
+      ]
+    },
+    {
+      "job": "Save a combination of filters, columns and sort",
+      "use": "saved-views"
+    },
+    {
+      "job": "Act on several selected rows",
+      "use": "bulk-action-bar",
+      "notThis": [
+        "a toolbar that replaces the filters"
+      ]
+    },
+    {
+      "job": "Show one number that matters",
+      "use": "stat-compare",
+      "how": "number, change with arrow and sign, what it compares to",
+      "notThis": [
+        "a chart"
+      ]
+    },
+    {
+      "job": "Show change over time",
+      "use": "chart-card-line",
+      "notThis": [
+        "bar chart for long series",
+        "two y-axes"
+      ]
+    },
+    {
+      "job": "Compare amounts across categories",
+      "use": "chart-bar"
+    },
+    {
+      "job": "Ask the assistant about what is on screen",
+      "use": "assistant-panel",
+      "how": "`⌘J`; selection and filters become context chips",
+      "notThis": [
+        "a floating chat bubble"
+      ]
+    },
+    {
+      "job": "Have the AI change data",
+      "use": "suggested-changes",
+      "how": "proposal with checkboxes, Apply, then Undo",
+      "notThis": [
+        "applying directly",
+        "batch Apply for decisions about people"
+      ]
+    },
+    {
+      "job": "Mark content written by AI",
+      "use": "ai-origin-label",
+      "notThis": [
+        "an AI colour",
+        "sparkles on every button"
+      ]
+    },
+    {
+      "job": "Let an agent act on someone's behalf",
+      "use": "agent-permissions",
+      "how": "Off / Ask first / Allow; decisions about candidates are capped at Ask first",
+      "notThis": [
+        "Allow on decisions with legal or similar effects on people"
+      ]
+    },
+    {
+      "job": "Group one settings section or form",
+      "use": "card",
+      "how": "`Card` with header, content, footer actions on the right; `CardFooter band` for one secondary line",
+      "notThis": [
+        "banner"
+      ]
+    },
+    {
+      "job": "Divide two ways of doing the same thing",
+      "use": "separator",
+      "how": "`FieldSeparator` with “or”; plain `Separator` between groups",
+      "notThis": []
+    },
+    {
+      "job": "Guide a task done in steps, in order",
+      "use": "stepper",
+      "how": "`Stepper steps current onStepSelect`; 3 to 6 steps",
+      "notThis": [
+        "tabs"
+      ]
+    },
+    {
+      "job": "Show how a total splits over time, such as applications by source per week",
+      "use": "chart-area",
+      "how": "`ChartArea` with 2 to 5 `series` stacked from zero, legend toggles, `Table` view",
+      "notThis": [
+        "chart-donut",
+        "chart-card-line"
+      ]
+    },
+    {
+      "job": "Show a count against its plan or average in the same unit",
+      "use": "chart-mixed",
+      "how": "`ChartMixed` with one `bar` series and up to three `line` series on one y-axis",
+      "notThis": [
+        "chart-card-line"
+      ]
+    },
+    {
+      "job": "Show how one total splits at a single moment into a few parts",
+      "use": "chart-donut",
+      "how": "`ChartDonut` with 2 to 5 `segments`, centre `total` and `unit`, labels as count and share",
+      "notThis": [
+        "chart-area",
+        "chart-funnel"
+      ]
+    },
+    {
+      "job": "See whether two measures move together across listings and spot outliers",
+      "use": "chart-scatter",
+      "how": "`ChartScatter` with up to 3 `groups` (colour plus marker shape), axis titles with units, popover linking to the record",
+      "notThis": [
+        "chart-card-line"
+      ]
+    },
+    {
+      "job": "Pick the right chart for a question on a dashboard",
+      "use": "data-visualisation",
+      "how": "Tag the question (trend, anomaly, comparison, investigation), then use the chart-choice step; finish with title, units, `Table` view and four states",
+      "notThis": []
+    },
+    {
+      "job": "Find out why a chart spiked or dropped on a given day",
+      "use": "chart-drill-down",
+      "how": "Pin the `ChartPopover` on the point, read the breakdown, then \"Filter chart\" or \"Filter page\" to add pills to the `FilterBar`",
+      "notThis": [
+        "breakdown-table"
+      ]
+    },
+    {
+      "job": "Mark a target or limit on a chart",
+      "use": "chart-bar",
+      "how": "Add a `threshold` (dashed, neutral, with a text `label`) instead of an extra series",
+      "notThis": [
+        "chart-mixed"
+      ]
+    },
+    {
+      "job": "Build the team's weekly hiring overview that everyone reads the same way",
+      "use": "static-dashboard",
+      "how": "12-column grid: `stat-compare` row at full width, then `chart-card-line` and short `list-table` items at 6 columns, getting started and links at the bottom",
+      "notThis": [
+        "configurable-dashboard",
+        "board"
+      ]
+    },
+    {
+      "job": "Let each recruiter choose and arrange what they see on their home page",
+      "use": "configurable-dashboard",
+      "how": "`Board` with `BoardItem`s, Add items in `page-header` opening `items-palette` in `side-panel`, layout saved per person, Reset to default layout in the more menu",
+      "notThis": [
+        "static-dashboard"
+      ]
+    },
+    {
+      "job": "Decide what to put inside a new dashboard tile",
+      "use": "dashboard-items",
+      "how": "Pick one type (key metrics, chart, list, status and alerts, quick links, getting started, feature news); one header action, `dropdown-menu` for the rest, footer \"View all N\" link",
+      "notThis": [
+        "list-table"
+      ]
+    },
+    {
+      "job": "Let someone add a chart back to their dashboard after removing it",
+      "use": "items-palette",
+      "how": "Open Add items; the removed item is listed again; drag it or press its `Add to dashboard` button",
+      "notThis": [
+        "templates-gallery",
+        "command-palette"
+      ]
+    },
+    {
+      "job": "Give people a way back after rearranging their dashboard badly",
+      "use": "configurable-dashboard",
+      "how": "`Reset to default layout` in the page header more menu, applied at once with a `toast` offering Undo",
+      "notThis": [
+        "confirmation-dialog"
+      ]
+    },
+    {
+      "job": "Get a different version of the assistant's last answer",
+      "use": "regenerating-answers",
+      "how": "`AnswerActions` Regenerate on the latest answer; version switch `2 / 2`; Stop replaces Send while writing",
+      "notThis": [
+        "clarify-before-acting",
+        "generated-columns"
+      ]
+    },
+    {
+      "job": "Give the person a job description or CSV the assistant made",
+      "use": "generated-drafts-files",
+      "how": "`ArtifactCard` under the answer with `Open`/`Download`; record-bound drafts use `Suggest for LST-…` into `SuggestedChanges`",
+      "notThis": [
+        "data-export",
+        "propose-apply"
+      ]
+    },
+    {
+      "job": "Collect a closing date and salary band before preparing a new listing",
+      "use": "inline-input-in-answer",
+      "how": "Inline `Card` with up to five required, prefilled fields and `Continue`, which produces `SuggestedChanges`",
+      "notThis": [
+        "clarify-before-acting",
+        "workspace-onboarding"
+      ]
+    },
+    {
+      "job": "See what an agent did last week and which run changed a listing",
+      "use": "agent-activity-log",
+      "how": "`GroupedList` by day with time, `StatusBadge` outcome and past-tense label linking to the `AgentRun` step; `FilterBar` by agent and outcome",
+      "notThis": [
+        "reasoning-progress"
+      ]
+    },
+    {
+      "job": "Turn an agent on or off and limit which listings it touches",
+      "use": "managing-agents",
+      "how": "Agents page `ListTable` with `Switch` (Undo toast) and row detail in `SidePanel` showing `AgentPermissions` and scope",
+      "notThis": [
+        "agents-on-behalf",
+        "connected-tools"
+      ]
+    },
+    {
+      "job": "Let a person approve a tool call the agent needs mid-conversation",
+      "use": "agents-on-behalf",
+      "how": "Approval card above `MessageComposer`: `Allow once` / `Allow in this conversation` / `Always allow`, focus on heading, resolved line afterwards",
+      "notThis": [
+        "confirmation-dialog",
+        "propose-apply"
+      ]
+    },
+    {
+      "job": "Explain why an action can't be used right now",
+      "use": "disabled-read-only",
+      "how": "`Button aria-disabled` with `Tooltip` reason \"Available when the listing is Live.\"; hide it if the role can never use it",
+      "notThis": [
+        "help-system"
+      ]
+    },
+    {
+      "job": "Let people reorder pipeline stages or columns",
+      "use": "drag-and-drop",
+      "how": "Grip handle plus keyboard pick-up (Enter, arrows, Enter) and `DropdownMenu` items Move up / Move down",
+      "notThis": [
+        "board"
+      ]
+    },
+    {
+      "job": "Tell people a save, load or action failed",
+      "use": "error-messages",
+      "how": "Field: `FormField error`; form: `Banner variant=\"error\"` above actions; region: `ErrorState` with Try again",
+      "notThis": [
+        "toast",
+        "empty-state"
+      ]
+    },
+    {
+      "job": "Explain a field or concept that needs more than a label",
+      "use": "help-system",
+      "how": "Info link beside the label opens `HelpPanel topic=\"visa-sponsorship\"` in the right slot",
+      "notThis": [
+        "tooltip",
+        "assistant-panel"
+      ]
+    },
+    {
+      "job": "Decide which right-hand panel to use",
+      "use": "secondary-panels",
+      "how": "Record: `SidePanel`; questions about data: `AssistantPanel`; guidance: `HelpPanel`; one open at a time",
+      "notThis": [
+        "confirmation-dialog"
+      ]
+    },
+    {
+      "job": "Ask people whether a help topic or report was useful",
+      "use": "user-feedback",
+      "how": "`FeedbackPrompt question=\"Was this helpful?\"` at the end of the content, follow-up revealed after the vote",
+      "notThis": [
+        "labelling-ai-output"
+      ]
+    },
+    {
+      "job": "Stop people losing a half-written listing",
+      "use": "unsaved-changes",
+      "how": "Autosave drafts with `Timestamp` \"Draft saved\"; `ConfirmationDialog` \"Discard changes?\" only when dirty; `beforeunload` while dirty",
+      "notThis": [
+        "undo-destructive"
+      ]
+    },
+    {
+      "job": "Show when something happened or is due",
+      "use": "timestamps",
+      "how": "`Timestamp format=\"relative\"` in tables, `format=\"absolute\"` in details and deadlines, `by` for the source",
+      "notThis": []
+    },
+    {
+      "job": "Place actions for a page, a selection and a single row",
+      "use": "actions",
+      "how": "`PageHeader actions` (one primary, last), `BulkActionBar` for selections, row icon buttons plus `DropdownMenu` More actions",
+      "notThis": [
+        "selection-bulk-actions"
+      ]
+    },
+    {
+      "job": "Pick between radio, checkbox, switch and select",
+      "use": "choosing-selection-control",
+      "how": "Up to 7 options: `RadioGroup` or `Checkbox` group; 8+: select; immediate on/off: `Switch`",
+      "notThis": [
+        "segmented-control"
+      ]
+    },
+    {
+      "job": "Add a new job listing",
+      "use": "create-record",
+      "how": "`Create listing` in the `page-header` opens a single page with `card` sections, defaults filled in and `Additional settings` collapsed; never disable the submit `button`.",
+      "notThis": [
+        "stepper",
+        "confirmation-dialog"
+      ]
+    },
+    {
+      "job": "Publish a listing to external job boards",
+      "use": "create-record",
+      "how": "Use the `stepper` with 3 to 5 steps ending in a Review step whose `Edit` links return to each step.",
+      "notThis": [
+        "side-panel"
+      ]
+    },
+    {
+      "job": "Add a location that does not exist yet while creating a listing",
+      "use": "create-record",
+      "how": "Offer `Create \"Leeds office\"` in the select, or open an overlay `side-panel`; select the new item and return focus to the field.",
+      "notThis": [
+        "confirmation-dialog"
+      ]
+    },
+    {
+      "job": "Change the salary and location of a listing",
+      "use": "edit-record",
+      "how": "Section `Edit` in the `card` header turns the section into a form with `Save` and `Cancel`; `toast` \"Listing updated. Undo\".",
+      "notThis": [
+        "inline-editing-validation"
+      ]
+    },
+    {
+      "job": "Change the stage of many candidates",
+      "use": "inline-editing-validation",
+      "how": "Edit the cell in the `data-grid` or use the `bulk-action-bar`; Undo in the `toast`.",
+      "notThis": [
+        "edit-record"
+      ]
+    },
+    {
+      "job": "Delete a duplicate candidate record",
+      "use": "delete-record",
+      "how": "Move to Deleted at once with `toast` \"Candidate deleted. Undo\" and ⌘Z; no dialog.",
+      "notThis": [
+        "confirmation-dialog"
+      ]
+    },
+    {
+      "job": "Erase a candidate's data on request",
+      "use": "delete-record",
+      "how": "`confirmation-dialog` with role `alertdialog`, the name in bold, what is erased and what stays, buttons `Keep candidate` and `Delete permanently`.",
+      "notThis": [
+        "toast"
+      ]
+    },
+    {
+      "job": "Delete a whole workspace or a team with live listings",
+      "use": "delete-record",
+      "how": "`confirmation-dialog` plus a warning `banner` listing what else goes and a `text-input` where the person types the name.",
+      "notThis": [
+        "undo-destructive"
+      ]
+    },
+    {
+      "job": "Decide where a new area of the product goes in the navigation",
+      "use": "navigation",
+      "how": "Add an item to the `app-shell` sidebar only if people go there directly; keep the `breadcrumb` and sidebar labels identical.",
+      "notThis": [
+        "page-header"
+      ]
+    },
+    {
+      "job": "Tell people about a new Reports page",
+      "use": "announcing-features",
+      "how": "`New` text label after the sidebar item, opening a popover with two sentences and Learn more; remove after 30 days.",
+      "notThis": [
+        "toast",
+        "banner",
+        "status-badge"
+      ]
+    },
+    {
+      "job": "Mark an AI feature as beta",
+      "use": "announcing-features",
+      "how": "`FeatureLabel kind=\"Beta\"` in the sidebar (`SidebarItem tag`) and after the page title (`PageHeader titleAddon`), popover saying results may change, plus Send feedback; still label output per `labelling-ai-output`.",
+      "notThis": [
+        "tag",
+        "status-badge"
+      ]
+    },
+    {
+      "job": "Agree a multi-step or costly run before it starts",
+      "use": "plan-card",
+      "how": "`PlanCard` with removable steps and risk marks; approval starts the `AgentRun`; a mid-run change adds `PlanChange`.",
+      "notThis": [
+        "suggested-changes",
+        "confirmation-dialog"
+      ]
+    },
+    {
+      "job": "Review a change an agent proposes to procedures, prompts, tools or another agent",
+      "use": "change-request",
+      "how": "`ChangeRequest` with reason, `AiOrigin`, `DiffView` and `SimulationResults`; Approve, or Reject with a reason; list open ones in the Inbox.",
+      "notThis": [
+        "suggested-changes",
+        "alert-dialog"
+      ]
+    },
+    {
+      "job": "Tell people the agent is unsure",
+      "use": "confidence-note",
+      "how": "`ConfidenceNote` with the cause in words and a safer option or a way to check; ask first when the scope of a change is unclear.",
+      "notThis": [
+        "alert",
+        "toast",
+        "badge"
+      ]
+    },
+    {
+      "job": "Explain why the agent chose something",
+      "use": "why-choice",
+      "how": "`WhyChoice` next to the choice: factors, options that lost, anything it couldn't meet, then Change this or Keep it.",
+      "notThis": [
+        "tooltip",
+        "help-panel"
+      ]
+    },
+    {
+      "job": "Let people sign in with Google, Microsoft, SSO or email",
+      "use": "sign-in",
+      "how": "`SignInOptions` with `providers` and `ssoDomains`; errors under the email field.",
+      "notThis": [
+        "dialog",
+        "text-field"
+      ]
+    },
+    {
+      "job": "Set up a new account in a few steps",
+      "use": "onboarding-step",
+      "how": "Three to five `OnboardingStep`s; optional ones with Skip; then a `SetupChecklist` in the sidebar.",
+      "notThis": [
+        "stepper",
+        "dialog"
+      ]
+    },
+    {
+      "job": "Upload a profile picture, logo or document",
+      "use": "file-drop",
+      "how": "`FileDrop` with `accept`, `hint` and `maxBytes`; preview once chosen.",
+      "notThis": [
+        "empty-state"
+      ]
+    },
+    {
+      "job": "Connect Google, Slack, a CRM or another service",
+      "use": "connector-picker",
+      "how": "`ConnectorPicker` with what each connection can do; `ConnectDialog` for OAuth or an API key test.",
+      "notThis": [
+        "connected-tools",
+        "agent-permissions"
+      ]
+    },
+    {
+      "job": "Show credits, seats or storage against a limit",
+      "use": "usage-meter",
+      "how": "`UsageMeter` with used, limit, unit and reset date; upgrade link appears from 80%.",
+      "notThis": [
+        "stat-compare",
+        "badge"
+      ]
+    },
+    {
+      "job": "Show a third-party service's logo",
+      "use": "provider-logo",
+      "how": "`ProviderLogo provider=\"google\"` beside its name; add new ones in scripts/provider-logos.mjs.",
+      "notThis": [
+        "avatar",
+        "tag"
+      ]
+    },
+    {
+      "job": "Show how one total splits at one moment, in a line of space",
+      "use": "chart-share-bar",
+      "how": "`ShareBar` with up to 6 `parts`; the rest fold into grey Other; `shareTable` for the table view",
+      "notThis": [
+        "chart-donut",
+        "a pie chart"
+      ]
+    },
+    {
+      "job": "Rank items by one measure beside a stacked chart, as its legend",
+      "use": "ranked-list",
+      "how": "`RankedList` with `colorIndex` matching the chart's series, change with arrow and sign",
+      "notThis": [
+        "ChartLegend plus a second list",
+        "list-table"
+      ]
+    },
+    {
+      "job": "List prices, indices or rates with today's change",
+      "use": "change-list",
+      "how": "`ChangeList` with name, code, value and unit, change, optional `spark`, and `seeAll`",
+      "notThis": [
+        "a stat tile per instrument",
+        "colour without arrow and sign"
+      ]
+    },
+    {
+      "job": "Show a price moving within a narrow range today",
+      "use": "chart-price",
+      "how": "`PriceChart` over the whole session with `reference` (previous close) and `live`; the axis says when it does not start at zero",
+      "notThis": [
+        "chart-card-line",
+        "a line chart cropped without saying so"
+      ]
+    },
+    {
+      "job": "Explain how an opening amount became a closing amount",
+      "use": "chart-waterfall",
+      "how": "`Waterfall` with `total` steps in grey and changes in c1 and c2 with + and − labels",
+      "notThis": [
+        "green and red bars",
+        "stacked bar"
+      ]
+    },
+    {
+      "job": "Show actual against target for a few measures",
+      "use": "chart-bullet",
+      "how": "`BulletChart` rows with `value`, `target` and neutral `bands`",
+      "notThis": [
+        "a gauge",
+        "a dial",
+        "a donut"
+      ]
+    },
+    {
+      "job": "Show which of many items make up most of a total",
+      "use": "chart-treemap",
+      "how": "`Treemap` with up to 12 `items`, optional `group` for colour and legend",
+      "notThis": [
+        "chart-donut with many slices",
+        "colour by value"
+      ]
+    },
+    {
+      "job": "Show how a quantity flows across two or three stages",
+      "use": "chart-sankey",
+      "how": "`SankeyChart` with `nodes` and `links`; `sankeyTable` for the table view",
+      "notThis": [
+        "chart-funnel",
+        "more than three columns"
+      ]
+    },
+    {
+      "job": "Show how one set of values is spread",
+      "use": "chart-histogram",
+      "how": "`Histogram` with `binValues(values, { binWidth })` and an optional median `marker`",
+      "notThis": [
+        "an average alone",
+        "chart-bar of categories"
+      ]
+    },
+    {
+      "job": "Compare how spread out several groups are",
+      "use": "chart-box-plot",
+      "how": "`BoxPlot` with raw `values` per group on one shared axis",
+      "notThis": [
+        "averages in a bar chart",
+        "one histogram per group"
+      ]
+    },
+    {
+      "job": "Show daily open, high, low and close for a traded price",
+      "use": "chart-candlestick",
+      "how": "`CandlestickChart` with up hollow and down filled; volume as its own panel; `colors=\"market\"` and `showLast` on trading screens",
+      "notThis": [
+        "colour as the only sign of direction",
+        "volume on a second y axis"
+      ]
+    },
+    {
+      "job": "Show the prices people are offering to buy and sell at, and let them pick one",
+      "use": "order-book",
+      "how": "`OrderBook` with `asks`, `bids`, `steps` and `onSelectPrice` filling the order form's limit price",
+      "notThis": [
+        "a list table of orders",
+        "colour as the only sign of side"
+      ]
+    },
+    {
+      "job": "Build a table whose columns are looked up, calculated or written per row",
+      "use": "sheet-grid",
+      "how": "`SheetGrid` with typed `columns` and computed cells in `rows[].computed`; `RunStatusBar` under it",
+      "notThis": [
+        "data-grid",
+        "list-table"
+      ]
+    },
+    {
+      "job": "Show, hide or reorder the columns of a sheet or list table",
+      "use": "columns-menu",
+      "how": "`ColumnsMenu` in the table toolbar; applies at once, with keyboard and Move buttons for reordering; on list tables add `onWrapChange` and `onPageSizeChange`",
+      "notThis": [
+        "dialog"
+      ]
+    },
+    {
+      "job": "Show what a sheet is running, how far it is and what it costs",
+      "use": "run-status-bar",
+      "how": "`RunStatusBar` with done, total, creditsUsed, costPerRow and onStop; Auto-run states its cost per row",
+      "notThis": [
+        "usage-meter",
+        "agent-run"
+      ]
+    },
+    {
+      "job": "Import rows from a CSV file",
+      "use": "csv-import",
+      "how": "`CsvImport` with the table's `targets`: map, read the problem summary, then Import with the row count",
+      "notThis": [
+        "file-drop"
+      ]
+    },
+    {
+      "job": "Match fields from a file, form or service to a table's fields",
+      "use": "field-mapping",
+      "how": "`FieldMapping` with `targets`, `sources` and `autoMapFields`; required marked, type mismatches warned",
+      "notThis": [
+        "columns-menu"
+      ]
+    },
+    {
+      "job": "Add a looked-up, AI, formula or export column to a sheet",
+      "use": "action-catalogue",
+      "how": "`ActionCatalogue` in a `SidePanel` titled Add column; cost per row, then the total before adding, test on 10 rows by default",
+      "notThis": [
+        "items-palette",
+        "templates-gallery"
+      ]
+    },
+    {
+      "job": "Set how a table handles duplicates, empty rows and template sharing",
+      "use": "table-settings",
+      "how": "`TableSettings` in the side panel slot, saved with Save; asks before discarding only when changed",
+      "notThis": [
+        "confirmation-dialog"
+      ]
+    },
+    {
+      "job": "Show where something happens when location itself matters, such as conversion rate by country or ARR by city",
+      "use": "chart-map",
+      "how": "`MapChart` with your TopoJSON and `values` as a rate (five steps, No data hatched), or `markers` for raw amounts; `mapTable` for the Table view",
+      "notThis": [
+        "Bar chart or Ranked list to compare amounts",
+        "raw counts as shading"
+      ]
+    },
+    {
+      "job": "Show someone where the controls for a task are, after they ask",
+      "use": "guide-cue",
+      "how": "`GuideCue` with 1 to 3 `steps` (target ref or data attribute, title, body), opened from a `SetupChecklist` Start, Help menu, `HelpPanel` link or a `FeatureLabel` Show me via `useGuide().start`",
+      "notThis": [
+        "a product tour on load",
+        "an auto-opening popover",
+        "a dimmed spotlight overlay"
+      ]
+    },
+    {
+      "job": "See releases, maintenance windows or campaign phases across services or teams on one time scale",
+      "use": "timeline",
+      "how": "`Timeline` with `tracks`, `start`, `end` and `now` inside `ChartFrame` with `timelineTable`; `onSelect` opens the record in `SidePanel`",
+      "notThis": [
+        "List table",
+        "Line chart card",
+        "Agent activity log"
+      ]
+    },
+    {
+      "job": "Show how much of a few fixed limits is used, such as seats, credits and storage, in a small card",
+      "use": "chart-radial-bars",
+      "how": "`RadialBars` with 1 to 4 `items` ({ label, value, limit, unit }), used of limit written beside the rings, `radialBarsTable` for the table view",
+      "notThis": [
+        "Bullet chart for actual against target",
+        "a gauge or dial",
+        "Donut chart for parts of one total"
+      ]
+    },
+    {
+      "job": "Show how a measure rises and falls through a repeating cycle, such as support tickets by hour of day",
+      "use": "chart-radial-lines",
+      "how": "`RadialLines` with `periods` for one full cycle and 1 to 3 `series` (null for gaps), `periodLabel`, `radialLinesTable` for the table view",
+      "notThis": [
+        "Line chart card for time that does not repeat",
+        "Heatmap for a cycle against a second dimension",
+        "an area fill that paints gaps as zero"
+      ]
+    },
+    {
+      "job": "Book and rearrange interviews, shifts or rooms across a few people on a calendar",
+      "use": "scheduler",
+      "how": "`Scheduler` with `resources`, `view`/`onViewChange` and `date`/`onDateChange`; `onSelectEvent` opens `SidePanel`, `onCreate` opens a dialog of up to three fields, `onMove` applies with an Undo `toast`",
+      "notThis": [
+        "List table",
+        "Timeline",
+        "Board and board item"
+      ]
+    },
+    {
+      "job": "Set a date on a record, such as a closing date or start date",
+      "use": "date-picker",
+      "how": "`DatePicker` with `label`, ISO `value` and `onValueChange`; typing dd/mm/yyyy is the main path, Alt+↓ or the calendar button the second; `min`, `isDateUnavailable` and `unavailableReason` say which dates can't be chosen",
+      "notThis": [
+        "Text input",
+        "Scheduler"
+      ]
+    },
+    {
+      "job": "Filter a list or chart to a period, such as the last 30 days or last quarter",
+      "use": "date-picker",
+      "how": "In a filter bar, `DateFilterPill` beside `FilterPill` (\"Applied is in Last 30 days\"); in a form or chart header, `DateRangePicker` with `presets`. Store the value with `dateFilterToValues` in the URL and saved views, and get the dates with `resolveDateRange`",
+      "notThis": [
+        "Segmented control",
+        "Text input"
+      ]
+    },
+    {
+      "job": "Pick one or several values from a list of eight or more, such as a location or skills",
+      "use": "combobox",
+      "how": "`Combobox` with `options` (add `multiple` for several); `onCreate` offers Create \"Leeds office\"; server search with `filter={null}`, `onSearch`, `loading` and `loadError`",
+      "notThis": [
+        "Radio",
+        "Checkbox",
+        "Filter pills and filter bar",
+        "Command palette (⌘K)"
+      ]
+    },
+    {
+      "job": "Enter several free values that don't come from a list, such as email addresses to invite",
+      "use": "tag-input",
+      "how": "`TagInput` with `validateValue` and `noun`; pasted lists are split, duplicates are reported and invalid values stay marked with their reason",
+      "notThis": [
+        "Combobox",
+        "Text input",
+        "Tag"
+      ]
+    },
+    {
+      "job": "Keep several regions of a tool page in view and let people resize and rearrange them, such as a trading screen",
+      "use": "pane-layout",
+      "how": "`PaneLayout` with `value`, `onValueChange`, `panes` and `onReset` inside `AppShell frame=\"flush\"`; `usePaneSize` sizes charts and lists to their pane",
+      "notThis": [
+        "a page that scrolls past regions people need together",
+        "a hand-built grid of fixed cards"
+      ]
+    }
+  ]
+}

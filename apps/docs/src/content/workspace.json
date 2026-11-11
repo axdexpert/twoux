@@ -1,0 +1,880 @@
+{
+	"components": [
+		{
+			"id": "sheet-grid",
+			"name": "Sheet grid",
+			"kind": "component",
+			"group": "Data",
+			"summary": "A spreadsheet of records with typed columns, a menu per column, row numbers and a status row for computed columns, and Excel and Google Sheets keys: select ranges, copy and paste to and from either, fill, clear and undo. size=\"dense\" gives 28px rows for spreadsheet-like data.",
+			"structure": [
+				"Header row: type icon (or the service's logo), column name, sort arrow, menu",
+				"Filter row (optional): a search field under each header",
+				"Status row for computed columns: Up to date, 62%, 3 errors",
+				"Pinned row numbers (with checkbox and ⋮ row menu when set) and frozen first columns",
+				"Group rows (optional): label, count and each total column's sum, collapsible",
+				"Cells: values, Tag for select, Switch with its word, n/a, or Waiting, Writing, Looking up, Failed with the reason, Not found; the selected range in indigo",
+				"Totals row (optional), then Add row, Add 10 rows, the status line and the sum and count of the selection"
+			],
+			"whenToUse": [
+				{
+					"t": "People build a table of records and add columns that are typed, calculated or filled in per row, such as a work email looked up for every person.",
+					"s": []
+				},
+				{
+					"t": "The table is wider than the screen and people compare values across columns, so the name column must stay in view.",
+					"s": []
+				},
+				{
+					"t": "People work as they would in Excel or Google Sheets: they paste blocks of values in, fill down, copy ranges out and undo mistakes.",
+					"s": []
+				},
+				{
+					"t": "Spreadsheet-like data, such as inventories, ledgers and imports, where people need many rows in view: use size=\"dense\".",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "For scanning and triage of records. Use the List table; a static table is simpler to read.",
+					"s": []
+				},
+				{
+					"t": "For editing a few columns of known data without computed columns. Use the Data grid.",
+					"s": []
+				},
+				{
+					"t": "For deep edits of one record. Use the side panel.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Every column shows its type in the header: an icon for text, number, date and select, the formula mark, the AI origin mark, or the logo of the service an enrichment uses.",
+					"s": []
+				},
+				{
+					"t": "The grid has one tab stop. Arrow keys move between cells; Up from the first row reaches the column headers, where Enter opens the column menu.",
+					"s": []
+				},
+				{
+					"t": "The column menu holds rename, change type, sort, filter, wrap text, pin or unpin, column width, hide, insert left or right and delete. Delete happens at once with Undo.",
+					"s": []
+				},
+				{
+					"t": "Columns resize from the header: drag its right edge (60 to 640px) or double-click the edge to fit the widest value. From the keyboard, ⌥⇧ with an arrow on a header, or Column width in the column menu (Wider, Narrower, Fit to content).",
+					"s": []
+				},
+				{
+					"t": "Pin any column from its menu to keep it in view when scrolling sideways; pinned columns move to the left edge and show a pin in the header. Pinned columns never take more than 60% of the grid's width.",
+					"s": []
+				},
+				{
+					"t": "You always see where you are and which record changes: the row being edited is tinted (--color-active-row), and its row number and column header turn primary, as in Google Sheets. The active cell has a 2px primary outline on the surface. Under the pointer, the row takes --color-hover and the cell --color-selected. A select's list opens below the cell, never over it.",
+					"s": []
+				},
+				{
+					"t": "Select columns read as selectors: the value with a chevron, shown on row hover and focus. A second click on the active cell, a click on the chevron, Enter or any letter opens the list. Don't show select values as badges in an editable grid; badges read as status, not as something to change.",
+					"s": []
+				},
+				{
+					"t": "The row header is one compact slot: the row number, replaced by a checkbox on hover, on focus and while any row is checked, then the ⋮ menu, shown on hover. On touch screens both stay visible.",
+					"s": []
+				},
+				{
+					"t": "Computed columns show their progress in the status row and their state in each cell, in words. A run never overwrites a typed value.",
+					"s": []
+				},
+				{
+					"t": "Pressing Enter on a failed cell runs it again; the status line states the cost first.",
+					"s": []
+				},
+				{
+					"t": "Keys follow Excel and Google Sheets: Shift with an arrow extends the selection, ⌘ or Ctrl with an arrow jumps to the edge of the data, ⌘C and ⌘V copy and paste, ⌘D and ⌘R fill, ⌘Z undoes. Ctrl replaces ⌘ on Windows and Linux.",
+					"s": []
+				},
+				{
+					"t": "Copy puts tab-separated values on the clipboard, so a range pastes straight into Excel or Google Sheets, and numbers stay numbers.",
+					"s": []
+				},
+				{
+					"t": "Paste reads tab-separated values from Excel or Sheets into the range starting at the active cell, and checks each value against its column's type. Cells that don't fit keep their value, are outlined in red with the reason, and the status line says how many were left and why. Nothing is dropped without saying so.",
+					"s": []
+				},
+				{
+					"t": "Paste, fill, clear and edits can all be undone (⌘Z) and redone (⌘⇧Z or Ctrl+Y), and each one is announced: “Pasted 12 cells”, “Undid paste of 12 cells”.",
+					"s": []
+				},
+				{
+					"t": "Use size=\"dense\" (28px rows) for spreadsheet-like data. It is a variant for that data, never a row height setting; offer Wrap text per column for long values.",
+					"s": []
+				},
+				{
+					"t": "Tab moves out of the grid unless a cell is being edited, where it saves and moves right, so the grid stays one tab stop.",
+					"s": []
+				},
+				{
+					"t": "With onOpenRow, the name cell shows Open on hover and focus and the row menu has Open too; ⇧F10 opens the row menu from the keyboard.",
+					"s": []
+				},
+				{
+					"t": "Pair the grid with a ShortcutSheet group from sheetGridShortcuts(), which writes ⌘ on a Mac and Ctrl elsewhere, and list the same groups on the page with ShortcutList, so the keys are visible without pressing ? or ⌘/.",
+					"s": []
+				},
+				{
+					"t": "Add row and Add 10 rows put the new rows at the bottom, scroll there and make the first new cell active, so people can type straight away.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Keep the three empty-looking states apart: a dash when there is nothing, Not found when the service looked and found nothing, and Failed with the reason.",
+					"s": []
+				},
+				{
+					"t": "Status row words: Up to date, 62%, 3 errors, Out of date. Never a bare spinner.",
+					"s": []
+				},
+				{
+					"t": "Right-align numbers; show dates as 14 Mar 2026.",
+					"s": []
+				},
+				{
+					"t": "Status line messages say what happened and to how many cells: Copied 6 cells, Pasted 12 cells. 2 cells left as they were, Filled down 4 cells, Cleared 3 cells.",
+					"s": []
+				},
+				{
+					"t": "Rejection reasons say what to enter: “Enter a number, such as 1200.”, “Choose one of Lead, Qualified, Proposal.”",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "APG grid pattern: role grid, roving focus on cells, aria-sort on the sorted header, row numbers as row headers.",
+					"s": []
+				},
+				{
+					"t": "2.1.1 Keyboard: every column action is in a menu reached from the header by keyboard.",
+					"s": []
+				},
+				{
+					"t": "1.4.1 Use of colour: failed cells carry an icon and the reason, not only red.",
+					"s": []
+				},
+				{
+					"t": "4.1.3 Status messages: saves, clears and retries are announced from the status line.",
+					"s": []
+				},
+				{
+					"t": "2.4.11 Focus not obscured: cells scroll clear of the sticky header and frozen columns.",
+					"s": []
+				},
+				{
+					"t": "APG grid: aria-multiselectable on the grid and aria-selected on cells in the range; selections are announced as “6 cells selected: Job title to Seniority, rows 1 to 3.”",
+					"s": []
+				},
+				{
+					"t": "4.1.3 Status messages: copy, paste, fill, clear, undo and redo are announced from the status line, including the reason any cell was rejected.",
+					"s": []
+				},
+				{
+					"t": "3.3.1 Error identification: a rejected paste cell has aria-invalid, a red dashed outline and its reason in text, not colour alone.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "← → ↑ ↓",
+					"action": "Move one cell; up from row 1 to the filter row and the headers"
+				},
+				{
+					"keys": "⌘ / Ctrl + arrow",
+					"action": "Jump to the edge of the data in that direction"
+				},
+				{
+					"keys": "Home / End",
+					"action": "First or last cell in the row"
+				},
+				{
+					"keys": "⌘ Home / ⌘ End (Ctrl on Windows)",
+					"action": "First or last cell in the sheet"
+				},
+				{
+					"keys": "Page Up / Page Down",
+					"action": "Move 10 rows"
+				},
+				{
+					"keys": "⇧ + arrow, ⇧ Home / End",
+					"action": "Extend the selection"
+				},
+				{
+					"keys": "⌘ ⇧ + arrow",
+					"action": "Extend the selection to the edge of the data"
+				},
+				{
+					"keys": "⇧ click, click and drag",
+					"action": "Select a range with the mouse"
+				},
+				{
+					"keys": "⌘ A",
+					"action": "Select all cells"
+				},
+				{
+					"keys": "Ctrl Space",
+					"action": "Select the column"
+				},
+				{
+					"keys": "⇧ Space",
+					"action": "Select or deselect the rows of the selected cells (with row selection)"
+				},
+				{
+					"keys": "⌘ C",
+					"action": "Copy the range as tab-separated values, for here, Excel or Google Sheets"
+				},
+				{
+					"keys": "⌘ X",
+					"action": "Copy the range and clear it"
+				},
+				{
+					"keys": "⌘ V",
+					"action": "Paste from here, Excel or Google Sheets into the range from the active cell; each value is checked"
+				},
+				{
+					"keys": "Delete / Backspace",
+					"action": "Clear the editable cells in the range"
+				},
+				{
+					"keys": "⌘ D",
+					"action": "Fill down: the top row of the range into the rows below (one row: from the row above)"
+				},
+				{
+					"keys": "⌘ R",
+					"action": "Fill right: the left column of the range into the columns to its right"
+				},
+				{
+					"keys": "⌘ Z",
+					"action": "Undo the last edit, paste, clear or fill"
+				},
+				{
+					"keys": "⌘ ⇧ Z / Ctrl Y",
+					"action": "Redo"
+				},
+				{
+					"keys": "Enter / F2",
+					"action": "Edit; on a header, open the column menu; on a failed cell, run it again; on a group row, collapse or expand"
+				},
+				{
+					"keys": "Any character",
+					"action": "Start editing and replace the value; on a select cell, open the list"
+				},
+				{
+					"keys": "Space (yes or no cell)",
+					"action": "Turn it on or off"
+				},
+				{
+					"keys": "Enter (editing)",
+					"action": "Save and move down"
+				},
+				{
+					"keys": "⇧ Enter (editing)",
+					"action": "Save and move up"
+				},
+				{
+					"keys": "Tab (editing)",
+					"action": "Save and move right"
+				},
+				{
+					"keys": "⇧ Tab (editing)",
+					"action": "Save and move left"
+				},
+				{
+					"keys": "⌘ Enter (editing)",
+					"action": "Save the value into every selected cell"
+				},
+				{
+					"keys": "Esc (editing)",
+					"action": "Cancel the edit"
+				},
+				{
+					"keys": "Esc",
+					"action": "Clear the selection back to the active cell"
+				},
+				{
+					"keys": "⇧ F10 / Menu key, right click",
+					"action": "Open the row's actions"
+				},
+				{
+					"keys": "Alt ↓",
+					"action": "Open the column menu from a header"
+				},
+				{
+					"keys": "⌥ ⇧ ← / → (Alt Shift on Windows)",
+					"action": "On a header: make the column narrower or wider by 16px"
+				},
+				{
+					"keys": "⌘ ; (Ctrl ; on Windows)",
+					"action": "Put today's date in a date cell"
+				},
+				{
+					"keys": "⌘ / (Ctrl / on Windows), ?",
+					"action": "Show every shortcut"
+				},
+				{
+					"keys": "Tab",
+					"action": "Leave the grid (one tab stop)"
+				}
+			],
+			"related": [
+				"data-grid",
+				"columns-menu",
+				"run-status-bar",
+				"action-catalogue",
+				"ai-column",
+				"dense-table"
+			],
+			"references": []
+		},
+		{
+			"id": "columns-menu",
+			"name": "Columns menu",
+			"kind": "component",
+			"group": "Data",
+			"summary": "A menu that shows, hides and reorders the columns of a sheet or list table, with search, Show all and Hide all, type icons and eye toggles, plus wrapping and rows per page on list tables. Changes apply at once.",
+			"structure": [
+				"Button: Columns",
+				"Search field",
+				"Count with Show all and Hide all",
+				"Row per column: drag handle, type icon, name, Move up, Move down, eye toggle or lock",
+				"List tables: Wrap long text and Rows per page (25, 50, 100)",
+				"Where the choice is kept (\"Saved for you on this table\") and the help line for keyboard reordering"
+			],
+			"whenToUse": [
+				{
+					"t": "On a sheet or list table where people change which columns they see while they work and expect the change at once.",
+					"s": []
+				},
+				{
+					"t": "A table has more columns than most people need at once; let each person show, hide and reorder them.",
+					"s": []
+				},
+				{
+					"t": "People choose page size or line wrapping for their own work on a list table.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "To change what a column holds. Use the column menu in the sheet.",
+					"s": []
+				},
+				{
+					"t": "For filtering rows. Use the TwoUX Filter bar.",
+					"s": []
+				},
+				{
+					"t": "For saving a full working setup with filters. Use TwoUX Saved views.",
+					"s": []
+				},
+				{
+					"t": "As the main way to make a table usable; most people never customise, so defaults must already work.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Apply each change at once; there is nothing to confirm. Changing it back is the undo.",
+					"s": []
+				},
+				{
+					"t": "Every drag has a keyboard path (Space to pick up, arrows, Space to drop, Esc to cancel) and Move up and Move down buttons.",
+					"s": []
+				},
+				{
+					"t": "The column that names the record is locked: always shown, marked with a lock and the words Always shown.",
+					"s": []
+				},
+				{
+					"t": "Show the type icon of each column so people recognise it among similar names.",
+					"s": []
+				},
+				{
+					"t": "List columns in the same order they appear in the table.",
+					"s": []
+				},
+				{
+					"t": "Store the choice per person and per table, restore it on return, and say so in the menu: \"Saved for you on this table\".",
+					"s": []
+				},
+				{
+					"t": "Rows per page is a radio group, not a select, so the menu never opens a second popover.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Use sentence case and plain labels, for example \"Wrap long text\".",
+					"s": []
+				},
+				{
+					"t": "Zero results: No columns match \"cost\".",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Eye toggles are buttons with aria-pressed and a name that says what they do: Hide Email.",
+					"s": []
+				},
+				{
+					"t": "Moves are announced: Email moved to position 3 of 10.",
+					"s": []
+				},
+				{
+					"t": "2.5.7 Dragging movements: the Move buttons do the same as dragging.",
+					"s": []
+				},
+				{
+					"t": "Wrap long text is a labelled switch; Rows per page is a radio group named by its label.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Space / Enter on a handle",
+					"action": "Pick up or drop"
+				},
+				{
+					"keys": "↑ ↓ (picked up)",
+					"action": "Move the column"
+				},
+				{
+					"keys": "Esc (picked up)",
+					"action": "Cancel the move"
+				},
+				{
+					"keys": "Esc",
+					"action": "Close the menu; focus returns to Columns"
+				}
+			],
+			"related": [
+				"sheet-grid",
+				"list-table",
+				"saved-views",
+				"pagination-counts"
+			],
+			"references": []
+		},
+		{
+			"id": "run-status-bar",
+			"name": "Run status bar",
+			"kind": "component",
+			"group": "Data",
+			"summary": "The bottom bar of a sheet: Table up to date, or how far the run is with a meter, the credits spent so far and Stop; run history; and Auto-run with its cost per row.",
+			"structure": [
+				"Status: icon, words, rows done of total, percentage and meter",
+				"Credits so far",
+				"Errors link",
+				"Stop while running, or Run remaining with its cost",
+				"Auto-run switch with the cost per row",
+				"History popover"
+			],
+			"whenToUse": [
+				{
+					"t": "At the bottom of a sheet with computed columns, so people always see what is running and what it costs.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "For credits against a monthly limit. Use the Usage meter.",
+					"s": []
+				},
+				{
+					"t": "For one agent run with steps. Use Agent run.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Stop is always available while anything runs, and stopping keeps the finished cells.",
+					"s": []
+				},
+				{
+					"t": "Show progress as rows and a percentage, with a meter, never a bare spinner.",
+					"s": []
+				},
+				{
+					"t": "State the credits spent so far while running, and the cost of Run remaining before it starts.",
+					"s": []
+				},
+				{
+					"t": "Auto-run states its cost per row next to the switch, before anyone turns it on.",
+					"s": []
+				},
+				{
+					"t": "History lists each run with rows, credits, outcome and when.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Running: \"1,240 of 2,000 rows · 62%\". Stopped: \"Stopped at 62%\". Done: \"Table up to date\".",
+					"s": []
+				},
+				{
+					"t": "Costs use the unit: \"≈ 1.5 credits / row\".",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "The progress is a progressbar with its value; the status line is a live region.",
+					"s": []
+				},
+				{
+					"t": "Errors are words with an icon, not a red dot.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Reach Stop, Auto-run and History"
+				}
+			],
+			"related": [
+				"sheet-grid",
+				"usage-meter",
+				"agent-run"
+			],
+			"references": []
+		},
+		{
+			"id": "field-mapping",
+			"name": "Field mapping",
+			"kind": "component",
+			"group": "Data",
+			"summary": "A list of target fields, each with the source column that fills it: required fields marked, type mismatches warned in words, and other source columns skipped or created as new columns. Used by imports and, later, automations.",
+			"structure": [
+				"Headings: Field in the table, Column in the file",
+				"Row: type icon, field name, Required, arrow, source select with a sample value",
+				"Warning under a row: 3 of 20 values aren't an email address",
+				"Other columns in the file: Don't import or Create column"
+			],
+			"whenToUse": [
+				{
+					"t": "When data from one place fills fields in another: a CSV import, a connected service, an automation step.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "For choosing which columns show. Use the Columns menu.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Map by name automatically, ignoring case and punctuation, and let people change every pair.",
+					"s": []
+				},
+				{
+					"t": "Mark required fields in words, and check them when people submit, not by disabling the button.",
+					"s": []
+				},
+				{
+					"t": "Warn about values that don't fit the field type under that row, with how many.",
+					"s": []
+				},
+				{
+					"t": "Offer Create column for source columns no field uses, defaulting to Don't import.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Warnings name the column and the type: \"3 of 20 values in E-mail aren't an email address.\"",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Each select is labelled by its field name; warnings are linked with aria-describedby.",
+					"s": []
+				},
+				{
+					"t": "Warnings carry an icon and words, not colour alone.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Move between selects"
+				},
+				{
+					"keys": "Space / Enter",
+					"action": "Open a select"
+				}
+			],
+			"related": [
+				"csv-import",
+				"sheet-grid"
+			],
+			"references": []
+		},
+		{
+			"id": "csv-import",
+			"name": "CSV import",
+			"kind": "component",
+			"group": "Data",
+			"summary": "A two-step dialog: choose a CSV file, its delimiter and header row; then match columns, read the problems before importing, preview the first 20 rows with problem cells marked, and import with the count on the button.",
+			"structure": [
+				"Step 1: File drop, Use the sample file, Delimiter, First row contains column names",
+				"Step 2: problem summary with what happens to bad rows",
+				"Field mapping",
+				"Preview of the first 20 rows, or only rows with problems, with Fix on problem cells",
+				"Footer: Back, Cancel, Import 1,248 rows"
+			],
+			"whenToUse": [
+				{
+					"t": "Bringing rows from a spreadsheet into a table.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "For a single file attached to a record. Use File drop.",
+					"s": []
+				},
+				{
+					"t": "For syncing a connected service. Use the connector and an automation.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Show problems before importing, in a summary at the top that says what will happen to bad rows: skipped, or imported with the cells left empty.",
+					"s": []
+				},
+				{
+					"t": "Mark problem cells in the preview with an icon and a word, and let people fix them in place.",
+					"s": []
+				},
+				{
+					"t": "Put the number of rows on the Import button, so the result is known before pressing it.",
+					"s": []
+				},
+				{
+					"t": "Accept the file by drop or by the Upload button, state the type and size limit, and explain a wrong file in words.",
+					"s": []
+				},
+				{
+					"t": "Detect the delimiter and header row, and let people change both.",
+					"s": []
+				},
+				{
+					"t": "Read dates day first, as in the UK (02/11/2026 is 2 November), accept ISO 8601 and written months (14 Mar 2026), and mark anything else, including impossible dates such as 31/02/2026, as Not a date. Hand dates to the app as ISO 8601 so it never re-reads them.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Summary: \"3 rows have an invalid email. They will be skipped or you can fix them.\"",
+					"s": []
+				},
+				{
+					"t": "Wrong file: \"That isn't a CSV file. Save the sheet as CSV and choose it again.\"",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Progress is written as Step 2 of 2.",
+					"s": []
+				},
+				{
+					"t": "The summary takes focus after a failed Import; problem cells have the word, not only a tint.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Esc",
+					"action": "Close the dialog"
+				},
+				{
+					"keys": "Enter (fixing)",
+					"action": "Save the fixed value"
+				},
+				{
+					"keys": "Esc (fixing)",
+					"action": "Cancel the fix"
+				}
+			],
+			"related": [
+				"field-mapping",
+				"file-drop",
+				"sheet-grid"
+			],
+			"references": []
+		},
+		{
+			"id": "action-catalogue",
+			"name": "Action catalogue",
+			"kind": "component",
+			"group": "Data",
+			"summary": "A searchable list, in the side panel, of actions that add a column: look-ups from other services, AI, formulas and exports, each with a one-line description and its cost per row. Choosing one opens a short set-up with the estimated total.",
+			"structure": [
+				"Search",
+				"Tabs: Suggested, Enrichment, AI, Formulas, Exports, with counts",
+				"Action: logo or icon, name, description, cost per row",
+				"Set-up: column name, inputs, Run after adding (test, all, not yet), estimated total, Add column"
+			],
+			"whenToUse": [
+				{
+					"t": "To add a computed column to a sheet.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "For adding a dashboard item. Use the Items palette.",
+					"s": []
+				},
+				{
+					"t": "For templates of whole tables. Use the Templates gallery.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "State the cost per row on every action, and the total for the current rows before adding.",
+					"s": []
+				},
+				{
+					"t": "Default to testing on the first 10 rows when an action costs credits.",
+					"s": []
+				},
+				{
+					"t": "Show the service's logo with ProviderLogo when an action uses one; otherwise a plain icon.",
+					"s": []
+				},
+				{
+					"t": "Search covers every category; tabs group the rest.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Cost: \"≈ 0.5 credits / row\"; total: \"About 1,000 credits for 2,000 rows\".",
+					"s": []
+				},
+				{
+					"t": "The button says what happens: \"Add column and test on 10 rows\".",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Each action is a button whose name includes its cost.",
+					"s": []
+				},
+				{
+					"t": "Back to the list returns focus to the action chosen.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Move through actions"
+				},
+				{
+					"keys": "Enter",
+					"action": "Open an action's set-up"
+				}
+			],
+			"related": [
+				"sheet-grid",
+				"run-status-bar",
+				"items-palette",
+				"prompt-editor"
+			],
+			"references": []
+		},
+		{
+			"id": "table-settings",
+			"name": "Table settings",
+			"kind": "component",
+			"group": "Data",
+			"summary": "Settings for one table in the side panel: how duplicates are handled with the consequence written out, deleting empty rows, and sharing as a template with who can use it. Saved with Save; closing with changes asks first.",
+			"structure": [
+				"Duplicate rows: match on, Keep the oldest, Keep the newest, Keep both, each with what happens",
+				"Empty rows: Delete empty rows automatically",
+				"Share as a template: checkbox, who can use it, link with Copy",
+				"Footer: Cancel, Save"
+			],
+			"whenToUse": [
+				{
+					"t": "For rules that apply to a whole table rather than one column.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "For column set-up. Use the column menu.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Write out the consequence of each duplicate rule, including overwritten values and runs that cost credits again.",
+					"s": []
+				},
+				{
+					"t": "Use checkboxes and radios in this form, saved with Save; a switch is only for changes that apply at once.",
+					"s": []
+				},
+				{
+					"t": "Ask before discarding only when something changed, and warn before leaving the page while dirty.",
+					"s": []
+				},
+				{
+					"t": "Say what a template shares and what it never shares.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "\"Rows and looked-up values are never shared.\"",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Radio groups are labelled by their heading; hints are linked to each option.",
+					"s": []
+				},
+				{
+					"t": "The discard dialog puts focus on Keep editing.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "⌘ Enter",
+					"action": "Save"
+				},
+				{
+					"keys": "Esc",
+					"action": "Close; asks first when there are changes"
+				}
+			],
+			"related": [
+				"side-panel",
+				"sheet-grid"
+			],
+			"references": []
+		}
+	]
+}

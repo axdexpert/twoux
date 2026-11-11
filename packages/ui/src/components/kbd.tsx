@@ -1,0 +1,34 @@
+/**
+ * Generated from shadcn/ui new-york-v4 "kbd" by scripts/tailor-shadcn.mjs. Do not edit by hand.
+ * TwoUX changes:
+ *  - Inside a primary or destructive button, the key sits on a darker tint so white text keeps 4.5:1
+ */
+import { cn } from "../lib/cn"
+
+function Kbd({ className, ...props }: React.ComponentProps<"kbd">) {
+  return (
+    <kbd
+      data-slot="kbd"
+      className={cn(
+        "pointer-events-none inline-flex h-5 w-fit min-w-5 items-center justify-center gap-1 rounded-xs bg-muted px-1 font-sans text-sm font-medium text-muted-foreground select-none",
+        "[&_svg:not([class*='size-'])]:size-3",
+        "[[data-slot=button][data-variant=default]_&]:bg-black/20 [[data-slot=button][data-variant=default]_&]:text-primary-foreground [[data-slot=button][data-variant=destructive]_&]:bg-black/20 [[data-slot=button][data-variant=destructive]_&]:text-white",
+        "[[data-slot=tooltip-content]_&]:bg-background/20 [[data-slot=tooltip-content]_&]:text-background",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+function KbdGroup({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <kbd
+      data-slot="kbd-group"
+      className={cn("inline-flex items-center gap-1", className)}
+      {...props}
+    />
+  )
+}
+
+export { Kbd, KbdGroup }

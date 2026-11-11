@@ -1,0 +1,2659 @@
+{
+	"components": [
+		{
+			"id": "toast",
+			"name": "Toast",
+			"group": "Feedback and overlays",
+			"summary": "A short, non-blocking confirmation of something the person just did, with Undo when the action can be reversed.",
+			"structure": [
+				"Status icon (check for success)",
+				"Title: what happened, past tense",
+				"Optional body: which record, one line",
+				"Undo button (ghost, small)",
+				"Live region container (role=\"status\")"
+			],
+			"whenToUse": [
+				{
+					"t": "Confirm an action the person just took in the current view, such as publishing, extending or closing a listing.",
+					"s": []
+				},
+				{
+					"t": "Offer Undo right after a reversible change, so the change can go ahead without a confirmation dialog.",
+					"s": []
+				},
+				{
+					"t": "Confirm accelerated actions done by keyboard (T, D, E, ⇧C), where the person has no other visual cue that the key worked.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "Errors and anything the person must act on. Use an Error state in place, or a Banner on the page.",
+					"s": []
+				},
+				{
+					"t": "Events the person did not cause, such as an agent finishing or a listing about to close. Send them to the Inbox.",
+					"s": []
+				},
+				{
+					"t": "When the result is already visible on screen and there is nothing else to know, show nothing.",
+					"s": []
+				},
+				{
+					"t": "Irreversible, high-impact actions. Ask first with a Confirmation dialog.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Place the toast at the bottom right, 16px from the edges, at most 340px wide, on a solid white surface. It rises above the focused element and anything marked data-toast-avoid, such as a sticky footer, so it never covers them.",
+					"s": []
+				},
+				{
+					"t": "Show one toast at a time. A new toast replaces the one on screen rather than stacking.",
+					"s": []
+				},
+				{
+					"t": "Hide it after 6 seconds. Pause the timer while the pointer is over the toast or focus is inside it.",
+					"s": []
+				},
+				{
+					"t": "Allow one action only, and only Undo. Never put a Close or Cancel button next to it.",
+					"s": []
+				},
+				{
+					"t": "Undo must also be reachable without the toast: ⌘Z undoes the last action for as long as the record allows.",
+					"s": []
+				},
+				{
+					"t": "Never move focus to the toast. The person keeps working where they were.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Title in past tense saying what happened: \"Listing published\", \"Snoozed until Mon 9:00\".",
+					"s": []
+				},
+				{
+					"t": "Name the record in the body when the title alone is ambiguous: \"Junior Product Designer is now live.\"",
+					"s": []
+				},
+				{
+					"t": "Sentence case, UK spelling, one short sentence, no exclamation marks and no \"successfully\".",
+					"s": []
+				},
+				{
+					"t": "Do not apologise or thank. Say the outcome and stop.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Render toasts into a role=\"status\" live region that already exists in the DOM, so screen readers announce them without moving focus (4.1.3).",
+					"s": []
+				},
+				{
+					"t": "Because Undo disappears with the toast, the same undo is available through ⌘Z and the record's activity, which meets the intent of 2.2.1 Timing Adjustable.",
+					"s": []
+				},
+				{
+					"t": "The toast must not hide the focused element: TwoUX's Toaster measures the focused element and any data-toast-avoid element in its corner and moves up above them (2.4.11).",
+					"s": []
+				},
+				{
+					"t": "Do not rely on the green check alone: the title says the outcome in words (1.4.1).",
+					"s": []
+				},
+				{
+					"t": "Respect prefers-reduced-motion: the toast appears without sliding when motion is reduced (2.3.3).",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "⌘Z",
+					"action": "Undo the last action, whether or not the toast is still visible"
+				},
+				{
+					"keys": "Tab",
+					"action": "Reaches the Undo button while the toast is shown; the timer pauses while focus is inside"
+				}
+			],
+			"related": [
+				"banner",
+				"confirmation-dialog",
+				"inbox",
+				"notifications-decision",
+				"error-state"
+			],
+			"references": []
+		},
+		{
+			"id": "banner",
+			"name": "Banner (inline alert)",
+			"group": "Feedback and overlays",
+			"summary": "A persistent message inside the page about a condition that affects what the person is looking at, with at most one action.",
+			"structure": [
+				"Icon (info, warning or error)",
+				"Message: one sentence",
+				"Dismiss (ghost), only when nothing is blocked",
+				"One action (secondary button), such as Review",
+				"Form variant: error strip with count and \"Go to first\" link"
+			],
+			"whenToUse": [
+				{
+					"t": "A condition on the current page that stays true until it is resolved, such as \"Two listings expire this week.\"",
+					"s": []
+				},
+				{
+					"t": "Something blocks a task until fixed, such as form errors before Publish.",
+					"s": []
+				},
+				{
+					"t": "Data-loss or connection problems that affect the whole page. These may sit above the page header.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "Confirming an action the person just took. Use a Toast.",
+					"s": []
+				},
+				{
+					"t": "Background events that need someone to act later. Use the Inbox.",
+					"s": []
+				},
+				{
+					"t": "A whole region failed to load. Use the Error state in place of that region.",
+					"s": []
+				},
+				{
+					"t": "Feature announcements or tips. Leave them out, or put them in the setup checklist in the sidebar.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Place the banner in context: above the table it refers to, or above the submit button for form problems.",
+					"s": []
+				},
+				{
+					"t": "Show one banner per region. If several apply, order them from most to least severe.",
+					"s": []
+				},
+				{
+					"t": "Offer Dismiss only when nothing is blocked and no action is required. Condition banners clear themselves when the condition ends.",
+					"s": []
+				},
+				{
+					"t": "At most one action, as a secondary button on the right. Dismiss sits before it as a ghost button.",
+					"s": []
+				},
+				{
+					"t": "Use neutral styling for information and keep red for errors that stop the task.",
+					"s": []
+				},
+				{
+					"t": "The form error strip counts the problems and links to the first one: \"2 fields need fixing before you can publish. Go to first\".",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Say what is true and what to do: the condition, then a verb on the button (\"Review\").",
+					"s": []
+				},
+				{
+					"t": "One or two short sentences, sentence case, no title when one sentence is enough.",
+					"s": []
+				},
+				{
+					"t": "For errors, say what went wrong and how to recover, without blaming the person.",
+					"s": []
+				},
+				{
+					"t": "No apologies, no \"please\", no exclamation marks.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Information banners that appear after load sit in a polite live region; the form error strip uses role=\"alert\" because it reports a blocking problem (4.1.3).",
+					"s": []
+				},
+				{
+					"t": "The icon is never the only cue: the sentence states severity in words, and the icon has an accessible label (1.4.1).",
+					"s": []
+				},
+				{
+					"t": "Errors name the field and describe the problem in text, and \"Go to first\" moves focus to it (3.3.1).",
+					"s": []
+				},
+				{
+					"t": "A banner must not be sticky over content in a way that hides the focused element (2.4.11).",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Reaches Dismiss, then the action"
+				},
+				{
+					"keys": "Enter",
+					"action": "Activates the focused button or the \"Go to first\" link"
+				}
+			],
+			"related": [
+				"toast",
+				"error-state",
+				"notifications-decision",
+				"page-header"
+			],
+			"references": []
+		},
+		{
+			"id": "confirmation-dialog",
+			"name": "Confirmation dialog",
+			"group": "Feedback and overlays",
+			"summary": "A modal question before an irreversible or high-impact action, stating the consequence and offering the safe option first.",
+			"structure": [
+				"Title: a question naming the action and count (\"Close 2 listings?\")",
+				"Body: the consequence, and what is kept",
+				"Footer: safe secondary button (\"Keep open\")",
+				"Footer: destructive button named after the action (\"Close listings\")"
+			],
+			"whenToUse": [
+				{
+					"t": "Before actions that cannot be undone or that affect other people, such as closing listings that stop taking applications.",
+					"s": []
+				},
+				{
+					"t": "Bulk actions on many records where a mistake is costly to repair.",
+					"s": []
+				},
+				{
+					"t": "When the person must read a consequence they could not otherwise see, such as what happens to existing applicants.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "Reversible actions. Do them at once and offer Undo in a Toast.",
+					"s": []
+				},
+				{
+					"t": "Collecting lots of input or showing a record. Use the Side panel.",
+					"s": []
+				},
+				{
+					"t": "Reporting an error. Use a Banner or the Error state in place.",
+					"s": []
+				},
+				{
+					"t": "Low-risk actions that are easy to redo, which need no confirmation at all.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Width up to 420px, centred, with the page dimmed behind it. One dialog at a time; never open a dialog from a dialog.",
+					"s": []
+				},
+				{
+					"t": "Footer buttons sit on the right: the safe option first, the destructive action last in the destructive colour.",
+					"s": []
+				},
+				{
+					"t": "On open, focus goes to the safe button, so Enter cannot destroy anything by accident.",
+					"s": []
+				},
+				{
+					"t": "Esc and the safe button both close it with no change. On close, focus returns to the control that opened it.",
+					"s": []
+				},
+				{
+					"t": "For the most dangerous, rare actions, require an unusual step such as typing the listing name.",
+					"s": []
+				},
+				{
+					"t": "After confirming, report the result with a Toast.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Title as a specific question with the verb and the object: \"Close 2 listings?\", never \"Are you sure?\".",
+					"s": []
+				},
+				{
+					"t": "Body states the consequence and what stays: \"They stop taking applications now. The 140 people who already applied stay in your pipeline.\"",
+					"s": []
+				},
+				{
+					"t": "Buttons name the outcome (\"Keep open\", \"Close listings\"), never Yes, No or OK.",
+					"s": []
+				},
+				{
+					"t": "The confirm label matches the title's verb.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Use role=\"alertdialog\" with aria-modal=\"true\", aria-labelledby on the title and aria-describedby on the consequence.",
+					"s": []
+				},
+				{
+					"t": "Tab and Shift+Tab cycle inside the dialog; Esc closes it, so focus is contained but never trapped (2.1.2).",
+					"s": []
+				},
+				{
+					"t": "Focus returns to the opener on close, or to the next logical row if the opener was removed (2.4.3).",
+					"s": []
+				},
+				{
+					"t": "Confirming before data changes is one of the three ways to meet 3.3.4 Error Prevention.",
+					"s": []
+				},
+				{
+					"t": "The destructive button is identified by its label, not only its red colour (1.4.1).",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab / ⇧Tab",
+					"action": "Move between the two buttons, wrapping inside the dialog"
+				},
+				{
+					"keys": "Enter",
+					"action": "Activates the focused button (the safe one on open)"
+				},
+				{
+					"keys": "Esc",
+					"action": "Closes without changing anything"
+				}
+			],
+			"related": [
+				"toast",
+				"side-panel",
+				"keyboard-shortcut-sheet"
+			],
+			"references": []
+		},
+		{
+			"id": "empty-state",
+			"name": "Empty state",
+			"group": "Feedback and overlays",
+			"summary": "What a list, table or panel shows when it loaded correctly but has nothing to show, with the next step.",
+			"structure": [
+				"Icon tile (32px, neutral)",
+				"Title: the state, sentence case, no full stop",
+				"Description: why, and what to try (max 36 characters wide per line block)",
+				"One action (secondary button), or none for a finished state",
+				"Dashed container sized to the region it replaces"
+			],
+			"whenToUse": [
+				{
+					"t": "Filters or search match nothing: \"No listings match these filters\".",
+					"s": []
+				},
+				{
+					"t": "Nothing has been created yet, such as a team with no listings.",
+					"s": []
+				},
+				{
+					"t": "A queue is cleared, such as the Inbox: \"All caught up\".",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "Data is still loading. Use the Loading skeleton.",
+					"s": []
+				},
+				{
+					"t": "Loading failed. Use the Error state, never an empty message.",
+					"s": []
+				},
+				{
+					"t": "Only part of a record is missing, such as one field. Show \"Add\" in the field itself.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Replace the region that would hold the data, inside the same container, so filters and the result count stay in place.",
+					"s": []
+				},
+				{
+					"t": "Distinguish no data (nothing created) from no results (filters too narrow); they need different actions.",
+					"s": []
+				},
+				{
+					"t": "Give one next step: Clear filters for no results, the create action for no data. Never leave a dead end.",
+					"s": []
+				},
+				{
+					"t": "Keep the result count visible (\"0 of 24\") so the person sees the filters, not the data, caused the empty view.",
+					"s": []
+				},
+				{
+					"t": "Show the empty state only after loading finishes; never as placeholder text that is later replaced.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Title names the state plainly and briefly: \"No listings match these filters\".",
+					"s": []
+				},
+				{
+					"t": "Description says why and what to try, without repeating the title: \"Try a wider date range, or clear the location filter.\"",
+					"s": []
+				},
+				{
+					"t": "Button label starts with a verb and matches the next step: \"Clear filters\", \"New listing\".",
+					"s": []
+				},
+				{
+					"t": "Neutral tone for no results; a short positive line for a finished queue. No jokes, no apologies.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Replace the whole table, headers included, so screen readers do not read an empty structure first (1.3.1).",
+					"s": []
+				},
+				{
+					"t": "When filtering produces zero results, announce the new count through a polite live region (4.1.3).",
+					"s": []
+				},
+				{
+					"t": "The icon is decorative and has empty alt text.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Reaches the single action"
+				},
+				{
+					"keys": "F",
+					"action": "Opens the filter picker to change filters instead of clearing them"
+				}
+			],
+			"related": [
+				"loading-skeleton",
+				"error-state",
+				"inbox",
+				"setup-checklist"
+			],
+			"references": []
+		},
+		{
+			"id": "loading-skeleton",
+			"name": "Loading skeleton",
+			"group": "Feedback and overlays",
+			"summary": "Grey placeholder rows that keep the table or panel's shape while data loads.",
+			"structure": [
+				"Region header kept (\"Loading listings…\")",
+				"Skeleton rows at the real row height (36px)",
+				"Bars per column: checkbox, title, secondary, right-aligned figure",
+				"Shimmer animation (off with reduced motion)"
+			],
+			"whenToUse": [
+				{
+					"t": "First load of a table, list or panel whose layout is known.",
+					"s": []
+				},
+				{
+					"t": "Loads that take roughly 1 to 10 seconds.",
+					"s": []
+				},
+				{
+					"t": "Several parts of a view load at once and each can fill in as it arrives.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "Loads under 1 second. Show nothing and render the data.",
+					"s": []
+				},
+				{
+					"t": "A single action in progress, such as Apply or Run. Use the button's inline spinner.",
+					"s": []
+				},
+				{
+					"t": "Work over 10 seconds or with known progress, such as an agent run. Use a progress indicator with a count (\"2 / 5\").",
+					"s": []
+				},
+				{
+					"t": "Popovers, menus, toasts or dialogs, whose content should already be loaded.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Match the real layout: same row height, same column positions, varied bar widths so it reads as text, numbers on the right.",
+					"s": []
+				},
+				{
+					"t": "Keep the header, filters and page actions live; only the data region shows the skeleton.",
+					"s": []
+				},
+				{
+					"t": "Replace the skeleton as soon as data arrives, section by section where possible.",
+					"s": []
+				},
+				{
+					"t": "Never combine a skeleton with a spinner in the same region.",
+					"s": []
+				},
+				{
+					"t": "Shimmer runs at 1.4 s per cycle and stops when prefers-reduced-motion is set.",
+					"s": []
+				},
+				{
+					"t": "If loading fails, swap to the Error state in the same space.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "The region header says what is loading, short, without articles: \"Loading listings…\".",
+					"s": []
+				},
+				{
+					"t": "No other text inside the skeleton; it holds space, it does not explain.",
+					"s": []
+				},
+				{
+					"t": "Never rely on a bare \"Loading…\" message alone for longer waits; the skeleton shows where the data will appear, and long runs show a count.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Mark the region aria-busy while loading and give it a label (\"Loading listings\"); skeleton bars are hidden from assistive technology.",
+					"s": []
+				},
+				{
+					"t": "Do not announce every load; announce only the result, such as the row count, through a polite live region (4.1.3).",
+					"s": []
+				},
+				{
+					"t": "Shimmer shown next to usable content must stop within 5 seconds or be pausable; TwoUX's reduced-motion setting stops it (2.2.2, 2.3.3).",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "None",
+					"action": "No keyboard interaction; filters and page actions stay usable while it loads"
+				}
+			],
+			"related": [
+				"empty-state",
+				"error-state",
+				"side-panel"
+			],
+			"references": []
+		},
+		{
+			"id": "error-state",
+			"name": "Error state (failed to load)",
+			"group": "Feedback and overlays",
+			"summary": "Shown in place of a region that failed to load: what failed, that nothing was lost, and Try again.",
+			"structure": [
+				"Region header kept (\"Listings\")",
+				"Icon tile in the error colour",
+				"Title: what failed (\"Couldn't load listings\")",
+				"Description: why if known, and what is kept",
+				"Try again button (secondary) with its shortcut R",
+				"Optional: expandable technical details"
+			],
+			"whenToUse": [
+				{
+					"t": "A table, list, chart or panel could not fetch its data.",
+					"s": []
+				},
+				{
+					"t": "Only one region fails while the rest of the page works; the error stays inside that region.",
+					"s": []
+				},
+				{
+					"t": "The person lacks permission to see a region's data.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "An action failed (save, extend, close). Show a Banner near the action and keep the person's input.",
+					"s": []
+				},
+				{
+					"t": "Field validation. Use the inline field error and the form error strip (Banner).",
+					"s": []
+				},
+				{
+					"t": "Nothing matched the filters. That is an Empty state, not an error.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Replace only the failed region, at the same size, so the header, filters and other regions stay usable.",
+					"s": []
+				},
+				{
+					"t": "Keep the person's filters, sort and selection; say so in the message.",
+					"s": []
+				},
+				{
+					"t": "Offer one action, Try again, which re-runs the same request.",
+					"s": []
+				},
+				{
+					"t": "Retrying swaps back to the Loading skeleton, then to data or the error again.",
+					"s": []
+				},
+				{
+					"t": "Put raw error codes in an expandable details section, never in the main message.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Title says what failed in plain words: \"Couldn't load listings\".",
+					"s": []
+				},
+				{
+					"t": "Description says why if known and what is safe: \"The server didn't respond. Your filters are kept.\"",
+					"s": []
+				},
+				{
+					"t": "Take ownership; never imply the person caused it.",
+					"s": []
+				},
+				{
+					"t": "No apologies, jokes or exclamation marks. Do not promise that a team has been told unless that is true.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "The error is identified in text, not only by the red icon (3.3.1, 1.4.1).",
+					"s": []
+				},
+				{
+					"t": "Announce the failure once through a live region; do not move focus unless the person triggered the load (4.1.3).",
+					"s": []
+				},
+				{
+					"t": "After Try again succeeds, keep focus on a stable element such as the region header, not on the removed button (2.4.3).",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "R",
+					"action": "Try again (single-key shortcut, can be turned off)"
+				},
+				{
+					"keys": "Tab / Enter",
+					"action": "Reach and activate Try again"
+				}
+			],
+			"related": [
+				"loading-skeleton",
+				"empty-state",
+				"banner",
+				"toast"
+			],
+			"references": []
+		},
+		{
+			"id": "side-panel",
+			"name": "Side panel (drawer)",
+			"group": "Feedback and overlays",
+			"summary": "A panel on the right that shows the selected row's detail beside the table, in push (default) or overlay mode; 440px by default and resizable from 360px to half the canvas in push mode.",
+			"structure": [
+				"Control bar without a title: previous, next, position (\"3 of 9\"), open full page, close",
+				"Record ID, title and status line",
+				"Tabs (Overview, Candidates, Activity)",
+				"Sections split by full-width rules, each with a 13px heading and one action on the right",
+				"Empty fields show \"Add\"",
+				"Pinned footer: destructive action left, primary right"
+			],
+			"whenToUse": [
+				{
+					"t": "Viewing or editing one record while the list stays in view, such as a listing's figures beside the listings table.",
+					"s": []
+				},
+				{
+					"t": "Working down a list one record at a time: J and K move the selection and the panel follows.",
+					"s": []
+				},
+				{
+					"t": "Secondary tasks that should not take the person off the page, such as the Assistant's quick questions.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "The full picture of one record, with history and long sections. Open the full page (⇧↵).",
+					"s": []
+				},
+				{
+					"t": "A decision that must interrupt the task. Use a Confirmation dialog.",
+					"s": []
+				},
+				{
+					"t": "Confirming an action. Use a Toast.",
+					"s": []
+				},
+				{
+					"t": "Comparing many records side by side. Use the table with the chosen columns.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Push mode (default) on list pages: the table narrows so filters, page actions and the first columns stay usable and nothing is hidden behind the panel.",
+					"s": []
+				},
+				{
+					"t": "Overlay mode when the page is narrower than about 1100px, or for wide content (dashboards, wide tables) that pushing would crush. The first columns stay visible.",
+					"s": []
+				},
+				{
+					"t": "One component with mode=\"push\" | \"overlay\"; the person can switch with ⇧P and the choice is remembered.",
+					"s": []
+				},
+				{
+					"t": "Opens only from a person's action (Enter or a click on a row), never on its own.",
+					"s": []
+				},
+				{
+					"t": "Esc closes it and focus returns to the row it came from.",
+					"s": []
+				},
+				{
+					"t": "Do not repeat table header actions inside the panel; the footer holds actions for this record only.",
+					"s": []
+				},
+				{
+					"t": "Below 860px the panel takes the full width of the canvas.",
+					"s": []
+				},
+				{
+					"t": "A panel for one thing, such as settings or a form, has its title in the 44px header bar, with the object it belongs to beside it in muted text (Table settings · People) and Close on the right. A record panel that steps through a list keeps previous, next and the position in the bar, and shows the record's name and status under it.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "The control bar has no title; the record's own title sits below it, matching the row the person picked.",
+					"s": []
+				},
+				{
+					"t": "Section headings are short nouns (\"Performance\", \"Funnel\", \"Details\") with one action each.",
+					"s": []
+				},
+				{
+					"t": "Empty fields say \"Add\" and the field name rather than a dash, so the gap is an invitation, not an error.",
+					"s": []
+				},
+				{
+					"t": "Figures sit next to a comparison (\"vs board median\") so a number can be judged without leaving.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "The panel is a non-modal complementary region with a label; it does not trap focus, so J/K keep driving the table (2.1.2).",
+					"s": []
+				},
+				{
+					"t": "In overlay mode the panel must not cover the focused row; the table scrolls the active row into the visible part (2.4.11).",
+					"s": []
+				},
+				{
+					"t": "Tabs inside the panel follow the APG tabs pattern with arrow keys between tabs.",
+					"s": []
+				},
+				{
+					"t": "Push and overlay both reflow to a single column at 320px wide without horizontal scrolling of text (1.4.10).",
+					"s": []
+				},
+				{
+					"t": "Focus order inside the panel follows reading order: control bar, title, tabs, sections, footer (2.4.3).",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Enter",
+					"action": "Open the panel for the focused row"
+				},
+				{
+					"keys": "J / K",
+					"action": "Next or previous row; the panel follows"
+				},
+				{
+					"keys": "⇧↵",
+					"action": "Open the record as a full page"
+				},
+				{
+					"keys": "⇧P",
+					"action": "Switch between push and overlay"
+				},
+				{
+					"keys": "Esc",
+					"action": "Close the panel and return focus to the row"
+				}
+			],
+			"related": [
+				"app-shell",
+				"command-palette",
+				"confirmation-dialog",
+				"loading-skeleton"
+			],
+			"references": []
+		},
+		{
+			"id": "command-palette",
+			"name": "Command palette (⌘K)",
+			"group": "Navigation",
+			"summary": "A searchable list of actions and destinations, scoped to the current selection, opened with ⌘K from anywhere.",
+			"structure": [
+				"Search input with a scope chip (\"2 listings\") and Esc hint",
+				"Group: Actions on selection, each with its shortcut",
+				"Group: Go to (records and pages)",
+				"Footer hints: ↑ ↓ navigate, ↵ run, Tab change scope"
+			],
+			"whenToUse": [
+				{
+					"t": "Run any action by name without hunting through menus, especially on a selection of rows.",
+					"s": []
+				},
+				{
+					"t": "Jump to a record or page by typing part of its name.",
+					"s": []
+				},
+				{
+					"t": "Learn shortcuts: every action shows its key, so the palette teaches the faster path.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "As the only way to reach an action. Every command also exists as a visible button or menu item.",
+					"s": []
+				},
+				{
+					"t": "Filtering the table. Use Filter (F) and its type-ahead field list.",
+					"s": []
+				},
+				{
+					"t": "Confirming irreversible actions. A destructive command picked in the palette still opens the Confirmation dialog.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Opens centred near the top, up to 560px wide, with focus in the search input.",
+					"s": []
+				},
+				{
+					"t": "Scope defaults to the current selection and shows it as a chip; Tab switches to the whole workspace.",
+					"s": []
+				},
+				{
+					"t": "Order results with actions on the selection first, then Go to; show the most used actions before typing.",
+					"s": []
+				},
+				{
+					"t": "Results update with each keystroke, within 400 ms.",
+					"s": []
+				},
+				{
+					"t": "Enter runs the highlighted item and closes the palette; reversible results offer Undo in a toast.",
+					"s": []
+				},
+				{
+					"t": "Esc closes it and focus returns to where it was.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Commands start with a verb and name the object: \"Extend end by 30 days\", \"Export 2 rows as CSV\".",
+					"s": []
+				},
+				{
+					"t": "Commands that need more input end with an ellipsis: \"Extend end to a date…\".",
+					"s": []
+				},
+				{
+					"t": "Use the same command names as the buttons and menus they mirror.",
+					"s": []
+				},
+				{
+					"t": "Placeholder text says what can be typed: \"Search or run a command\".",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Built as a modal dialog containing a combobox with a listbox popup; DOM focus stays in the input and aria-activedescendant points to the highlighted item.",
+					"s": []
+				},
+				{
+					"t": "Group headings are exposed as group labels and each option's shortcut is part of its accessible description (1.3.1).",
+					"s": []
+				},
+				{
+					"t": "⌘K uses a modifier, so it stays on when single-key shortcuts are turned off (2.1.4).",
+					"s": []
+				},
+				{
+					"t": "Announce the number of results through a polite live region as the person types (4.1.3).",
+					"s": []
+				},
+				{
+					"t": "Esc always exits; there is no keyboard trap (2.1.2).",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "⌘K / Ctrl+K",
+					"action": "Open or close the palette"
+				},
+				{
+					"keys": "↑ / ↓",
+					"action": "Move through results"
+				},
+				{
+					"keys": "Enter",
+					"action": "Run the highlighted command"
+				},
+				{
+					"keys": "Tab",
+					"action": "Switch scope between selection and workspace"
+				},
+				{
+					"keys": "Esc",
+					"action": "Close and return focus"
+				}
+			],
+			"related": [
+				"keyboard-shortcut-sheet",
+				"app-shell",
+				"page-header",
+				"toast"
+			],
+			"references": []
+		},
+		{
+			"id": "keyboard-shortcut-sheet",
+			"name": "Shortcut sheet (?)",
+			"group": "Navigation",
+			"summary": "A panel listing every shortcut by task, opened with ?, which also holds the switch to turn single-key shortcuts off.",
+			"structure": [
+				"Toggle: Single-key shortcuts, with the note \"Turn off if you use a screen reader or voice control. ⌘ shortcuts stay on.\"",
+				"Group: Navigate (⌘K, G L, G P, /)",
+				"Group: Table (J K, X, ⇧J, ↵)",
+				"Group: Act (C, E, F, ⌘Z)",
+				"Each row: action name left, key caps right"
+			],
+			"whenToUse": [
+				{
+					"t": "Reference for people who want to learn the faster path after using the visible controls.",
+					"s": []
+				},
+				{
+					"t": "The single place to turn single-key shortcuts off.",
+					"s": []
+				},
+				{
+					"t": "Supporting expert users who already rely on shortcuts and want the full list in one view.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "As the main way to discover shortcuts. Show each key on its button, menu item and palette row.",
+					"s": []
+				},
+				{
+					"t": "Searching for an action to run. Use the Command palette.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Opens with ? from anywhere outside a text field, and from the Help menu.",
+					"s": []
+				},
+				{
+					"t": "Group shortcuts by task, a handful per group, so the sheet can be scanned.",
+					"s": []
+				},
+				{
+					"t": "Single-key shortcuts (C, E, F, J, K, X, R, G sequences) can be turned off; ⌘ shortcuts stay on.",
+					"s": []
+				},
+				{
+					"t": "Single-key shortcuts never fire while focus is in a text input.",
+					"s": []
+				},
+				{
+					"t": "Avoid keys that clash with the browser, the operating system or screen readers, and never override copy, paste or save.",
+					"s": []
+				},
+				{
+					"t": "Prefer one or two letters with a mnemonic (C create, E edit, F filter) over stacked modifiers.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Action names match the button labels they belong to.",
+					"s": []
+				},
+				{
+					"t": "Show keys as the symbols printed on the keyboard (⌘, ⇧, ↵) and give the Windows equivalent.",
+					"s": []
+				},
+				{
+					"t": "The off switch says who it is for in plain words.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Meets 2.1.4 Character Key Shortcuts by letting people turn single-key shortcuts off.",
+					"s": []
+				},
+				{
+					"t": "Every shortcut is an extra route; the same action is reachable by Tab and Enter (2.1.1).",
+					"s": []
+				},
+				{
+					"t": "Shown as a modal dialog with a heading; Esc closes it and focus returns (2.4.3).",
+					"s": []
+				},
+				{
+					"t": "The toggle is a real switch with its state exposed (4.1.2).",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "?",
+					"action": "Open the shortcut sheet"
+				},
+				{
+					"keys": "Esc",
+					"action": "Close it"
+				},
+				{
+					"keys": "Tab",
+					"action": "Reach the single-key shortcut switch"
+				}
+			],
+			"related": [
+				"command-palette",
+				"app-shell",
+				"page-header"
+			],
+			"references": []
+		},
+		{
+			"id": "inbox",
+			"name": "Inbox (triage)",
+			"group": "Navigation",
+			"summary": "The one place for things that need the person, shown as a list beside the selected item's detail, cleared by doing, marking done or snoozing.",
+			"structure": [
+				"Header with key hints (J K, E done, ⇧H snooze)",
+				"Tabs: Inbox, Snoozed, Done, each with a count",
+				"List (listbox): items that block an agent first, marked \"Needs you\", then by time",
+				"Detail: the item with its actions in place (approve, extend, reply, answer 1 to 3)",
+				"Snooze menu: quick times plus a typed time",
+				"Empty state per tab"
+			],
+			"whenToUse": [
+				{
+					"t": "Agent approvals and questions that block a run.",
+					"s": []
+				},
+				{
+					"t": "Things about to need action, such as listings closing soon, mentions and new assignments.",
+					"s": []
+				},
+				{
+					"t": "Anything the person may need to come back to later, so it must persist rather than flash past.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "Confirming the person's own action. Use a Toast.",
+					"s": []
+				},
+				{
+					"t": "Events that need nothing from anyone. Record them in the record's Activity tab.",
+					"s": []
+				},
+				{
+					"t": "A condition on the page being viewed. Use a Banner.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "List and detail side by side; acting in the detail never leaves the Inbox, and the next item opens after Done.",
+					"s": []
+				},
+				{
+					"t": "Items that block an agent sort first and carry a \"Needs you\" badge with a word, not only a colour.",
+					"s": []
+				},
+				{
+					"t": "Items stay until done or snoozed; snoozed items return at the chosen time.",
+					"s": []
+				},
+				{
+					"t": "Snooze offers four quick times (an hour from now, tomorrow, next week, a month from now) and a typed time such as \"4 pm\" or \"2 days\"; an unparseable time shows an error and keeps the menu open.",
+					"s": []
+				},
+				{
+					"t": "Every action (done, snooze, approve, reply) shows a toast with Undo.",
+					"s": []
+				},
+				{
+					"t": "Only things that matter reach the Inbox; filter for significance so the count stays trustworthy.",
+					"s": []
+				},
+				{
+					"t": "The unread count shows on the sidebar item; below 860px, when the sidebar hides, an inbox button with the same count appears in the top bar.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Item titles say what needs doing and to what: \"Approve 3 rejections for Graduate Data Analyst\".",
+					"s": []
+				},
+				{
+					"t": "Empty tabs say the state and what happens next: \"All caught up. New items appear here when something needs you.\"",
+					"s": []
+				},
+				{
+					"t": "Snooze placeholder shows examples: \"Try 4 pm, tomorrow, 2 days or in 5 weeks.\"",
+					"s": []
+				},
+				{
+					"t": "Snoozed items show when they come back: \"Until Mon 9:00\".",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "The list is a listbox with aria-selected on the current item; arrow keys and J/K move through it.",
+					"s": []
+				},
+				{
+					"t": "Tabs follow the APG tabs pattern and expose their counts in the accessible name.",
+					"s": []
+				},
+				{
+					"t": "The detail region is a polite live region, so the newly opened item is announced (4.1.3).",
+					"s": []
+				},
+				{
+					"t": "The compact inbox button's label includes the count: \"Inbox, 3 unread\" (4.1.2).",
+					"s": []
+				},
+				{
+					"t": "Single-key triage keys (E, ⇧H, 1 to 3) follow the global single-key switch (2.1.4).",
+					"s": []
+				},
+				{
+					"t": "New items never interrupt; they appear in the list and count, and the person reads them when ready (2.2.4).",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "G I",
+					"action": "Go to Inbox"
+				},
+				{
+					"keys": "J / K",
+					"action": "Next or previous item"
+				},
+				{
+					"keys": "E",
+					"action": "Mark done"
+				},
+				{
+					"keys": "⇧H",
+					"action": "Snooze (quick times or type a time, Enter to apply)"
+				},
+				{
+					"keys": "1 to 3",
+					"action": "Answer an agent's question"
+				},
+				{
+					"keys": "⌘↵",
+					"action": "Send a reply from the detail"
+				},
+				{
+					"keys": "Esc",
+					"action": "Close the snooze menu"
+				}
+			],
+			"related": [
+				"notifications-decision",
+				"toast",
+				"app-shell",
+				"empty-state"
+			],
+			"references": []
+		},
+		{
+			"id": "notifications-decision",
+			"name": "Notifications vs inbox vs toast",
+			"group": "Feedback and overlays",
+			"summary": "The rule for where a message goes: toast for your own action, banner for a condition on this page, inbox for anything that needs you later, activity for the rest.",
+			"structure": [
+				"Question 1: did the person just do this, here? Toast",
+				"Question 2: is it a condition on the page in view? Banner",
+				"Question 3: does it need someone to act, now or later? Inbox",
+				"Question 4: must it stop the task before it continues? Confirmation dialog",
+				"Otherwise: the record's Activity tab, no message"
+			],
+			"whenToUse": [
+				{
+					"t": "Designing any new message, to choose its component before writing it.",
+					"s": []
+				},
+				{
+					"t": "Reviewing a screen that shows several messages at once, to remove the ones that belong elsewhere.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "Field-level validation, which always sits next to the field. Use inline field errors and the Banner strip.",
+					"s": []
+				},
+				{
+					"t": "Loading feedback. Use the Loading skeleton or an inline spinner.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Toast: passive confirmation of the person's own action in the current view; disappears; may carry Undo.",
+					"s": []
+				},
+				{
+					"t": "Banner: a condition in context that persists until resolved; may carry one action.",
+					"s": []
+				},
+				{
+					"t": "Inbox: events the person did not trigger, or that complete later, that need a response; persists until done or snoozed.",
+					"s": []
+				},
+				{
+					"t": "Confirmation dialog: only when the task must stop for a decision that cannot be undone.",
+					"s": []
+				},
+				{
+					"t": "Activity: events that need nothing. Logging them instead of notifying prevents alert fatigue.",
+					"s": []
+				},
+				{
+					"t": "Errors never go in a toast.",
+					"s": []
+				},
+				{
+					"t": "Keep event notifications people didn't trigger (reminders, assignments) apart from toasts. Notifications get their own component, which comes in at the top right and can stack, separate from toasts.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Whatever the component, say what happened and what to do next, in sentence case, without apologies.",
+					"s": []
+				},
+				{
+					"t": "Use the same name for the same record across toast, inbox and activity.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Toasts use role=\"status\"; blocking errors use role=\"alert\"; the dialog uses role=\"alertdialog\" (4.1.3).",
+					"s": []
+				},
+				{
+					"t": "Only dialogs take focus; everything else is announced without moving focus.",
+					"s": []
+				},
+				{
+					"t": "Nothing important is only in a timed message (2.2.1); the Inbox and Activity keep a permanent record.",
+					"s": []
+				},
+				{
+					"t": "Non-urgent updates can be postponed by the person (snooze), which supports 2.2.4 Interruptions.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "⌘Z",
+					"action": "Undo after a toast"
+				},
+				{
+					"keys": "G I",
+					"action": "Open the Inbox"
+				}
+			],
+			"related": [
+				"toast",
+				"banner",
+				"inbox",
+				"confirmation-dialog"
+			],
+			"references": []
+		},
+		{
+			"id": "app-shell",
+			"name": "App shell and sidebar navigation",
+			"group": "Navigation",
+			"summary": "The frame of every screen: a tinted left sidebar for navigation and an inset white canvas with a top bar for breadcrumb, Ask and search.",
+			"structure": [
+				"Sidebar: workspace switcher",
+				"Sidebar: personal items (Inbox with count, My candidates, Assistant)",
+				"Sidebar: group headings with items (Hiring: Listings, Pipeline, Reports; Workspace: Settings, Members, Billing)",
+				"Sidebar footer: setup checklist (\"Get set up 3 / 5\")",
+				"Canvas top bar: breadcrumb, Ask ⌘J, Search or run a command ⌘K",
+				"Canvas: page header and content; side panel docks on the right",
+				"Optional rail: 48px of icons with names in tooltips and a Collapse sidebar button at the foot"
+			],
+			"whenToUse": [
+				{
+					"t": "Every signed-in screen uses the same shell, with navigation in the same place and order.",
+					"s": []
+				},
+				{
+					"t": "Products with more than a handful of sections, where a vertical list scales better than a top bar.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "Switching views of the same data, such as Live or Drafts. Use tabs in the page header.",
+					"s": []
+				},
+				{
+					"t": "Moving between records in a list. Use J/K with the Side panel.",
+					"s": []
+				},
+				{
+					"t": "Showing location deeper than two levels. Use the Breadcrumb.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Keep the sidebar visible on desktop with text labels on every item. Collapse it to a rail of icons only on workspaces where the content needs the width (trading, editors), with each name in a tooltip, the Collapse sidebar button and ⌘B, and the choice saved per person.",
+					"s": []
+				},
+				{
+					"t": "Two levels at most: group headings and items. Deeper structure becomes tabs on the page.",
+					"s": []
+				},
+				{
+					"t": "Mark the current item with aria-current=\"page\" and a filled background, not colour alone.",
+					"s": []
+				},
+				{
+					"t": "Most used items first, settings last.",
+					"s": []
+				},
+				{
+					"t": "Below 860px the sidebar hides; the top bar gains an inbox button with the same count, so nothing that needs the person disappears.",
+					"s": []
+				},
+				{
+					"t": "The top bar holds global tools only (Ask, search); page actions live in the page header.",
+					"s": []
+				},
+				{
+					"t": "Nav items are at least 24px tall with full-width hit areas, to meet the target size minimum.",
+					"s": []
+				},
+				{
+					"t": "Use frame=\"flush\" for workspaces whose regions sit edge to edge, divided by hairlines instead of gaps and cards; keep the inset canvas everywhere else.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Item labels are short nouns that match the page title they open (\"Listings\" opens \"Listings\").",
+					"s": []
+				},
+				{
+					"t": "Group headings are short and never include the word \"navigation\".",
+					"s": []
+				},
+				{
+					"t": "Counts are numbers only and show only when above zero.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "The sidebar is a nav landmark with a unique label (\"Main\"); the canvas is main; the side panel is complementary (2.4.1).",
+					"s": []
+				},
+				{
+					"t": "Navigation order and labels are the same on every page (3.2.3).",
+					"s": []
+				},
+				{
+					"t": "Search and the command palette provide a second way to reach pages (2.4.5).",
+					"s": []
+				},
+				{
+					"t": "Each page has a title that names the page and the product (2.4.2).",
+					"s": []
+				},
+				{
+					"t": "Focus is always visible on nav items, including inside the tinted sidebar (2.4.7).",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "G L / G P / G I",
+					"action": "Go to Listings, Pipeline or Inbox"
+				},
+				{
+					"keys": "⌘K",
+					"action": "Search or run a command"
+				},
+				{
+					"keys": "⌘J",
+					"action": "Open the Assistant"
+				},
+				{
+					"keys": "Tab",
+					"action": "Move through sidebar items in order"
+				},
+				{
+					"keys": "⌘B / Ctrl+B",
+					"action": "Collapse or expand the sidebar, when the app offers the rail"
+				}
+			],
+			"related": [
+				"breadcrumb",
+				"page-header",
+				"inbox",
+				"command-palette",
+				"side-panel",
+				"setup-checklist",
+				"usage-meter"
+			],
+			"references": []
+		},
+		{
+			"id": "pane-layout",
+			"name": "Pane layout",
+			"group": "Navigation",
+			"summary": "A workspace that fills the screen with columns of panes people resize with splitters and rearrange by dragging, for tool pages such as trading screens and editors where everything has to stay in view.",
+			"structure": [
+				"Columns of panes, edge to edge, divided by 1px splitters",
+				"Pane header: grip, title or a view switch, one action, ⋯ menu",
+				"Pane body that scrolls on its own",
+				"Splitter: 1px line with an 8px grab area, primary on hover and focus",
+				"Drop line in primary where a dragged pane will land",
+				"Collapsed: header only, or a 36px strip with the name when the whole column is collapsed"
+			],
+			"whenToUse": [
+				{
+					"t": "Tool pages where people watch and act on several regions at once and need them all in view, such as a trading screen.",
+					"s": []
+				},
+				{
+					"t": "Letting people give more room to the region they work in and put regions where they expect them.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "List, record and dashboard pages. Use the app shell with one side panel, or a Configurable dashboard for movable items.",
+					"s": []
+				},
+				{
+					"t": "Content people read top to bottom. Let the page scroll instead.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Fit the viewport: panes scroll inside, and charts and lists size themselves to their pane with usePaneSize.",
+					"s": []
+				},
+				{
+					"t": "Every drag has a keyboard path and a menu path: Move up, down, left, right and Wider, Narrower, Taller, Shorter.",
+					"s": []
+				},
+				{
+					"t": "Splitters follow the window splitter pattern: role separator, a value from 0 to 100, arrow keys, Home and End.",
+					"s": []
+				},
+				{
+					"t": "Save the layout per person, and offer Reset layout with Undo, never a confirmation.",
+					"s": []
+				},
+				{
+					"t": "One action at most in a pane header; switch views with a segmented control in place of the title.",
+					"s": []
+				},
+				{
+					"t": "Below the stack width, panes stack in one column and the page scrolls.",
+					"s": []
+				},
+				{
+					"t": "Let people collapse a pane they don't need right now; it keeps its header so it is one click from coming back.",
+					"s": []
+				},
+				{
+					"t": "Put a pane's own options, such as Show as table, at the top of its ⋯ menu rather than as more header buttons.",
+					"s": []
+				},
+				{
+					"t": "Put a strip of at most six key figures above the panes, the ones people check first, and keep the panes for detail.",
+					"s": []
+				},
+				{
+					"t": "Keep secondary detail behind a request: an expandable row, a tooltip or the pane's ⋯ menu (Show as table, View all), so the panes show what people watch.",
+					"s": []
+				},
+				{
+					"t": "Keep panes people use all the time, such as filters, as panes rather than drawers, so they never hide the controls they hold.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Name every pane with a noun people use for that region: Markets, Order book, Place order.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "2.5.7 Dragging movements: moving and resizing work from the pane's menu with single clicks.",
+					"s": []
+				},
+				{
+					"t": "Each pane is a section named by its title; each move and resize is announced.",
+					"s": []
+				},
+				{
+					"t": "1.4.10 Reflow: below the stack width the panes stack and nothing scrolls sideways.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "← → (column splitter), ↑ ↓ (pane splitter)",
+					"action": "Resize by 16px; with Shift, 64px"
+				},
+				{
+					"keys": "Home End",
+					"action": "Smallest or largest size"
+				},
+				{
+					"keys": "Space or Enter on a grip",
+					"action": "Pick up or drop the pane"
+				},
+				{
+					"keys": "← → ↑ ↓ while picked up",
+					"action": "Move the pane to another column or position"
+				},
+				{
+					"keys": "Esc while picked up",
+					"action": "Put the pane back"
+				}
+			],
+			"related": [
+				"app-shell",
+				"side-panel",
+				"board"
+			],
+			"references": []
+		},
+		{
+			"id": "breadcrumb",
+			"name": "Breadcrumb",
+			"group": "Navigation",
+			"summary": "A short trail in the top bar showing where the page sits in the hierarchy, ending with the current page.",
+			"structure": [
+				"Section name (link when it has its own page)",
+				"Chevron separator (decorative)",
+				"Current page (not a link, darker text)"
+			],
+			"whenToUse": [
+				{
+					"t": "On pages below the top level, to show the section they belong to (\"Hiring > Listings\").",
+					"s": []
+				},
+				{
+					"t": "On a record's full page, so the person can go back up to the list (\"Hiring > Listings > Junior Product Designer\").",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "As main navigation. The sidebar is the main navigation; the breadcrumb supplements it.",
+					"s": []
+				},
+				{
+					"t": "Linking to sibling or related pages. Use tabs or the sidebar.",
+					"s": []
+				},
+				{
+					"t": "Showing the path the person took. Breadcrumbs show hierarchy, not history; use the browser's Back.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Sits at the left of the top bar on every page; top-level pages (Inbox, Assistant) show their name only.",
+					"s": []
+				},
+				{
+					"t": "The last item is the current page, styled darker and not a link.",
+					"s": []
+				},
+				{
+					"t": "Names match page titles exactly.",
+					"s": []
+				},
+				{
+					"t": "When space runs out, collapse middle items behind an ellipsis button; the current page always stays visible.",
+					"s": []
+				},
+				{
+					"t": "Keep it on one line; never wrap.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Use the page and section names exactly as shown in the sidebar.",
+					"s": []
+				},
+				{
+					"t": "For a record, end with its title; add the ID only when titles can repeat.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Wrap it in a nav landmark labelled \"Breadcrumb\" containing an ordered list (1.3.1).",
+					"s": []
+				},
+				{
+					"t": "The current item has aria-current=\"page\"; when it is not a link this is optional but still set for clarity.",
+					"s": []
+				},
+				{
+					"t": "Separators are decorative and hidden from assistive technology.",
+					"s": []
+				},
+				{
+					"t": "Breadcrumbs help meet 2.4.8 Location by showing where the page sits.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Move through the links in the trail"
+				},
+				{
+					"keys": "Enter",
+					"action": "Follow the focused link"
+				}
+			],
+			"related": [
+				"app-shell",
+				"page-header"
+			],
+			"references": []
+		},
+		{
+			"id": "page-header",
+			"name": "Page header",
+			"group": "Navigation",
+			"summary": "The page title on the left and its actions on the right, with exactly one primary action per view.",
+			"structure": [
+				"Title (h1)",
+				"Actions, right-aligned: secondary actions (\"Export ⇧E\") then the one primary action (\"New listing C\")",
+				"Optional: view tabs below (All 24, Live 14, Drafts 3, Closed 7)"
+			],
+			"whenToUse": [
+				{
+					"t": "At the top of every page in the canvas, to name the page and hold actions that affect the whole page.",
+					"s": []
+				},
+				{
+					"t": "When a page has a main next step, such as creating a listing.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "Actions on selected rows. Use the bulk action bar.",
+					"s": []
+				},
+				{
+					"t": "Actions on one record shown in the side panel. Use the panel's footer.",
+					"s": []
+				},
+				{
+					"t": "Global tools such as search or Ask. Those live in the top bar of the App shell.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "One primary button per view; every other action is secondary or in a menu.",
+					"s": []
+				},
+				{
+					"t": "The primary action sits rightmost, nearest the content edge, with secondary actions to its left.",
+					"s": []
+				},
+				{
+					"t": "Each button shows its shortcut (C, ⇧E) so people learn it by using it.",
+					"s": []
+				},
+				{
+					"t": "Three actions at most in the header; more go into a menu.",
+					"s": []
+				},
+				{
+					"t": "Title and actions wrap to two lines on narrow widths rather than truncating.",
+					"s": []
+				},
+				{
+					"t": "View tabs (segmented counts) sit under the title and filter the same data; they are not navigation.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Title is a short noun in sentence case that matches the sidebar item: \"Listings\".",
+					"s": []
+				},
+				{
+					"t": "Action labels start with a verb and name the object: \"New listing\", \"Export\".",
+					"s": []
+				},
+				{
+					"t": "Tab labels are one or two words with a count.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "The title is the page's only h1 and matches the document title (2.4.2, 2.4.6).",
+					"s": []
+				},
+				{
+					"t": "Shortcut hints are part of the button's accessible description, not its name, so voice users can say the label (4.1.2).",
+					"s": []
+				},
+				{
+					"t": "Buttons are at least 24px tall (28 to 32px in TwoUX) (2.5.8).",
+					"s": []
+				},
+				{
+					"t": "After navigation, focus can be moved to the title so screen reader users start at the page (2.4.3).",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "C",
+					"action": "Primary create action (New listing)"
+				},
+				{
+					"keys": "⇧E",
+					"action": "Export"
+				},
+				{
+					"keys": "Tab",
+					"action": "Move from title area to actions, left to right"
+				}
+			],
+			"related": [
+				"app-shell",
+				"breadcrumb",
+				"command-palette",
+				"keyboard-shortcut-sheet"
+			],
+			"references": []
+		},
+		{
+			"id": "stepper",
+			"name": "Stepper",
+			"kind": "component",
+			"group": "Navigation",
+			"summary": "A vertical list of numbered steps for a task done in order, such as setting up a workspace or publishing a listing, showing what is done, what is current and what is left.",
+			"structure": [
+				"Marker: number, or a check when done",
+				"Line joining the markers, primary up to the current step",
+				"Title, and an optional one-line description",
+				"Current step: primary marker, aria-current=\"step\"",
+				"Later steps: faded"
+			],
+			"whenToUse": [
+				{
+					"t": "For a task of 3 to 6 steps that must happen in order, where knowing what is left helps people finish.",
+					"s": []
+				},
+				{
+					"t": "For a setup checklist on an empty workspace, where each step unlocks the next.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "For sections people can visit in any order. Use Tabs.",
+					"s": []
+				},
+				{
+					"t": "For one long form. Split it with headings; steps add clicks without reducing work.",
+					"s": []
+				},
+				{
+					"t": "For background progress, such as an upload. Use a progress bar or status.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Keep it to 3 to 6 steps. More than that, group steps or simplify the task.",
+					"s": []
+				},
+				{
+					"t": "Let people go back to any done step; never skip ahead to a step that depends on an unfinished one.",
+					"s": []
+				},
+				{
+					"t": "Keep entered data when people go back and forward.",
+					"s": []
+				},
+				{
+					"t": "Check each step when people press Next and keep them on it until it passes, with errors at the field. A final Review step checks everything again and links each problem to its step.",
+					"s": []
+				},
+				{
+					"t": "Mark a done step with a check and the line in primary up to the current step, so progress reads at a glance.",
+					"s": []
+				},
+				{
+					"t": "Place it beside the step's content on wide screens, and above it on narrow ones.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Step titles are short verb phrases in sentence case: “Add the role”, “Set salary”, “Review and publish”.",
+					"s": []
+				},
+				{
+					"t": "The description says what the step needs, in a few words: “Title, team and location”.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Use an ordered list, so screen readers announce the count and position.",
+					"s": []
+				},
+				{
+					"t": "The current step has aria-current=\"step\"; done and current states are also given in text, not by colour alone.",
+					"s": []
+				},
+				{
+					"t": "Done steps that can be revisited are buttons with a visible focus ring.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Reaches each done step that can be revisited"
+				},
+				{
+					"keys": "Enter / Space",
+					"action": "Goes back to that step"
+				}
+			],
+			"related": [
+				"tabs",
+				"card",
+				"onboarding-step"
+			],
+			"references": []
+		},
+		{
+			"id": "setup-checklist",
+			"name": "Setup checklist",
+			"kind": "component",
+			"group": "Navigation",
+			"summary": "A short list in the sidebar of the few things that make the product useful, with progress shown as \"2 of 4\".",
+			"structure": [
+				"Heading (\"Get set up\")",
+				"Progress text (\"2 of 4\") and bar",
+				"Tasks (status, label, Start)",
+				"Dismiss button"
+			],
+			"whenToUse": [
+				{
+					"t": "Showing the next few things that make an empty workspace useful.",
+					"s": []
+				},
+				{
+					"t": "Setup that people can do in any order and return to later.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "A fixed sequence. Use Stepper (stepper) or Onboarding step (onboarding-step).",
+					"s": []
+				},
+				{
+					"t": "Teaching the interface. Use contextual help, not a modal tour.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Keep it to three to five tasks that make the product useful.",
+					"s": []
+				},
+				{
+					"t": "Put it in the sidebar and let people dismiss it.",
+					"s": []
+				},
+				{
+					"t": "Show progress as text, \"2 of 4\", with the bar as extra.",
+					"s": []
+				},
+				{
+					"t": "Start opens the task in place. Never a modal tour or a full-page takeover.",
+					"s": []
+				},
+				{
+					"t": "When everything is done, collapse it or let it disappear.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Tasks begin with a verb: \"Connect Slack\", \"Invite a teammate\".",
+					"s": []
+				},
+				{
+					"t": "Start button text stays \"Start\"; the task name is read out with it.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "The checklist is a labelled section with a list; done tasks say \"done\" for assistive technology (SC 1.3.1, 1.4.1).",
+					"s": []
+				},
+				{
+					"t": "Start and Dismiss have names that include what they act on (SC 2.4.6).",
+					"s": []
+				},
+				{
+					"t": "The progress bar is decorative; the count is text (SC 1.4.1).",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Move through Start buttons and Dismiss"
+				},
+				{
+					"keys": "Enter or Space",
+					"action": "Start a task or hide the checklist"
+				}
+			],
+			"related": [
+				"workspace-onboarding",
+				"empty-state",
+				"onboarding-step",
+				"app-shell",
+				"stepper"
+			],
+			"references": []
+		},
+		{
+			"id": "onboarding-step",
+			"name": "Onboarding step",
+			"kind": "component",
+			"group": "Navigation",
+			"summary": "One step of first-run setup on a plain page: why we ask, the fields, which step this is, and Back, Skip and Continue.",
+			"structure": [
+				"\"Step n of N\" text (with Optional when it is)",
+				"Heading (receives focus)",
+				"Why we ask, in one line",
+				"Fields",
+				"Back, Skip (optional steps), Continue",
+				"Progress dots (decoration only)",
+				"Aside panel (optional, wide screens)"
+			],
+			"whenToUse": [
+				{
+					"t": "A few setup steps that the product cannot guess, such as workspace name and who to invite.",
+					"s": []
+				},
+				{
+					"t": "Steps that depend on each other, where each answer shapes the next.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "Teaching the product with a tour or video. Show it in the product and use contextual help (workspace-onboarding).",
+					"s": []
+				},
+				{
+					"t": "A long form. Ask only what is needed to start and let people finish the rest later in Settings.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Keep it to a few steps. Each step says why it asks.",
+					"s": []
+				},
+				{
+					"t": "Optional steps say Optional and offer Skip. Required steps do not offer it.",
+					"s": []
+				},
+				{
+					"t": "Never disable Continue. Validate when it is pressed and put the error under the field.",
+					"s": []
+				},
+				{
+					"t": "Say \"Step 2 of 5\" in text. Dots alone do not tell people how much is left.",
+					"s": []
+				},
+				{
+					"t": "Move focus to the heading when the step changes, so a screen reader says where the person is.",
+					"s": []
+				},
+				{
+					"t": "Use a plain background. No gradients, no illustration, no auto-playing video.",
+					"s": []
+				},
+				{
+					"t": "Keep what was entered when going Back. Never ask for the same thing twice.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Heading: a short question or task, such as \"Name your workspace\".",
+					"s": []
+				},
+				{
+					"t": "Why line: \"Teammates see this name when you invite them.\"",
+					"s": []
+				},
+				{
+					"t": "Skip, not \"Do this later\" or \"Not now\", on optional steps.",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "The \"Step n of N\" text is real text; the dots are hidden from assistive technology (SC 1.4.1).",
+					"s": []
+				},
+				{
+					"t": "The heading has tabindex -1 and receives focus on each step; the section is labelled by it (SC 2.4.3, 2.4.6).",
+					"s": []
+				},
+				{
+					"t": "Errors are shown under the field and linked to it (SC 3.3.1).",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Move through the fields, Back, Skip and Continue in order"
+				},
+				{
+					"keys": "Enter",
+					"action": "In a text field, press Continue"
+				},
+				{
+					"keys": "Shift+Tab",
+					"action": "Move back, starting from the heading on a new step"
+				}
+			],
+			"related": [
+				"workspace-onboarding",
+				"stepper",
+				"text-input",
+				"form-validation",
+				"setup-checklist",
+				"sign-in"
+			],
+			"references": []
+		},
+		{
+			"id": "help-panel",
+			"name": "Help panel",
+			"kind": "component",
+			"group": "Feedback and overlays",
+			"summary": "Read-only help in the right-hand panel slot, opened from an Info link next to a heading or label, with the topic heading, short guidance and Learn more links.",
+			"structure": [
+				"Header: topic heading (matches the heading or label it opened from) and close button",
+				"Body: two to five short paragraphs or lists answering what this is, why it matters and how to choose",
+				"Optional: a short example, such as a well-written job title",
+				"Learn more: up to three help centre links, each opening in a new tab",
+				"Feedback prompt: \"Was this helpful?\" at the foot"
+			],
+			"whenToUse": [
+				{
+					"t": "To explain a page, section or field whose meaning or consequences aren't obvious from its label, opened from an Info link.",
+					"s": []
+				},
+				{
+					"t": "On each step of a multi-step create flow, such as Create listing.",
+					"s": []
+				},
+				{
+					"t": "As the page-level help for any page with decisions, opened from the Help button when no Info link was used.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "To name an icon or show a shortcut. Use a tooltip.",
+					"s": []
+				},
+				{
+					"t": "For forms or actions. Use the side panel or the page.",
+					"s": []
+				},
+				{
+					"t": "For questions about the person's data. Use the assistant panel (⌘J).",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Opens in TwoUX's single right-hand slot at 440px, or the width the person last chose, replacing any open panel, and restores it on close.",
+					"s": []
+				},
+				{
+					"t": "Without an Info link pressed, shows the page topic. After an Info link, shows that topic until another is chosen or the page changes.",
+					"s": []
+				},
+				{
+					"t": "Reopening on the same page shows the last topic, not the page default.",
+					"s": []
+				},
+				{
+					"t": "Never opens empty: pages with no help content don't show the Help trigger.",
+					"s": []
+				},
+				{
+					"t": "Below 860px it takes the full width of the canvas.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Heading matches the on-screen heading or label exactly: \"Visa sponsorship\".",
+					"s": []
+				},
+				{
+					"t": "Plain UK English, short paragraphs, no marketing. Explain consequences: \"Candidates who need sponsorship can apply only if this is on.\"",
+					"s": []
+				},
+				{
+					"t": "Learn more links say what the reader will learn: \"How closing dates affect applications\".",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "A complementary landmark labelled \"Help\"; it does not trap focus.",
+					"s": []
+				},
+				{
+					"t": "Opening from an Info link moves focus to the topic heading; Esc or close returns focus to that Info link.",
+					"s": []
+				},
+				{
+					"t": "New-tab links say so in their accessible name.",
+					"s": []
+				},
+				{
+					"t": "Content reflows to 320px wide without horizontal scrolling.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Enter / Space (Info link)",
+					"action": "Open the help panel at that topic"
+				},
+				{
+					"keys": "Tab",
+					"action": "Move through links in the panel, then back to the page"
+				},
+				{
+					"keys": "Esc",
+					"action": "Close the panel and return focus to the Info link"
+				}
+			],
+			"related": [
+				"help-system",
+				"secondary-panels",
+				"side-panel",
+				"assistant-panel",
+				"feedback-prompt",
+				"tooltip"
+			],
+			"references": []
+		},
+		{
+			"id": "feedback-prompt",
+			"name": "Feedback prompt",
+			"kind": "component",
+			"group": "Feedback and overlays",
+			"summary": "A small \"Was this helpful?\" block with Yes and No buttons, a thank you once voted, and an optional short follow-up form.",
+			"structure": [
+				"Question as a small heading: \"Was this helpful?\"",
+				"Optional one-line description",
+				"Yes and No buttons (text, with an optional thumb icon)",
+				"States: default, sending (button spinner), sent (chosen answer selected and thank you text), failed (message and Try again)",
+				"Optional follow-up revealed after the vote: one to three fields, a privacy line and Send"
+			],
+			"whenToUse": [
+				{
+					"t": "At the end of help topics, help centre articles and beta feature pages.",
+					"s": []
+				},
+				{
+					"t": "At the end of a report people have just read, to learn if it was useful.",
+					"s": []
+				},
+				{
+					"t": "On a beta feature's page, to learn whether it is worth keeping.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "Under assistant answers; they use the good and bad controls by the origin label.",
+					"s": []
+				},
+				{
+					"t": "As a modal or toast, or before people have read the content.",
+					"s": []
+				},
+				{
+					"t": "For surveys of more than three questions; link to a survey page instead.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Send the vote on click; send the follow-up separately with its own Send button.",
+					"s": []
+				},
+				{
+					"t": "Once voted, the buttons are replaced by the chosen answer and the thank you; the vote can't be sent twice.",
+					"s": []
+				},
+				{
+					"t": "One feedback prompt per page or panel.",
+					"s": []
+				},
+				{
+					"t": "Free-text fields carry the privacy line and a 500 character limit with a count.",
+					"s": []
+				},
+				{
+					"t": "On failure, show the message inline with Try again; keep any typed text.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Question names the thing: \"Was this help topic helpful?\" or simply \"Was this helpful?\" when the context is clear.",
+					"s": []
+				},
+				{
+					"t": "Sent: \"Thanks, your feedback is recorded.\"",
+					"s": []
+				},
+				{
+					"t": "Follow-up label: \"What was missing? (optional)\". Privacy line: \"Don't include candidate names or other personal details.\"",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "Yes and No are real buttons with visible text; an icon alone is not enough.",
+					"s": []
+				},
+				{
+					"t": "After a successful vote, focus moves to the thank you text.",
+					"s": []
+				},
+				{
+					"t": "The failed state is announced in a live region.",
+					"s": []
+				},
+				{
+					"t": "The follow-up fields have visible labels and follow the form validation rules.",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Move to Yes, then No"
+				},
+				{
+					"keys": "Enter / Space",
+					"action": "Send the vote"
+				},
+				{
+					"keys": "Tab (after voting)",
+					"action": "Reach the optional follow-up fields and Send"
+				}
+			],
+			"related": [
+				"user-feedback",
+				"help-panel",
+				"button",
+				"text-input"
+			],
+			"references": []
+		},
+		{
+			"id": "usage-meter",
+			"name": "Usage meter",
+			"kind": "component",
+			"group": "Feedback and overlays",
+			"summary": "Credits or seats used against a limit, when it resets, and what used them. An upgrade link appears only near the limit.",
+			"structure": [
+				"Name of the unit and \"used of limit\"",
+				"Meter bar",
+				"Warning from 80% (what stops at the limit)",
+				"Resets date",
+				"What used them link",
+				"Add more link (only near the limit)"
+			],
+			"whenToUse": [
+				{
+					"t": "Showing consumption against a plan limit, such as credits or seats.",
+					"s": []
+				},
+				{
+					"t": "A measured value within a known range.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "Progress of a task. Use a progress indicator (nng-progress).",
+					"s": []
+				},
+				{
+					"t": "A permanent plan promotion. Upgrade is not an always-visible bright button.",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Say \"13.2k of 20k credits\": used, limit and unit.",
+					"s": []
+				},
+				{
+					"t": "Say when it resets, for example \"Resets 1 Dec\".",
+					"s": []
+				},
+				{
+					"t": "Link \"What used them\" to a breakdown, so people can reduce usage.",
+					"s": []
+				},
+				{
+					"t": "From 80% used, warn and say what stops at the limit: \"Agents pause until 1 Dec\".",
+					"s": []
+				},
+				{
+					"t": "Show the upgrade link only near the limit. Never a permanent bright button.",
+					"s": []
+				},
+				{
+					"t": "Use role=\"meter\" with min, max and now values, and a name.",
+					"s": []
+				},
+				{
+					"t": "Never use colour alone: the warning has an icon and words as well as the amber bar.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "\"86% used. Agents pause until 1 Dec.\"",
+					"s": []
+				},
+				{
+					"t": "Link: \"Add more\", not \"Upgrade now\".",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "role=\"meter\" with aria-valuemin, aria-valuemax, aria-valuenow and an accessible name (APG meter, SC 4.1.2).",
+					"s": []
+				},
+				{
+					"t": "Warning is text with an icon, so it does not depend on colour (SC 1.4.1).",
+					"s": []
+				},
+				{
+					"t": "The bar meets 3:1 against its track (SC 1.4.11).",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Tab",
+					"action": "Move to What used them and Add more"
+				},
+				{
+					"keys": "Enter",
+					"action": "Open the breakdown or the upgrade options"
+				}
+			],
+			"related": [
+				"stat-compare",
+				"banner",
+				"empty-state",
+				"status-badge"
+			],
+			"references": []
+		},
+		{
+			"id": "guide-cue",
+			"name": "Guide cue",
+			"kind": "component",
+			"group": "Feedback and overlays",
+			"summary": "A short guide of one to three popovers that point at the real controls for a task, opened only when the person asks to be shown.",
+			"structure": [
+				"Target highlight (the focus ring round the real control)",
+				"Popover anchored to the target",
+				"Heading (what the person does here)",
+				"Body (one or two sentences)",
+				"Step count as text (\"Step 2 of 3\")",
+				"Back, then Next or Done (the one primary in the cue)",
+				"Close (\"Close guide\", Esc)"
+			],
+			"whenToUse": [
+				{
+					"t": "Showing where the parts of a task live after the person chose it, from a setup checklist Start, a Help menu entry, a help panel link or a feature label's Show me.",
+					"s": []
+				},
+				{
+					"t": "A task spread over two or three controls in a dense toolbar, such as filter, change the layout, then save a view.",
+					"s": []
+				}
+			],
+			"whenNotToUse": [
+				{
+					"t": "On page load, first login, a timer or hover. TwoUX has no push tours; use a setup checklist (setup-checklist) and let people start the guide.",
+					"s": []
+				},
+				{
+					"t": "Announcing a feature. Use a feature label (feature-label) and its popover; offer Show me inside it only if the feature spans several controls.",
+					"s": []
+				},
+				{
+					"t": "Explaining a field or concept. Use contextual help (help-system) and the help panel (help-panel).",
+					"s": []
+				},
+				{
+					"t": "More than three steps, or steps that depend on what was entered. Use a help article, or a stepper (stepper) for the task itself.",
+					"s": []
+				},
+				{
+					"t": "Explaining an icon-only button. Use a tooltip (tooltip).",
+					"s": []
+				}
+			],
+			"guidelines": [
+				{
+					"t": "Open the guide only from something the person pressed, and return focus there when it closes.",
+					"s": []
+				},
+				{
+					"t": "Keep it to one to three steps, each on a real control people will use for the task.",
+					"s": []
+				},
+				{
+					"t": "Point at elements by ref or a data attribute. A step whose target is missing or hidden is skipped, and the count counts only the steps shown; with no targets the guide does not open.",
+					"s": []
+				},
+				{
+					"t": "Leave the page usable: no dimmed overlay or spotlight. Clicking the page keeps the cue open so people can try the control.",
+					"s": []
+				},
+				{
+					"t": "Show one guide cue at a time, and close any other popover first.",
+					"s": []
+				},
+				{
+					"t": "Offer Show me only where the guide can point at something; check with isGuideTargetAvailable.",
+					"s": []
+				}
+			],
+			"content": [
+				{
+					"t": "Heading names what the person does, sentence case: \"Filter the list\", \"Save it as a view\". Not \"Step 1\" or \"Welcome\".",
+					"s": []
+				},
+				{
+					"t": "Body is one or two sentences on what the control does for them.",
+					"s": []
+				},
+				{
+					"t": "Progress is text: \"Step 2 of 3\". Buttons are Back, Next and Done; the close button is named \"Close guide\".",
+					"s": []
+				}
+			],
+			"accessibility": [
+				{
+					"t": "The cue is a non-modal dialog: role=\"dialog\", aria-modal=\"false\", named by its heading and described by its body (SC 4.1.2).",
+					"s": []
+				},
+				{
+					"t": "Focus moves to the heading on open and returns to the control that started the guide on close (SC 2.4.3).",
+					"s": []
+				},
+				{
+					"t": "Each step change is announced in a polite live region: \"Saved views guide, step 2 of 3: Choose a layout\" (SC 4.1.3).",
+					"s": []
+				},
+				{
+					"t": "It never opens unrequested (SC 2.2.4). Nothing pulses; the popover's entrance stops under reduced motion (SC 2.3.3).",
+					"s": []
+				},
+				{
+					"t": "The highlight uses the focus colour, 3:1 or more against the page, and the cue sits beside the target so it never covers it (SC 1.4.11, 2.4.11).",
+					"s": []
+				}
+			],
+			"keyboard": [
+				{
+					"keys": "Enter or Space",
+					"action": "Press Next, Back, Done or Close"
+				},
+				{
+					"keys": "Tab, Shift+Tab",
+					"action": "Move between the cue's buttons and on to the page; focus is not trapped"
+				},
+				{
+					"keys": "Esc",
+					"action": "Close the guide and return focus to what started it"
+				}
+			],
+			"related": [
+				"setup-checklist",
+				"feature-label",
+				"help-panel",
+				"help-system",
+				"announcing-features",
+				"workspace-onboarding",
+				"popover-rules"
+			],
+			"references": []
+		}
+	]
+}

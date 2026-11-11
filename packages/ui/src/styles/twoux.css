@@ -1,0 +1,236 @@
+/*
+ * TwoUX tokens. The ONLY place raw values live.
+ * Components and apps use the Tailwind utilities these generate (bg-surface, text-ink-2, border-control, rounded-md, h-control...)
+ * or var(--color-*). Never a hex, px or arbitrary value elsewhere.
+ * Light and dark, light by default. Compact only. Each role is light-dark(light, dark); <html data-theme="dark"> or "system" switches.
+ * Contrast ratios are measured against --color-surface: #FFFFFF in light, #15151C in dark.
+ */
+@import "tw-animate-css";
+@import "@xyflow/react/dist/base.css" layer(base); /* Flow canvas structure only; TwoUX styles the steps, links and controls */
+@import "./palette.css";
+@import "./theme.css"; /* brand colour, radii, font: generated from packages/ui/theme.json */
+
+/*
+ * Two layers:
+ *   1. Primitives  (palette.css, generated): --color-indigo-600, --color-neutral-200 ... the ranges.
+ *   2. Roles       (below): what a colour is FOR. Components use roles, never primitives,
+ *                  so a role can be re-pointed in one place and every screen follows.
+ * Primitives are for the docs, charts and rare one-off illustrations reviewed by design.
+ */
+@theme static {
+  /* Surfaces */
+  --color-bg: light-dark(var(--color-neutral-50), #0E0E13);           /* page and app shell */
+  --color-surface: light-dark(var(--color-white), #15151C);           /* cards, tables, panels, popovers */
+  --color-surface-2: light-dark(var(--color-neutral-25), #1A1A22);    /* table header, footers, quiet fills */
+  --color-hover: light-dark(var(--color-neutral-100), #252530);       /* hover fill, skeleton base */
+  --color-active-row: color-mix(in oklab, var(--color-primary-soft) 55%, var(--color-surface)); /* the row being edited in a grid: you always see which record changes */
+  --color-selected: light-dark(var(--color-neutral-150), #2D2D39);    /* hover on the app background (sidebar, top bar); selected row base */
+  --color-highlight: light-dark(#F2F4F8, #22222C);                    /* light slate: the item under the pointer or arrow keys in menus, the palette, ghost and outline buttons */
+
+  /* Lines */
+  --color-line: light-dark(var(--color-neutral-100), #25252F);        /* dividers, table rows, card edges. Soft: never the only edge of a control */
+  --color-line-strong: light-dark(var(--color-neutral-150), #30303C); /* outlines that must hold on grey: secondary buttons, popovers, the canvas */
+  --color-input: light-dark(var(--color-neutral-200), #3A3A48);       /* edge of text fields and selects. Light, with shadow-xs. Allowed because a visible label always identifies the field (WCAG 1.4.11 applies to the indicator that identifies a control) */
+  --color-input-hover: light-dark(var(--color-neutral-300), #4C4C5C);
+  --color-control: light-dark(var(--color-neutral-500), #7C7C8E); /* edge of checkboxes, radios, switches: nothing else marks them. 3.59:1 light, 4.44:1 dark (WCAG 1.4.11) */
+
+  /* Text */
+  --color-ink: light-dark(var(--color-neutral-950), #EDEDF3); /* primary text. 17.8:1 light, 15.6:1 dark */
+  --color-ink-2: light-dark(var(--color-neutral-700), #B9B9C6); /* secondary text, labels, column headers. 9.12:1 light, 9.36:1 dark */
+  --color-ink-3: light-dark(var(--color-neutral-600), #9191A1); /* placeholders, meta. 5.73:1 light, 5.86:1 dark */
+  --color-scrim: light-dark(rgb(23 23 31 / 0.2), rgb(0 0 0 / 0.6)); /* behind dialogs and sheets */
+
+  /* Accent: once per view for the main action, plus links, focus and selection */
+
+  /* shadcn/ui names, mapped to TwoUX roles. shadcn source works unchanged: bg-background, text-muted-foreground,
+     border-input, ring-ring, bg-accent (hover fill, shadcn's meaning) all resolve to TwoUX values. */
+  --color-background: var(--color-surface);
+  --color-foreground: var(--color-ink);
+  --color-card: var(--color-surface);           --color-card-foreground: var(--color-ink);
+  --color-popover: light-dark(var(--color-surface), #1C1C25); --color-popover-foreground: var(--color-ink);
+  --color-secondary: var(--color-hover);        --color-secondary-foreground: var(--color-ink);
+  --color-muted: var(--color-hover);            --color-muted-foreground: var(--color-ink-3);
+  --color-accent: var(--color-highlight);           --color-accent-foreground: var(--color-ink);
+  --color-destructive: var(--color-red-600); /* fill behind white text: 5.48:1 in both themes */
+  --color-destructive-edge: var(--color-red-400); /* invalid field edge: visible, not shouting. The message carries the error */
+  --color-border: var(--color-line);
+  --color-ring: var(--color-focus);
+  --color-sidebar: var(--color-bg);
+
+  /* Status: reserved for state. Never a chart series, never decoration */
+  /* Dark: text steps at 400 (6.5 to 7.4:1 on surface), fills mixed into the surface so they stay quiet */
+  --color-ok: light-dark(var(--color-green-700), var(--color-green-400));   --color-ok-bg: light-dark(var(--color-green-50), color-mix(in oklab, var(--color-green-500) 16%, #15151C));   --color-ok-line: light-dark(var(--color-green-200), color-mix(in oklab, var(--color-green-500) 40%, #15151C));
+  --color-warn: light-dark(var(--color-amber-700), var(--color-amber-400)); --color-warn-bg: light-dark(var(--color-amber-50), color-mix(in oklab, var(--color-amber-500) 16%, #15151C)); --color-warn-line: light-dark(var(--color-amber-200), color-mix(in oklab, var(--color-amber-500) 40%, #15151C));
+  --color-bad: light-dark(var(--color-red-600), var(--color-red-400));    --color-bad-bg: light-dark(var(--color-red-50), color-mix(in oklab, var(--color-red-500) 16%, #15151C));    --color-bad-line: light-dark(var(--color-red-200), color-mix(in oklab, var(--color-red-500) 40%, #15151C));
+  --color-neutral: light-dark(var(--color-neutral-700), #B9B9C6); --color-neutral-bg: light-dark(var(--color-neutral-75), #20202A); --color-neutral-line: light-dark(var(--color-neutral-150), #30303C);
+  --color-progress: light-dark(var(--color-amber-600), var(--color-amber-400)); /* in progress. 4.21:1 (was #D9A118 at 2.32:1, failed 1.4.11) */
+
+  /* Data visualisation: categorical, fixed order, never cycled. Validated per theme for lightness band, chroma,
+     colour-blind separation (worst adjacent ΔE 10.0 light, 9.7 dark) and >= 3:1 on the surface. Dark is its own selection
+     (steps 500), not a flip. c6 and c8 are tuned off-range to keep the separation; do not snap them to a step. */
+  --color-c1: light-dark(var(--color-indigo-600), var(--color-indigo-500)); --color-c2: var(--color-orange-500);
+  --color-c3: light-dark(var(--color-teal-600), var(--color-teal-500)); --color-c4: light-dark(var(--color-amber-600), var(--color-amber-500));
+  --color-c5: light-dark(var(--color-magenta-600), var(--color-magenta-500)); --color-c6: light-dark(#008300, #5AA62A);
+  --color-c7: light-dark(var(--color-blue-600), var(--color-blue-500)); --color-c8: light-dark(#D93F3E, var(--color-red-500));
+  /* Sequential and ordinal: one hue, more = more contrast with the surface. Light: light to dark. Dark: dark to light. */
+  --color-q1: light-dark(var(--color-indigo-400), var(--color-indigo-900)); --color-q2: light-dark(var(--color-indigo-500), var(--color-indigo-800));
+  --color-q3: light-dark(var(--color-indigo-600), var(--color-indigo-700)); --color-q4: light-dark(var(--color-indigo-800), var(--color-indigo-600));
+  --color-q5: light-dark(var(--color-indigo-950), var(--color-indigo-500));
+
+  /* Type: Geist for UI, Geist Mono for IDs, code and keycaps */
+  /* --font-sans comes from theme.css (packages/ui/theme.json) */
+  --font-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --text-xs: 11px;   --text-xs--line-height: 16px;   /* keycaps, counts, chart ticks only */
+  --text-sm: 12px;   --text-sm--line-height: 16px;   /* meta, column headers, helper text */
+  --text-base: 13px; --text-base--line-height: 20px; /* body, table cells, buttons */
+  --text-md: 14px;   --text-md--line-height: 20px;
+  --text-lg: 16px;   --text-lg--line-height: 24px;   /* section headings */
+  --text-xl: 20px;   --text-xl--line-height: 28px;   /* figures */
+  --text-2xl: 24px;  --text-2xl--line-height: 32px;  /* page titles */
+
+  /* Spacing: 4px grid. p-1 = 4px, p-2 = 8px, p-3 = 12px ... The numeric scale is for TwoUX's own components;
+     apps use the role utilities below (proposals/spacing-tokens.md). */
+  --spacing: 4px;
+  /* Fixed: never change, not even in a workspace. Used inside controls and small parts. */
+  --spacing-hair: 2px;     /* icon to text nudges, keycap padding, badge inset */
+  --spacing-tight: 4px;    /* inside a control; label to help text */
+  --spacing-control: 6px;  /* icon to label inside buttons, menu items and badges (shadcn's value) */
+  --spacing-inline: 8px;   /* between controls in a row; field label to input */
+
+  /* Sizes: compact density, one size set. Rows are worked out from the control they hold. */
+  --size-control-sm: 28px;  /* small buttons, filter pills */
+  --size-control: 32px;     /* default buttons and inputs */
+  --size-row: calc(var(--size-control) + 2 * var(--spacing-hair));   /* 36px: table and list rows */
+  --size-row-dense: var(--size-control-sm);                           /* 28px: size="dense", spreadsheet-like data */
+
+  /* Shape: radius by role, concentric (inner = outer - padding) */
+  /* --radius-xs / sm / md come from theme.css (packages/ui/theme.json) */
+  --radius-lg: 12px;  /* marketing surfaces only */
+  --radius-xl: 16px;  /* marketing surfaces only */
+
+  /* Elevation: always paired with a light border (border-line). The border gives the edge, the shadow gives the lift.
+     Flat  = border only             (tables, previews, dividers)
+     Card  = border + shadow-card    (cards, inputs, secondary buttons: things that sit on the page)
+     Float = border + shadow-pop     (menus, popovers, dialogs, toasts: things above the page)
+     Dark: shadows barely show on a dark page, so floating layers also sit on a lighter surface (popover).  */
+  --shadow-xs: 0 1px 2px light-dark(rgb(23 23 40 / 0.04), rgb(0 0 0 / 0.3));
+  --shadow-card: 0 1px 2px light-dark(rgb(23 23 40 / 0.04), rgb(0 0 0 / 0.3)), 0 1px 1px light-dark(rgb(23 23 40 / 0.02), rgb(0 0 0 / 0.2));
+  --shadow-raised: 0 2px 6px -1px light-dark(rgb(23 23 40 / 0.06), rgb(0 0 0 / 0.4)), 0 1px 2px light-dark(rgb(23 23 40 / 0.04), rgb(0 0 0 / 0.3));
+  --shadow-pop: 0 0 0 1px var(--color-line-strong), 0 8px 24px -6px light-dark(rgb(23 23 40 / 0.12), rgb(0 0 0 / 0.5)), 0 2px 6px -2px light-dark(rgb(23 23 40 / 0.06), rgb(0 0 0 / 0.4));
+
+  /* Motion: short, eased by role, never decorative. Everything stops under prefers-reduced-motion.
+     --motion-tempo, --motion-pop-scale and --ease-pop come from theme.json (motion.tempo, motion.character) via theme.css.
+     Tempo scales every duration below; loops (spinner, shimmer) and shadcn's overlay timing are not scaled. */
+
+  /* Easing by role. Arrivals and in-place changes decelerate, movement eases both ends, exits accelerate. */
+  --ease-standard: cubic-bezier(0.22, 1, 0.36, 1);   /* state changes in place: swaps, numbers, heights, fills */
+  --ease-entrance: cubic-bezier(0.22, 1, 0.36, 1);   /* something arriving: rise-in, fade-in, a new row of results */
+  --ease-move: cubic-bezier(0.4, 0, 0.2, 1);         /* something moving between two places: panel push, sidebar width */
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);           /* something leaving. Same at every character, never overshoots */
+  /* --ease-pop (theme.css): pops only, a count that changes. Never on layout. "crisp" removes the overshoot */
+  /* Earlier names, kept so existing code keeps working. Prefer the role names above. */
+  --ease-out: var(--ease-entrance);
+  --ease-in-out: var(--ease-move);
+  --ease-soft: var(--ease-standard);
+  --ease-spring: var(--ease-pop, cubic-bezier(0.34, 1.56, 0.64, 1));
+
+  /* Durations: one band per job, all scaled by tempo. Exits are shorter than entrances. */
+  --duration-fast: calc(120ms * var(--motion-tempo, 1));  /* hover, press, colour, small controls */
+  --duration-base: calc(180ms * var(--motion-tempo, 1));  /* tabs, menus, state swaps, small transforms */
+  --duration-move: calc(200ms * var(--motion-tempo, 1));  /* panels and layout that move: matches shadcn's sheet */
+  --duration-slow: calc(260ms * var(--motion-tempo, 1));  /* content swaps, height changes, progress fills */
+  --duration-long: calc(480ms * var(--motion-tempo, 1));  /* figures rolling to a new value. Never on something people trigger often */
+  --duration-exit: var(--duration-fast);               /* anything leaving */
+
+  --animate-fade-in: twoux-fade-in var(--duration-base) var(--ease-entrance) both;
+  --animate-rise-in: twoux-rise-in var(--duration-slow) var(--ease-entrance) both;
+  --animate-pop-in: twoux-pop-in var(--duration-base) var(--ease-entrance) both;
+  --animate-fade-out: twoux-fade-out var(--duration-exit) var(--ease-exit) both;
+  --animate-shimmer: twoux-shimmer 1.4s linear infinite; /* loading skeleton. Loops are not scaled by tempo */
+  --animate-text-shimmer: twoux-text-shimmer 2s linear infinite; /* "Thinking", "Working…" */
+  --animate-swap-in-icon: twoux-swap-in-icon var(--duration-base) var(--ease-entrance) both;
+  --animate-swap-out-icon: twoux-swap-out-icon var(--duration-exit) var(--ease-exit) both;
+  --animate-swap-in-text: twoux-swap-in-text var(--duration-base) var(--ease-entrance) both;
+  --animate-swap-out-text: twoux-swap-out-text var(--duration-exit) var(--ease-exit) both;
+  --animate-count-pop: twoux-count-pop var(--duration-slow) var(--ease-spring);
+  --animate-word-in: twoux-word-in var(--duration-slow) var(--ease-entrance) both;
+
+  @keyframes twoux-fade-in { from { opacity: 0; } }
+  @keyframes twoux-rise-in { from { opacity: 0; transform: translateY(6px); } }
+  @keyframes twoux-pop-in { from { opacity: 0; transform: translateY(-4px) scale(0.98); } }
+  @keyframes twoux-fade-out { to { opacity: 0; } }
+  @keyframes twoux-shimmer { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+  @keyframes twoux-text-shimmer { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+  @keyframes twoux-swap-in-icon { from { opacity: 0; scale: 0.5; filter: blur(2px); } }
+  @keyframes twoux-swap-out-icon { to { opacity: 0; scale: 0.5; filter: blur(2px); } }
+  @keyframes twoux-swap-in-text { from { opacity: 0; translate: 0 4px; filter: blur(2px); } }
+  @keyframes twoux-swap-out-text { to { opacity: 0; translate: 0 -4px; filter: blur(2px); } }
+  @keyframes twoux-count-pop { 0% { scale: 1; } 40% { scale: var(--motion-pop-scale, 1.25); } 100% { scale: 1; } }
+  @keyframes twoux-word-in { from { opacity: 0; filter: blur(3px); } }
+}
+
+@layer base {
+  /* shadcn/ui expects a default border colour (from its globals.css); without it borders fall back to the text colour. */
+  *, ::after, ::before, ::backdrop, ::file-selector-button { border-color: var(--color-border); }
+  /* Light by default. <html data-theme="dark"> forces dark; data-theme="system" follows the OS. */
+  :root { color-scheme: light; }
+  :root[data-theme="dark"] { color-scheme: dark; }
+  :root[data-theme="system"] { color-scheme: light dark; }
+  body {
+    background: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: var(--text-base--line-height);
+    -webkit-font-smoothing: antialiased;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 1px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition-duration: 0ms !important; animation-duration: 0ms !important; }
+  }
+}
+
+/* Region spacing: set per layout. AppShell frame="flush" marks its canvas data-density="workspace", which takes out
+   gaps and frames between regions; nothing inside a control changes. Utilities: gap-group, p-region, px-page,
+   pt-page-top, gap-region-gap. */
+@theme inline {
+  --spacing-group: var(--sp-group);
+  --spacing-region: var(--sp-region);
+  --spacing-page: var(--sp-page);
+  --spacing-page-top: var(--sp-page-top);
+  --spacing-region-gap: var(--sp-region-gap);
+}
+@layer base {
+  :root { --sp-group: 16px; --sp-region: 16px; --sp-page: 24px; --sp-page-top: 20px; --sp-region-gap: 16px; }
+  [data-density="workspace"] { --sp-group: 12px; --sp-region: 8px; --sp-page: 12px; --sp-page-top: 8px; --sp-region-gap: 1px; }
+  /* Below 860px a workspace stacks and the page scrolls, so it takes the inset values back (page sides 16px). */
+  @media (max-width: 860px) {
+    :root, [data-density="workspace"] { --sp-group: 16px; --sp-region: 16px; --sp-page: 16px; --sp-page-top: 20px; --sp-region-gap: 16px; }
+  }
+}
+
+@utility h-control { height: var(--size-control); }
+@utility h-control-sm { height: var(--size-control-sm); }
+@utility h-row { height: var(--size-row); }
+@utility h-row-dense { height: var(--size-row-dense); }
+@utility tabular { font-variant-numeric: tabular-nums; }
+
+/* Flow canvas (@xyflow/react): point its own variables at TwoUX roles. */
+.react-flow {
+  --xy-background-color: var(--color-bg);
+  --xy-edge-stroke: var(--color-control);
+  --xy-edge-stroke-selected: var(--color-primary);
+  --xy-connectionline-stroke: var(--color-primary);
+  --xy-handle-background-color: var(--color-surface);
+  --xy-handle-border-color: var(--color-control);
+  --xy-minimap-background-color: var(--color-surface);
+  --xy-minimap-mask-background-color: color-mix(in oklab, var(--color-bg) 70%, transparent);
+  --xy-minimap-mask-stroke-color: var(--color-line-strong);
+  --xy-minimap-node-background-color: var(--color-line-strong);
+  --xy-attribution-background-color: transparent;
+}
+.react-flow__node:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; border-radius: var(--radius-sm); }
+.react-flow__attribution a { color: var(--color-ink-3); }

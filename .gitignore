@@ -1,0 +1,10 @@
+node_modules
+dist
+.DS_Store
+*.log
+scripts/export/.leaks.json
+scripts/export/.licences.json
+
+# Local Claude Code settings (maintainer switch, personal env)
+.claude/settings.local.json
+.claude/twoux-maintainer

@@ -1,0 +1,84 @@
+{
+  "name": "@twoux/ui",
+  "version": "0.1.0",
+  "description": "Engineering-first design system for teams building complex, data-intensive B2B applications with AI coding agents.",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./styles.css": "./src/styles/twoux.css",
+    "./theme.json": "./theme.json",
+    "./agent/*": "./agent/*",
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "prepack": "cp ../../LICENSE.md LICENSE.md"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "dependencies": {
+    "@radix-ui/react-checkbox": "1.3.2",
+    "@radix-ui/react-dialog": "1.1.14",
+    "@radix-ui/react-dropdown-menu": "2.1.15",
+    "@radix-ui/react-label": "2.1.7",
+    "@radix-ui/react-radio-group": "1.3.7",
+    "@radix-ui/react-slot": "^1.2.3",
+    "@radix-ui/react-switch": "1.2.5",
+    "@radix-ui/react-tabs": "1.1.12",
+    "@radix-ui/react-toggle-group": "1.1.10",
+    "@radix-ui/react-tooltip": "1.2.7",
+    "@xyflow/react": "12.12.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "cmdk": "1.1.1",
+    "d3-geo": "3.1.1",
+    "date-fns": "4.1.0",
+    "lucide-react": "0.525.0",
+    "radix-ui": "1.4.2",
+    "react-day-picker": "9.11.1",
+    "sonner": "2.0.7",
+    "tailwind-merge": "^3.3.1",
+    "topojson-client": "3.1.0",
+    "tw-animate-css": "1.3.5"
+  },
+  "devDependencies": {
+    "@types/d3-geo": "3.1.0",
+    "@types/geojson": "7946.0.16",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "@types/topojson-client": "3.1.5",
+    "@types/topojson-specification": "1.0.5",
+    "typescript": "^5.8.3"
+  },
+  "bin": {
+    "twoux": "./bin/twoux.mjs"
+  },
+  "files": [
+    "src",
+    "bin",
+    "agent",
+    "registry",
+    "theme.json",
+    "SHADCN-DIFF.md",
+    "LICENSE.md",
+    "NOTICE.md",
+    "LICENSES"
+  ],
+  "author": "Giulia Pizzignacco <hello@twoux.com>",
+  "homepage": "https://twoux.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/axdexpert/twoux.git",
+    "directory": "packages/ui"
+  },
+  "bugs": {
+    "url": "https://github.com/axdexpert/twoux/issues"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}

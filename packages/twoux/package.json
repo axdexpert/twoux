@@ -1,0 +1,37 @@
+{
+  "name": "twoux",
+  "version": "0.1.0",
+  "description": "Command line for TwoUX: set a project up for AI agents, find the component for a job, check UI code and run the MCP server. Runs the @twoux/ui installed in your project.",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "type": "module",
+  "bin": {
+    "twoux": "./bin/twoux.mjs"
+  },
+  "files": [
+    "bin",
+    "LICENSE.md"
+  ],
+  "dependencies": {
+    "@twoux/ui": "workspace:^"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "prepack": "cp ../../LICENSE.md LICENSE.md"
+  },
+  "author": "Giulia Pizzignacco <hello@twoux.com>",
+  "homepage": "https://twoux.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/axdexpert/twoux.git",
+    "directory": "packages/twoux"
+  },
+  "bugs": {
+    "url": "https://github.com/axdexpert/twoux/issues"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}

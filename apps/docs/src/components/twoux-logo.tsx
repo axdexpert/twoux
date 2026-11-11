@@ -1,0 +1,30 @@
+import { useId } from "react";
+import { cn } from "@twoux/ui";
+
+/**
+ * TwoUX wordmark. "TWO" follows the text colour (ink in light, white in dark),
+ * so one mark covers TwoUX.svg and TwoUX-logo-white.svg. "UX" keeps the brand gradient.
+ * Source files: public/brand/twoux.svg and public/brand/twoux-white.svg.
+ */
+/** mark: only the "UX" letters, for a sidebar rail. */
+export function TwoUXLogo({ className, mark = false }: { className?: string; mark?: boolean }) {
+	const id = useId().replace(/:/g, "");
+	const grad = `twoux-grad-${id}`;
+	return (
+		<svg viewBox={mark ? "84 0 49 32" : "0 0 133 32"} fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="TwoUX" className={cn("h-5 w-auto text-ink", className)}>
+			<path d="M6.48822 6.4H0V0H19.4647V6.4H12.9764V32H6.48822V6.4Z" fill="currentColor" />
+			<path d="M25.9529 25.6H22.7088V6.4H29.197V22.4H32.4411V25.6H35.6852V6.4H42.1734V25.6H45.4175V22.4H48.6616V6.4H55.1498V25.6H51.9057V28.8H48.6616V32H42.1734V28.8H35.6852V32H29.197V28.8H25.9529V25.6Z" fill="currentColor" />
+			<path d="M58.3686 9.6H61.6127V6.4H77.8333V9.6H81.0774V28.8H77.8333V32H61.6127V28.8H58.3686V9.6ZM74.5892 12.8H64.8568V25.6H74.5892V12.8Z" fill="currentColor" />
+			<path d="M97.3064 22.4H100.55V0H107.039V28.8H103.795V32H87.574V28.8H84.3299V0H90.8181V22.4H94.0622V25.6H97.3064V22.4Z" fill={`url(#${grad})`} />
+			<path d="M110.291 19.2H113.535V16H116.779V12.8H113.535V9.6H110.291V0H116.779V6.4H120.024V9.6H123.268V6.4H126.512V0H133V9.6H129.756V12.8H126.512V16H129.756V19.2H133V32H126.512V22.4H123.268V19.2H120.024V22.4H116.779V32H110.291V19.2Z" fill={`url(#${grad})`} />
+			<defs>
+				<linearGradient id={grad} x1="0" y1="16.3202" x2="136.253" y2="16.3202" gradientUnits="userSpaceOnUse">
+					<stop stopColor="#5753E0" />
+					<stop offset="0.245192" stopColor="#7B78EC" />
+					<stop offset="0.490385" stopColor="#5753E0" />
+					<stop offset="1" stopColor="#9F9DF8" />
+				</linearGradient>
+			</defs>
+		</svg>
+	);
+}

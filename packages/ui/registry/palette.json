@@ -1,0 +1,770 @@
+[
+  {
+    "name": "neutral",
+    "note": "Surfaces, lines, text",
+    "steps": [
+      {
+        "step": "25",
+        "hex": "#FAFAFC",
+        "anchor": true,
+        "onWhite": 1.04,
+        "onBlack": 20.14
+      },
+      {
+        "step": "50",
+        "hex": "#F5F5F8",
+        "anchor": true,
+        "onWhite": 1.09,
+        "onBlack": 19.3
+      },
+      {
+        "step": "75",
+        "hex": "#F0F0F4",
+        "anchor": true,
+        "onWhite": 1.14,
+        "onBlack": 18.48
+      },
+      {
+        "step": "100",
+        "hex": "#ECECF2",
+        "anchor": true,
+        "onWhite": 1.18,
+        "onBlack": 17.85
+      },
+      {
+        "step": "150",
+        "hex": "#E6E6EC",
+        "anchor": true,
+        "onWhite": 1.24,
+        "onBlack": 16.89
+      },
+      {
+        "step": "200",
+        "hex": "#D6D6DF",
+        "anchor": true,
+        "onWhite": 1.44,
+        "onBlack": 14.54
+      },
+      {
+        "step": "300",
+        "hex": "#B4B4C1",
+        "anchor": false,
+        "onWhite": 2.05,
+        "onBlack": 10.24
+      },
+      {
+        "step": "400",
+        "hex": "#9D9DAB",
+        "anchor": false,
+        "onWhite": 2.68,
+        "onBlack": 7.84
+      },
+      {
+        "step": "500",
+        "hex": "#868695",
+        "anchor": true,
+        "onWhite": 3.59,
+        "onBlack": 5.86
+      },
+      {
+        "step": "600",
+        "hex": "#656574",
+        "anchor": true,
+        "onWhite": 5.73,
+        "onBlack": 3.67
+      },
+      {
+        "step": "700",
+        "hex": "#474756",
+        "anchor": true,
+        "onWhite": 9.12,
+        "onBlack": 2.3
+      },
+      {
+        "step": "800",
+        "hex": "#33333F",
+        "anchor": false,
+        "onWhite": 12.46,
+        "onBlack": 1.69
+      },
+      {
+        "step": "900",
+        "hex": "#23232D",
+        "anchor": false,
+        "onWhite": 15.56,
+        "onBlack": 1.35
+      },
+      {
+        "step": "950",
+        "hex": "#17171F",
+        "anchor": true,
+        "onWhite": 17.82,
+        "onBlack": 1.18
+      }
+    ]
+  },
+  {
+    "name": "indigo",
+    "note": "Accent. 600 = primary action, 700 = accent text, 50 = selection tint",
+    "steps": [
+      {
+        "step": "50",
+        "hex": "#EEEDFD",
+        "anchor": true,
+        "onWhite": 1.16,
+        "onBlack": 18.17
+      },
+      {
+        "step": "100",
+        "hex": "#E8ECFF",
+        "anchor": false,
+        "onWhite": 1.17,
+        "onBlack": 17.87
+      },
+      {
+        "step": "200",
+        "hex": "#D2D8FF",
+        "anchor": false,
+        "onWhite": 1.4,
+        "onBlack": 15.01
+      },
+      {
+        "step": "300",
+        "hex": "#B2BBFF",
+        "anchor": false,
+        "onWhite": 1.83,
+        "onBlack": 11.45
+      },
+      {
+        "step": "400",
+        "hex": "#8C96FF",
+        "anchor": false,
+        "onWhite": 2.65,
+        "onBlack": 7.92
+      },
+      {
+        "step": "500",
+        "hex": "#6E70FF",
+        "anchor": false,
+        "onWhite": 3.87,
+        "onBlack": 5.42
+      },
+      {
+        "step": "600",
+        "hex": "#5753E0",
+        "anchor": true,
+        "onWhite": 5.65,
+        "onBlack": 3.72
+      },
+      {
+        "step": "700",
+        "hex": "#4340C4",
+        "anchor": true,
+        "onWhite": 7.58,
+        "onBlack": 2.77
+      },
+      {
+        "step": "800",
+        "hex": "#3A33A4",
+        "anchor": false,
+        "onWhite": 9.59,
+        "onBlack": 2.19
+      },
+      {
+        "step": "900",
+        "hex": "#2A257E",
+        "anchor": false,
+        "onWhite": 12.62,
+        "onBlack": 1.66
+      },
+      {
+        "step": "950",
+        "hex": "#1A1655",
+        "anchor": false,
+        "onWhite": 16.28,
+        "onBlack": 1.29
+      }
+    ]
+  },
+  {
+    "name": "blue",
+    "note": "Data visualisation (series 7)",
+    "steps": [
+      {
+        "step": "50",
+        "hex": "#F2F7FF",
+        "anchor": false,
+        "onWhite": 1.08,
+        "onBlack": 19.52
+      },
+      {
+        "step": "100",
+        "hex": "#E1EEFF",
+        "anchor": false,
+        "onWhite": 1.17,
+        "onBlack": 17.88
+      },
+      {
+        "step": "200",
+        "hex": "#C4DDFF",
+        "anchor": false,
+        "onWhite": 1.39,
+        "onBlack": 15.13
+      },
+      {
+        "step": "300",
+        "hex": "#97C4FF",
+        "anchor": false,
+        "onWhite": 1.8,
+        "onBlack": 11.66
+      },
+      {
+        "step": "400",
+        "hex": "#5BA3FF",
+        "anchor": false,
+        "onWhite": 2.58,
+        "onBlack": 8.13
+      },
+      {
+        "step": "500",
+        "hex": "#3385EA",
+        "anchor": false,
+        "onWhite": 3.69,
+        "onBlack": 5.68
+      },
+      {
+        "step": "600",
+        "hex": "#2A78D6",
+        "anchor": true,
+        "onWhite": 4.42,
+        "onBlack": 4.76
+      },
+      {
+        "step": "700",
+        "hex": "#045AB1",
+        "anchor": false,
+        "onWhite": 6.77,
+        "onBlack": 3.1
+      },
+      {
+        "step": "800",
+        "hex": "#004790",
+        "anchor": false,
+        "onWhite": 9.11,
+        "onBlack": 2.3
+      },
+      {
+        "step": "900",
+        "hex": "#00356F",
+        "anchor": false,
+        "onWhite": 12.08,
+        "onBlack": 1.74
+      },
+      {
+        "step": "950",
+        "hex": "#00224A",
+        "anchor": false,
+        "onWhite": 15.82,
+        "onBlack": 1.33
+      }
+    ]
+  },
+  {
+    "name": "teal",
+    "note": "Data visualisation (series 3)",
+    "steps": [
+      {
+        "step": "50",
+        "hex": "#EDFAF7",
+        "anchor": false,
+        "onWhite": 1.07,
+        "onBlack": 19.62
+      },
+      {
+        "step": "100",
+        "hex": "#DBF3EE",
+        "anchor": false,
+        "onWhite": 1.16,
+        "onBlack": 18.07
+      },
+      {
+        "step": "200",
+        "hex": "#B9E6DD",
+        "anchor": false,
+        "onWhite": 1.36,
+        "onBlack": 15.43
+      },
+      {
+        "step": "300",
+        "hex": "#89D1C5",
+        "anchor": false,
+        "onWhite": 1.75,
+        "onBlack": 11.99
+      },
+      {
+        "step": "400",
+        "hex": "#52B5A6",
+        "anchor": false,
+        "onWhite": 2.47,
+        "onBlack": 8.52
+      },
+      {
+        "step": "500",
+        "hex": "#199B8B",
+        "anchor": false,
+        "onWhite": 3.44,
+        "onBlack": 6.1
+      },
+      {
+        "step": "600",
+        "hex": "#00897B",
+        "anchor": true,
+        "onWhite": 4.32,
+        "onBlack": 4.86
+      },
+      {
+        "step": "700",
+        "hex": "#006B60",
+        "anchor": false,
+        "onWhite": 6.42,
+        "onBlack": 3.27
+      },
+      {
+        "step": "800",
+        "hex": "#00554C",
+        "anchor": false,
+        "onWhite": 8.74,
+        "onBlack": 2.4
+      },
+      {
+        "step": "900",
+        "hex": "#004039",
+        "anchor": false,
+        "onWhite": 11.72,
+        "onBlack": 1.79
+      },
+      {
+        "step": "950",
+        "hex": "#002A25",
+        "anchor": false,
+        "onWhite": 15.47,
+        "onBlack": 1.36
+      }
+    ]
+  },
+  {
+    "name": "green",
+    "note": "Status: ok (700 generated for a smooth range, re-checked for contrast)",
+    "steps": [
+      {
+        "step": "50",
+        "hex": "#E8F6EE",
+        "anchor": true,
+        "onWhite": 1.11,
+        "onBlack": 18.85
+      },
+      {
+        "step": "100",
+        "hex": "#DDF4E3",
+        "anchor": false,
+        "onWhite": 1.16,
+        "onBlack": 18.12
+      },
+      {
+        "step": "200",
+        "hex": "#BFE3CD",
+        "anchor": true,
+        "onWhite": 1.39,
+        "onBlack": 15.08
+      },
+      {
+        "step": "300",
+        "hex": "#93D2A5",
+        "anchor": false,
+        "onWhite": 1.75,
+        "onBlack": 12
+      },
+      {
+        "step": "400",
+        "hex": "#63B77E",
+        "anchor": false,
+        "onWhite": 2.44,
+        "onBlack": 8.61
+      },
+      {
+        "step": "500",
+        "hex": "#3A9C5F",
+        "anchor": false,
+        "onWhite": 3.44,
+        "onBlack": 6.1
+      },
+      {
+        "step": "600",
+        "hex": "#1C854A",
+        "anchor": false,
+        "onWhite": 4.66,
+        "onBlack": 4.5
+      },
+      {
+        "step": "700",
+        "hex": "#096F3A",
+        "anchor": false,
+        "onWhite": 6.28,
+        "onBlack": 3.35
+      },
+      {
+        "step": "800",
+        "hex": "#01582C",
+        "anchor": false,
+        "onWhite": 8.63,
+        "onBlack": 2.43
+      },
+      {
+        "step": "900",
+        "hex": "#014320",
+        "anchor": false,
+        "onWhite": 11.51,
+        "onBlack": 1.83
+      },
+      {
+        "step": "950",
+        "hex": "#012B13",
+        "anchor": false,
+        "onWhite": 15.48,
+        "onBlack": 1.36
+      }
+    ]
+  },
+  {
+    "name": "amber",
+    "note": "Status: warn, in progress",
+    "steps": [
+      {
+        "step": "50",
+        "hex": "#FDF4E3",
+        "anchor": true,
+        "onWhite": 1.09,
+        "onBlack": 19.23
+      },
+      {
+        "step": "100",
+        "hex": "#FAEAD5",
+        "anchor": false,
+        "onWhite": 1.18,
+        "onBlack": 17.79
+      },
+      {
+        "step": "200",
+        "hex": "#F0D7A8",
+        "anchor": true,
+        "onWhite": 1.4,
+        "onBlack": 14.99
+      },
+      {
+        "step": "300",
+        "hex": "#E4B97D",
+        "anchor": false,
+        "onWhite": 1.82,
+        "onBlack": 11.53
+      },
+      {
+        "step": "400",
+        "hex": "#CD9644",
+        "anchor": false,
+        "onWhite": 2.61,
+        "onBlack": 8.04
+      },
+      {
+        "step": "500",
+        "hex": "#B47801",
+        "anchor": false,
+        "onWhite": 3.73,
+        "onBlack": 5.63
+      },
+      {
+        "step": "600",
+        "hex": "#A87000",
+        "anchor": true,
+        "onWhite": 4.21,
+        "onBlack": 4.98
+      },
+      {
+        "step": "700",
+        "hex": "#965606",
+        "anchor": true,
+        "onWhite": 5.78,
+        "onBlack": 3.63
+      },
+      {
+        "step": "800",
+        "hex": "#644100",
+        "anchor": false,
+        "onWhite": 9.14,
+        "onBlack": 2.3
+      },
+      {
+        "step": "900",
+        "hex": "#4C3000",
+        "anchor": false,
+        "onWhite": 12.14,
+        "onBlack": 1.73
+      },
+      {
+        "step": "950",
+        "hex": "#321E00",
+        "anchor": false,
+        "onWhite": 15.89,
+        "onBlack": 1.32
+      }
+    ]
+  },
+  {
+    "name": "orange",
+    "note": "Data visualisation (series 2)",
+    "steps": [
+      {
+        "step": "50",
+        "hex": "#FFF4F0",
+        "anchor": false,
+        "onWhite": 1.08,
+        "onBlack": 19.45
+      },
+      {
+        "step": "100",
+        "hex": "#FFE7DE",
+        "anchor": false,
+        "onWhite": 1.18,
+        "onBlack": 17.74
+      },
+      {
+        "step": "200",
+        "hex": "#FFCEBD",
+        "anchor": false,
+        "onWhite": 1.42,
+        "onBlack": 14.82
+      },
+      {
+        "step": "300",
+        "hex": "#FFA888",
+        "anchor": false,
+        "onWhite": 1.87,
+        "onBlack": 11.21
+      },
+      {
+        "step": "400",
+        "hex": "#F4794A",
+        "anchor": false,
+        "onWhite": 2.73,
+        "onBlack": 7.68
+      },
+      {
+        "step": "500",
+        "hex": "#E0602B",
+        "anchor": true,
+        "onWhite": 3.57,
+        "onBlack": 5.88
+      },
+      {
+        "step": "600",
+        "hex": "#BC4200",
+        "anchor": false,
+        "onWhite": 5.36,
+        "onBlack": 3.92
+      },
+      {
+        "step": "700",
+        "hex": "#9C3600",
+        "anchor": false,
+        "onWhite": 7.14,
+        "onBlack": 2.94
+      },
+      {
+        "step": "800",
+        "hex": "#7E2900",
+        "anchor": false,
+        "onWhite": 9.53,
+        "onBlack": 2.2
+      },
+      {
+        "step": "900",
+        "hex": "#601E00",
+        "anchor": false,
+        "onWhite": 12.48,
+        "onBlack": 1.68
+      },
+      {
+        "step": "950",
+        "hex": "#401100",
+        "anchor": false,
+        "onWhite": 16.18,
+        "onBlack": 1.3
+      }
+    ]
+  },
+  {
+    "name": "red",
+    "note": "Status: bad, destructive",
+    "steps": [
+      {
+        "step": "50",
+        "hex": "#FCECED",
+        "anchor": true,
+        "onWhite": 1.14,
+        "onBlack": 18.36
+      },
+      {
+        "step": "100",
+        "hex": "#FFE6E4",
+        "anchor": false,
+        "onWhite": 1.19,
+        "onBlack": 17.69
+      },
+      {
+        "step": "200",
+        "hex": "#F1C3C6",
+        "anchor": true,
+        "onWhite": 1.57,
+        "onBlack": 13.36
+      },
+      {
+        "step": "300",
+        "hex": "#FFA5A1",
+        "anchor": false,
+        "onWhite": 1.88,
+        "onBlack": 11.15
+      },
+      {
+        "step": "400",
+        "hex": "#F9706F",
+        "anchor": false,
+        "onWhite": 2.77,
+        "onBlack": 7.58
+      },
+      {
+        "step": "500",
+        "hex": "#E1494E",
+        "anchor": false,
+        "onWhite": 3.99,
+        "onBlack": 5.26
+      },
+      {
+        "step": "600",
+        "hex": "#C2333B",
+        "anchor": true,
+        "onWhite": 5.48,
+        "onBlack": 3.83
+      },
+      {
+        "step": "700",
+        "hex": "#A81C2A",
+        "anchor": false,
+        "onWhite": 7.33,
+        "onBlack": 2.86
+      },
+      {
+        "step": "800",
+        "hex": "#88121F",
+        "anchor": false,
+        "onWhite": 9.75,
+        "onBlack": 2.15
+      },
+      {
+        "step": "900",
+        "hex": "#680B15",
+        "anchor": false,
+        "onWhite": 12.75,
+        "onBlack": 1.65
+      },
+      {
+        "step": "950",
+        "hex": "#46050B",
+        "anchor": false,
+        "onWhite": 16.32,
+        "onBlack": 1.29
+      }
+    ]
+  },
+  {
+    "name": "magenta",
+    "note": "Data visualisation (series 5)",
+    "steps": [
+      {
+        "step": "50",
+        "hex": "#FFF3F6",
+        "anchor": false,
+        "onWhite": 1.08,
+        "onBlack": 19.4
+      },
+      {
+        "step": "100",
+        "hex": "#FFE5EC",
+        "anchor": false,
+        "onWhite": 1.19,
+        "onBlack": 17.67
+      },
+      {
+        "step": "200",
+        "hex": "#FFCAD8",
+        "anchor": false,
+        "onWhite": 1.43,
+        "onBlack": 14.69
+      },
+      {
+        "step": "300",
+        "hex": "#FFA1BD",
+        "anchor": false,
+        "onWhite": 1.89,
+        "onBlack": 11.08
+      },
+      {
+        "step": "400",
+        "hex": "#EF719C",
+        "anchor": false,
+        "onWhite": 2.8,
+        "onBlack": 7.51
+      },
+      {
+        "step": "500",
+        "hex": "#D74D80",
+        "anchor": false,
+        "onWhite": 3.99,
+        "onBlack": 5.26
+      },
+      {
+        "step": "600",
+        "hex": "#CC4A7A",
+        "anchor": true,
+        "onWhite": 4.35,
+        "onBlack": 4.83
+      },
+      {
+        "step": "700",
+        "hex": "#9F2357",
+        "anchor": false,
+        "onWhite": 7.36,
+        "onBlack": 2.85
+      },
+      {
+        "step": "800",
+        "hex": "#811845",
+        "anchor": false,
+        "onWhite": 9.77,
+        "onBlack": 2.15
+      },
+      {
+        "step": "900",
+        "hex": "#631133",
+        "anchor": false,
+        "onWhite": 12.66,
+        "onBlack": 1.66
+      },
+      {
+        "step": "950",
+        "hex": "#420820",
+        "anchor": false,
+        "onWhite": 16.31,
+        "onBlack": 1.29
+      }
+    ]
+  }
+]

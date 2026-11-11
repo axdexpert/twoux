@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useMeta } from "../components/meta";
 import { EXAMPLE_APPS, isNew } from "../content";
+import { posthogCapture, posthogLogger } from "../posthog";
 import { PageHeader } from "./ComponentPage";
 
 /* Example apps as a gallery, the way template libraries show templates: a grid of cards with a screenshot, what the
@@ -15,10 +16,13 @@ type App = (typeof EXAMPLE_APPS)[number];
 type Viewport = "desktop" | "tablet" | "phone";
 const WIDTH: Record<Viewport, string> = { desktop: "max-w-full", tablet: "max-w-3xl", phone: "max-w-sm" };
 
-function OpenFullPage({ app, size = "sm" }: { app: App; size?: "sm" | "icon-sm" }) {
+function OpenFullPage({ app, entryPoint, size = "sm" }: { app: App; entryPoint: "gallery" | "preview"; size?: "sm" | "icon-sm" }) {
 	return (
 		<Button asChild variant={size === "sm" ? "outline" : "ghost"} size={size}>
-			<a href={app.to} target="_blank" rel="noreferrer" aria-label={size === "icon-sm" ? `Open ${app.label} full page (opens in a new tab)` : undefined}>
+			<a href={app.to} target="_blank" rel="noreferrer" aria-label={size === "icon-sm" ? `Open ${app.label} full page (opens in a new tab)` : undefined} onClick={() => {
+				posthogCapture("example_full_page_opened", { example_id: app.id, entry_point: entryPoint });
+				posthogLogger.info("example full page opened", { example_id: app.id, entry_point: entryPoint });
+			}}>
 				{size === "sm" && "Open full page"}
 				<ExternalLink />
 				{size === "sm" && <span className="sr-only">(opens {app.label} in a new tab)</span>}
@@ -36,12 +40,15 @@ function AppCard({ app, theme }: { app: App; theme: "light" | "dark" }) {
 			<div className="grid gap-1 px-2">
 				<div className="flex items-start justify-between gap-2">
 					<h2 className="text-md font-semibold text-ink">
-						<Link to={`/examples#${app.id}`} className="rounded-xs outline-none after:absolute after:inset-0 after:rounded-md focus-visible:after:ring-3 focus-visible:after:ring-primary/30">
+						<Link to={`/examples#${app.id}`} onClick={() => {
+							posthogCapture("example_preview_opened", { example_id: app.id });
+							posthogLogger.info("example preview opened", { example_id: app.id });
+						}} className="rounded-xs outline-none after:absolute after:inset-0 after:rounded-md focus-visible:after:ring-3 focus-visible:after:ring-primary/30">
 							{app.label}
 						</Link>
 						{isNew(`example:${app.id}`) && <><span className="sr-only">, </span><Badge className="ml-2 align-middle">New</Badge></>}
 					</h2>
-					<span className="relative z-10 -mt-1 -mr-1"><OpenFullPage app={app} size="icon-sm" /></span>
+					<span className="relative z-10 -mt-1 -mr-1"><OpenFullPage app={app} entryPoint="gallery" size="icon-sm" /></span>
 				</div>
 				<p className="text-docs-sm text-ink-2">{app.description}</p>
 				<p className="text-sm text-ink-3"><span className="sr-only">Shows: </span>{app.shows.join(" · ")}</p>
@@ -69,7 +76,7 @@ function AppPreview({ app }: { app: App }) {
 						<Segment value="tablet">Tablet</Segment>
 						<Segment value="phone">Phone</Segment>
 					</SegmentedControl>
-					<OpenFullPage app={app} />
+					<OpenFullPage app={app} entryPoint="preview" />
 				</div>
 			</div>
 			<div className="overflow-hidden rounded-md border border-line bg-surface-2 bg-dots">

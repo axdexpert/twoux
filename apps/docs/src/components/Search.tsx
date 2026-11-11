@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import jobs from "../../../../packages/ui/registry/jobs.json";
 import rules from "../../../../packages/ui/registry/rules.json";
 import { type Doc, docById, docPath, docs, examplesFor } from "../content";
+import { posthogCapture, posthogLogger } from "../posthog";
 
 type Hit = { kind: "page" | "section" | "rule" | "job" | "example"; title: string; text?: string; page: Doc; to: string; score: number };
 
@@ -136,7 +137,12 @@ export function SearchDialog({ open, onClose, initialQuery = "" }: { open: boole
 	useEffect(() => {
 		if (open) setQ(initialQuery);
 	}, [open, initialQuery]);
-	const go = (to: string) => {
+	const go = (to: string, resultKind?: Hit["kind"]) => {
+		if (resultKind) {
+			const queryLength = q.trim().length;
+			posthogCapture("docs_search_result_selected", { result_kind: resultKind, query_length: queryLength });
+			posthogLogger.info("docs search result selected", { result_kind: resultKind, query_length: queryLength });
+		}
 		onClose();
 		navigate(to);
 	};
@@ -172,7 +178,7 @@ export function SearchDialog({ open, onClose, initialQuery = "" }: { open: boole
 								return (
 									<CommandGroup key={k} heading={LABEL[k]}>
 										{group.map((h) => (
-											<CommandItem key={`${k}-${h.to}-${h.title}-${h.text ?? ""}`} value={`${k}-${h.to}-${h.title}-${h.text ?? ""}`} onSelect={() => go(h.to)}>
+											<CommandItem key={`${k}-${h.to}-${h.title}-${h.text ?? ""}`} value={`${k}-${h.to}-${h.title}-${h.text ?? ""}`} onSelect={() => go(h.to, h.kind)}>
 												<Row h={h} />
 											</CommandItem>
 										))}

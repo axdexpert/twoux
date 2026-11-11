@@ -339,6 +339,23 @@ export function PrevNext() {
 	);
 }
 
+/** The foot of every docs page: who makes TwoUX, its licence, and where to find and reach it. */
+export function SiteFooter() {
+	const link = "hover:text-ink hover:underline hover:underline-offset-4";
+	return (
+		<footer className="docs-cols pb-10">
+			<div className="flex flex-wrap items-center justify-between gap-x-8 gap-y-3 border-t border-line pt-6 text-docs-sm text-ink-3">
+				<p>© 2026 TwoUX</p>
+				<ul className="flex flex-wrap items-center gap-x-5 gap-y-2">
+					<li><Link to="/licence" className={link}>Licence</Link></li>
+					<li><a href="https://github.com/axdexpert/twoux" target="_blank" rel="noreferrer" className={link}>GitHub<span className="sr-only"> (opens in a new tab)</span></a></li>
+					<li><a href="mailto:hi@axdexpert.ai" className={link}>Get in touch</a></li>
+				</ul>
+			</div>
+		</footer>
+	);
+}
+
 /* ---------- shared building blocks for every docs page ---------- */
 
 /** The number of a step in an ordered list: outlined, so the list reads as a sequence without competing with the text. */

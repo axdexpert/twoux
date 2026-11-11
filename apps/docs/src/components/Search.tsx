@@ -1,5 +1,5 @@
 import { CommandDialog, CommandEmpty, CommandFooter, CommandGroup, CommandInput, CommandItem, CommandItemMeta, CommandList, CommandShortcut, Kbd } from "@twoux/ui";
-import { ArrowRight, BookOpen, FileText, Hash, ListChecks, Search as SearchIcon, Workflow } from "lucide-react";
+import { ArrowRight, BookOpen, FileText, Hash, Info, ListChecks, Search as SearchIcon, Workflow } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import jobs from "../../../../packages/ui/registry/jobs.json";
@@ -118,7 +118,8 @@ function Row({ h }: { h: Hit }) {
 }
 
 const JUMP: [string, string, typeof FileText][] = [
-	["/docs", "Get started", BookOpen],
+	["/docs", "Overview", Info],
+	["/get-started", "Get started", BookOpen],
 	["/components", "Components", FileText],
 	["/foundation", "Foundation", FileText],
 	["/patterns", "Patterns", FileText],

@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useMeta } from "../components/meta";
 import { H2, OnThisPage } from "../components/docs";
 import { DocCard } from "../components/DocCard";
 import { docPath, docs } from "../content";
@@ -13,6 +14,7 @@ const SECTIONS = {
 
 export function SectionIndex({ kind }: { kind: "foundation" | "pattern" }) {
 	const meta = SECTIONS[kind];
+	useMeta(`${meta.title} · TwoUX`, meta.summary);
 	const items = docs.filter((d) => d.kind === kind);
 	const groups = [...new Set(items.map((d) => d.group))];
 	return (

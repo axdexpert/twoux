@@ -17,14 +17,14 @@ type Tab = (typeof TABS)[number][0];
 /* ---------- building blocks used by component, foundation and pattern pages ---------- */
 
 /** Page title block. `eyebrow` is no longer shown: the breadcrumb lives in the docs header. */
-export function PageHeader({ title, summary, status, meta, actions, children }: { eyebrow?: ReactNode; title: string; /** Right of the title, such as Copy page. */ actions?: ReactNode; summary: string; status?: ReactNode; meta?: ReactNode; children?: ReactNode }) {
+export function PageHeader({ title, titleClassName = "text-docs-title", summary, status, meta, actions, children }: { eyebrow?: ReactNode; title: string; /** Title size, for the Overview only. */ titleClassName?: string; /** Right of the title, such as Copy page. */ actions?: ReactNode; summary: string; status?: ReactNode; meta?: ReactNode; children?: ReactNode }) {
 	return (
 		<header data-page-header className="pb-8">
 			<div>
 				<div className="min-w-0">
 				<div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3">
 					<div className="flex min-w-0 flex-wrap items-center gap-3">
-						<h1 className="font-display text-docs-title font-semibold text-balance">{title}</h1>
+						<h1 className={`font-display font-semibold text-balance ${titleClassName}`}>{title}</h1>
 					{status}
 					</div>
 					{actions && <div className="flex shrink-0 items-center gap-2 pt-1">{actions}</div>}

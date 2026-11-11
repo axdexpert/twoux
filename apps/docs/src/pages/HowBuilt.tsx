@@ -2,6 +2,7 @@ import { Badge, Code } from "@twoux/ui";
 import { Link } from "react-router-dom";
 import { H2, Inline, NumberMarker, OnThisPage } from "../components/docs";
 import { COMPONENT_GROUPS, docById, docs, isBuilt } from "../content";
+import { useMeta } from "../components/meta";
 import { PageHeader } from "./ComponentPage";
 
 /** What each component is built on. Keep in sync when a component ships. */
@@ -120,7 +121,10 @@ const BASE: Record<string, [string, string]> = {
 };
 const TONE: Record<string, "default" | "success" | "secondary" | "warning"> = { "shadcn + Radix": "default", shadcn: "default", "shadcn pattern": "default", Radix: "default", "TanStack Table": "warning", TwoUX: "success" };
 
+const HOW_SUMMARY = "TwoUX is not built from scratch, and it is not shadcn out of the box. Radix gives tested behaviour, shadcn gives starting code we own, and TwoUX adds the tokens, restrictions and rules.";
+
 export function HowBuilt() {
+	useMeta("How components are built · TwoUX", HOW_SUMMARY);
 	const comps = docs.filter((d) => d.kind === "component");
 	return (
 		<div className="docs-cols pt-10 pb-20 max-md:pt-8">
@@ -128,7 +132,7 @@ export function HowBuilt() {
 			<PageHeader
 				eyebrow="Get started"
 				title="How components are built"
-				summary="TwoUX is not built from scratch, and it is not shadcn out of the box. Radix gives tested behaviour, shadcn gives starting code we own, and TwoUX adds the tokens, restrictions and rules."
+				summary={HOW_SUMMARY}
 			/>
 				<article>
 					<H2 id="layers">Three layers</H2>

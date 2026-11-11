@@ -1,4 +1,4 @@
-import { Badge, Button, InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput, Kbd, Segment, SegmentedControl, type ThemeChoice, Tooltip, TooltipContent, TooltipTrigger, cn, setTheme, useTheme } from "@twoux/ui";
+import { Badge, Button, InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput, Kbd, Tooltip, TooltipContent, TooltipTrigger, cn, setTheme, useTheme } from "@twoux/ui";
 import * as Dialog from "@radix-ui/react-dialog";
 import {
 	ArrowRightLeft,
@@ -19,7 +19,6 @@ import {
 	LayoutGrid,
 	Menu,
 	MessageSquare,
-	Monitor,
 	Moon,
 	MousePointerClick,
 	Navigation,
@@ -30,11 +29,12 @@ import {
 	Table2,
 	Workflow,
 	X,
+	Info,
 } from "lucide-react";
 import { Fragment, type ReactNode, useEffect, useRef, useState } from "react";
 import { Link, NavLink, Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { SearchDialog } from "./components/Search";
-import { PrevNext } from "./components/docs";
+import { PrevNext, SiteFooter } from "./components/docs";
 import { EXAMPLE_APPS, LIBRARY, PAGE_ORDER, START_PAGES, docPath, docs, isBuilt, isNew } from "./content";
 import { ComponentPage } from "./pages/ComponentPage";
 import { ExampleApp } from "./pages/ExampleApp";
@@ -43,6 +43,9 @@ import { ForAgents } from "./pages/ForAgents";
 import { FoundationPage } from "./pages/FoundationPage";
 import { Gallery } from "./pages/Gallery";
 import { Home } from "./pages/Home";
+import { Overview } from "./pages/Overview";
+import { useMeta } from "./components/meta";
+import { StackMarkIcon } from "./components/stack-marks";
 import { HowBuilt } from "./pages/HowBuilt";
 import { Licence } from "./pages/Licence";
 import { SectionIndex } from "./pages/SectionIndex";
@@ -68,7 +71,7 @@ type Icon = typeof BookOpen;
 /** Example app icons, by id (the list itself lives in content.ts). */
 const EXAMPLE_ICONS: Record<string, Icon> = { hiring: LayoutDashboard, crm: Contact, operations: Activity, trading: CandlestickChart, agents: Bot, onboarding: Rocket, "data-workspace": Table2, workflows: Workflow };
 
-const START_ICONS: Record<string, Icon> = { "/docs": BookOpen, "/for-agents": Bot, "/how-its-built": Hammer };
+const START_ICONS: Record<string, Icon> = { "/docs": Info, "/get-started": BookOpen, "/for-agents": Bot, "/how-its-built": Hammer };
 const SECTION_ICONS: Record<string, Icon> = { foundation: Layers, components: Component, patterns: Workflow };
 const SECTION_OVERVIEW: Record<string, string> = { foundation: "Overview", components: "All components", patterns: "Overview" };
 const GROUP_ICONS: Record<string, Icon> = {
@@ -430,42 +433,32 @@ function Sidebar({ onSearchAll }: { onSearchAll: (q: string) => void }) {
 	);
 }
 
-/* ---------- theme: Light, Dark or Match system, at the foot of the sidebar ---------- */
-
-const THEMES: [ThemeChoice, string, Icon][] = [["system", "Match system", Monitor], ["light", "Light", Sun], ["dark", "Dark", Moon]];
-
-/** One option. It stays a direct child of the control, which finds the chosen segment there for its sliding pill.
-    The segment opens its own tooltip on hover and focus: a trigger wrapping it would overwrite its "on" state,
-    and its enlarged 24px hit area covers anything inside, so the inner span only anchors the tooltip. */
-function ThemeSegment({ value, label, icon: ThemeIcon }: { value: ThemeChoice; label: string; icon: Icon }) {
-	const [open, setOpen] = useState(false);
-	return (
-		<Segment value={value} aria-label={label} onPointerEnter={() => setOpen(true)} onPointerLeave={() => setOpen(false)} onFocus={() => setOpen(true)} onBlur={() => setOpen(false)}>
-			<Tooltip open={open} onOpenChange={setOpen}>
-				<TooltipTrigger asChild><span className="grid place-items-center"><ThemeIcon aria-hidden="true" /></span></TooltipTrigger>
-				<TooltipContent>{label}</TooltipContent>
-			</Tooltip>
-		</Segment>
-	);
-}
+/* ---------- theme: one button in the header that flips between light and dark ----------
+   A first visit follows the system; the first press picks the opposite of what is showing, and the choice is kept.
+   The icon shows where the press goes (moon in light, sun in dark), and the label says it in words. */
 
 function ThemeToggle() {
-	const { choice } = useTheme();
+	const { resolved } = useTheme();
+	const next = resolved === "dark" ? "light" : "dark";
+	const label = `Switch to ${next} theme`;
+	const ThemeIcon = next === "dark" ? Moon : Sun;
 	return (
-		<SegmentedControl value={choice} onValueChange={(v) => v && setTheme(v as ThemeChoice)} size="sm" aria-label="Theme">
-			{THEMES.map(([value, label, ThemeIcon]) => <ThemeSegment key={value} value={value} label={label} icon={ThemeIcon} />)}
-		</SegmentedControl>
+		<Tooltip>
+			<TooltipTrigger asChild>
+				<Button variant="ghost" size="icon-sm" aria-label={label} onClick={() => setTheme(next)}><ThemeIcon /></Button>
+			</TooltipTrigger>
+			<TooltipContent>{label}</TooltipContent>
+		</Tooltip>
 	);
 }
 
-/** Navigation filter pinned on top, then the scrolling list; theme pinned under a hairline at the foot. Used in the desktop sidebar and the phone drawer. */
+/** Navigation filter pinned on top, then the scrolling list. Used in the desktop sidebar and the phone drawer. */
 function SidebarBody({ onSearchAll }: { onSearchAll: (q: string) => void }) {
 	return (
 		<>
 			<div data-sidebar-scroll className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto px-3 pb-6">
 				<Sidebar onSearchAll={onSearchAll} />
 			</div>
-			<div className="border-t border-line px-3 py-3"><ThemeToggle /></div>
 		</>
 	);
 }
@@ -502,6 +495,45 @@ function Crumbs() {
 				))}
 			</ol>
 		</nav>
+	);
+}
+
+const REPO = "https://github.com/axdexpert/twoux";
+
+/** The docs default to the system theme. TwoUX's setTheme forgets Light (it is the package default),
+    so a chosen Light is saved here, and index.html reads it back before the first paint. */
+function useRememberLight() {
+	const { choice } = useTheme();
+	useEffect(() => {
+		if (choice !== "light") return;
+		try { localStorage.setItem("twoux-theme", "light"); } catch { /* private mode: the choice lasts this visit */ }
+	}, [choice]);
+}
+
+function GitHubLink() {
+	return (
+		<Tooltip>
+			<TooltipTrigger asChild>
+				<Button asChild variant="ghost" size="icon-sm">
+					<a href={REPO} target="_blank" rel="noreferrer" aria-label="TwoUX on GitHub (opens in a new tab)"><StackMarkIcon mark="github" /></a>
+				</Button>
+			</TooltipTrigger>
+			<TooltipContent>GitHub</TooltipContent>
+		</Tooltip>
+	);
+}
+
+/** Right of the search: theme, the repository and the way in. Get started stays secondary so each page keeps one primary action. */
+function HeaderActions() {
+	const { pathname } = useLocation();
+	return (
+		<div className="flex items-center gap-1">
+			<ThemeToggle />
+			<GitHubLink />
+			{pathname !== "/get-started" && (
+				<Button asChild variant="secondary" size="sm" className="ml-2"><Link to="/get-started">Get started</Link></Button>
+			)}
+		</div>
 	);
 }
 
@@ -567,14 +599,26 @@ function MobileNav({ open, onOpenChange, onSearchAll }: { open: boolean; onOpenC
 	);
 }
 
+/** Each full-screen example app gets its own title and description for search results and link previews. */
+function ExampleMeta() {
+	const { pathname } = useLocation();
+	const app = EXAMPLE_APPS.find((a) => a.to === pathname);
+	useMeta(app ? `${app.label} · TwoUX example app` : "Example app · TwoUX", app?.description ?? "A full screen built only from TwoUX components.");
+	return null;
+}
+
 /** Example apps open on their own page (a new tab), full screen, without the docs header and sidebar. */
 export function App() {
-	const { pathname } = useLocation();
-	// There is no marketing home: the site opens on Get started.
+	const { pathname, search, hash } = useLocation();
+	// There is no marketing home: the site opens on the Overview.
 	if (pathname === "/") return <Navigate to="/docs" replace />;
+	// Static hosts serve each prerendered page from a folder and redirect /examples to /examples/.
+	// Drop the slash so every path check below sees one form of each address.
+	if (pathname.length > 1 && pathname.endsWith("/")) return <Navigate to={pathname.replace(/\/+$/, "") + search + hash} replace />;
 	if (pathname === "/example-app" || pathname.startsWith("/examples/"))
 		return (
 			<div className="h-dvh bg-bg">
+				<ExampleMeta />
 				<Routes>
 					<Route path="/example-app" element={<ExampleApp />} />
 					<Route path="/examples/crm" element={<CrmExample />} />
@@ -594,6 +638,7 @@ function DocsApp() {
 	const [searchOpen, setSearchOpen] = useState(false);
 	// What the sidebar filter hands over when it found nothing in the navigation; ⌘K and the header button start empty.
 	const [searchSeed, setSearchSeed] = useState("");
+	useRememberLight();
 	const openSearch = (q = "") => { setSearchSeed(q); setSearchOpen(true); };
 	const [navOpen, setNavOpen] = useState(false);
 	const mainRef = useRef<HTMLElement>(null);
@@ -630,11 +675,13 @@ function DocsApp() {
 					<button type="button" onClick={() => openSearch()} aria-label="Search the docs" className="grid size-8 place-items-center rounded-sm text-ink-2 hover:bg-hover hover:text-ink md:hidden">
 						<Search className="size-4" aria-hidden="true" />
 					</button>
+					<span className="flex items-center gap-1 md:hidden"><ThemeToggle /><GitHubLink /></span>
 				</div>
 				<div className="flex min-w-0 items-center gap-4 px-6 max-md:hidden">
 					<Crumbs />
 					<span className="flex-1" />
 					<SearchButton onSearch={() => openSearch()} />
+					<HeaderActions />
 				</div>
 			</header>
 			<div className="grid min-h-0 grid-cols-[264px_minmax(0,1fr)] max-md:grid-cols-1">
@@ -643,8 +690,8 @@ function DocsApp() {
 				</aside>
 				<main ref={mainRef} className="relative min-h-0 overflow-y-auto">
 					<Routes>
-						<Route path="/docs" element={<Home />} />
-						<Route path="/get-started" element={<Navigate to="/docs" replace />} />
+						<Route path="/docs" element={<Overview />} />
+						<Route path="/get-started" element={<Home />} />
 						<Route path="/components" element={<Gallery />} />
 						<Route path="/components/column-preferences" element={<Navigate to="/components/columns-menu" replace />} />
 						<Route path="/components/:id" element={<ComponentPage />} />
@@ -658,6 +705,7 @@ function DocsApp() {
 						<Route path="/examples" element={<ExampleApps />} />
 					</Routes>
 					<PrevNext />
+					<SiteFooter />
 				</main>
 			</div>
 			<SearchDialog open={searchOpen} onClose={() => setSearchOpen(false)} initialQuery={searchSeed} />

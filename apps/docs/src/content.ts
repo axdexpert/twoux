@@ -88,7 +88,8 @@ export const COMPONENT_GROUPS = ["Actions and inputs", "Content", "Navigation", 
 
 /* ---------- navigation order: one source for the sidebar and for Previous / Next ---------- */
 export const START_PAGES: { to: string; label: string }[] = [
-	{ to: "/docs", label: "Get started" },
+	{ to: "/docs", label: "Overview" },
+	{ to: "/get-started", label: "Get started" },
 	{ to: "/for-agents", label: "For AI agents" },
 	{ to: "/how-its-built", label: "How components are built" },
 ];

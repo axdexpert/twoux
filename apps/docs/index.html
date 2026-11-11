@@ -1,7 +1,8 @@
 <!doctype html>
 <html lang="en-GB">
   <head>
-    <script>try{var t=localStorage.getItem("twoux-theme");if(t==="dark"||t==="system")document.documentElement.dataset.theme=t}catch(e){}</script>
+    <!-- The docs default to the system theme; a chosen Light is saved as "light" (see useRememberLight in App.tsx). -->
+    <script>var d=document.documentElement;try{var t=localStorage.getItem("twoux-theme");d.dataset.theme=t==="dark"||t==="light"?t:"system"}catch(e){d.dataset.theme="system"}</script>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>TwoUX: the engineering-first design system for complex apps</title>
@@ -11,6 +12,9 @@
     <meta property="og:title" content="TwoUX: the engineering-first design system for complex apps" />
     <meta property="og:description" content="For teams building complex B2B products with AI coding agents. Production-ready components, research-backed UX principles and guardrails that keep slop out of your product." />
     <meta name="twitter:card" content="summary_large_image" />
+    <!-- Only the bare shell, served for unknown addresses, is noindex; the prerender step removes this from real pages. -->
+    <meta name="robots" content="noindex" data-shell />
+    <link rel="alternate" type="text/plain" href="/llms.txt" title="TwoUX for AI assistants (llms.txt)" />
     <link rel="icon" type="image/svg+xml" href="/brand/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

@@ -15,9 +15,7 @@
     "responsive": "node scripts/checks/responsive.mjs",
     "design-audit": "node scripts/checks/audit.mjs",
     "verify": "pnpm typecheck && node scripts/checks/exports.mjs && node packages/ui/bin/check.mjs --app-only apps/docs/src/examples && node scripts/checks/interactions.mjs && node scripts/checks/responsive.mjs && node scripts/checks/audit.mjs && THEME=dark node scripts/checks/audit.mjs",
-    "twoux-check": "node packages/ui/bin/check.mjs",
-    "sources": "node scripts/checks/sources.mjs",
-    "export": "node scripts/export/export.mjs"
+    "twoux-check": "node packages/ui/bin/check.mjs"
   },
   "devDependencies": {
     "playwright-core": "1.54.1",

@@ -46,12 +46,16 @@ If you break this licence, your rights under it end automatically. If you fix th
 
 ## 7. No warranty
 
-TwoUX is provided "as is", without warranty of any kind, express or implied, including the warranties of merchantability, fitness for a particular purpose and non-infringement. In no event shall the authors or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with TwoUX or its use.
+To the extent the applicable law allows, TwoUX is provided "as is", without warranty of any kind, express or implied, including the warranties of merchantability, fitness for a particular purpose and non-infringement. In no event shall the authors or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with TwoUX or its use.
 
 ## 8. Contributions
 
 If you send a change, suggestion or other contribution to TwoUX, for example a pull request or an issue, you confirm that you have the right to send it, and you grant Giulia Pizzignacco a perpetual, worldwide, royalty-free and irrevocable licence to use, modify, sublicense and distribute it as part of TwoUX, under this licence or any other.
 
-## 9. Questions
+## 9. Governing law
+
+This licence is governed by the laws of Portugal. The courts of Portugal have jurisdiction over any dispute arising from it or from the use of TwoUX. This does not remove any right the law of your country gives you to bring proceedings where you live.
+
+## 10. Questions
 
 If you are unsure whether your use is allowed, email hello@twoux.com before you ship it.

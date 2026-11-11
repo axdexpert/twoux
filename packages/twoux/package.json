@@ -1,6 +1,6 @@
 {
   "name": "twoux",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Command line for TwoUX: set a project up for AI agents, find the component for a job, check UI code and run the MCP server. Runs the @twoux/ui installed in your project.",
   "license": "SEE LICENSE IN LICENSE.md",
   "type": "module",

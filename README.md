@@ -1,5 +1,5 @@
 <p align="center">
-  <img src=".github/assets/banner.png" alt="The TwoUX wordmark surrounded by TwoUX components: keyboard settings, a stat card, a twoux find command, status badges, a list table with two rows selected, the assistant composer and a suggested-changes proposal" width="100%">
+  <img src=".github/assets/banner.png?v=2" alt="The TwoUX wordmark surrounded by TwoUX components: keyboard settings, a stat card, a twoux find command, status badges, a list table with two rows selected, the assistant composer and a suggested-changes proposal" width="100%">
 </p>
 
 # Engineering-First Design System for Complex Apps

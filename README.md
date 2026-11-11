@@ -1,26 +1,39 @@
-<p align="center">
-  <img src=".github/assets/banner.png?v=2" alt="The TwoUX wordmark surrounded by TwoUX components: keyboard settings, a stat card, a twoux find command, status badges, a list table with two rows selected, the assistant composer and a suggested-changes proposal" width="100%">
-</p>
+<div align="center">
 
-# Engineering-First Design System for Complex Apps
+<img src=".github/assets/banner.png?v=2" alt="The TwoUX wordmark surrounded by TwoUX components: keyboard settings, a stat card, a twoux find command, status badges, a list table with two rows selected, the assistant composer and a suggested-changes proposal" width="100%">
 
-TwoUX makes UX decisions explicit for engineers and AI agents, and enforces quality before inconsistent experiences reach production.
+# TwoUX
 
-**Beta, 0.1.0.** Built on [shadcn/ui](https://ui.shadcn.com) and [Radix](https://www.radix-ui.com), for [React 19](https://react.dev) and [Tailwind CSS v4](https://tailwindcss.com).
+TwoUX is an engineering-first design system for complex apps that makes UX decisions explicit<br>
+for engineers and AI agents, and enforces quality before inconsistent experiences reach production.
 
-<p>
-  <a href="https://www.npmjs.com/package/@twoux/ui"><img alt="npm" src="https://img.shields.io/npm/v/@twoux/ui?style=flat-square&color=5753E0"></a>
-  <img alt="121 components" src="https://img.shields.io/badge/components-121-5753E0?style=flat-square">
-  <img alt="WCAG 2.2 AA" src="https://img.shields.io/badge/WCAG-2.2_AA-00704A?style=flat-square">
-  <a href="LICENSE.md"><img alt="Free to use, TwoUX Licence" src="https://img.shields.io/badge/licence-free_to_use-5753E0?style=flat-square"></a>
-</p>
+**Currently in Beta** · Built on [shadcn/ui](https://ui.shadcn.com) and [Radix](https://www.radix-ui.com), for [React 19+](https://react.dev) and [Tailwind CSS v4](https://tailwindcss.com)
 
-**[Quick start with your agent](#quick-start-with-your-agent)** · **[Get started](#getting-started)** · **[Connect over MCP](#connect-over-mcp)** · **[Why TwoUX](#why-twoux)** · **[Rules for agents](AGENTS.md)** · **[Every page](llms.txt)** · **[Licence](LICENSE.md)**
+<a href="https://www.npmjs.com/package/@twoux/ui"><img alt="npm version" src="https://img.shields.io/npm/v/@twoux/ui?label=npm&color=5753E0&logo=npm"></a>
+<a href="LICENSE.md"><img alt="Licence: free to use" src="https://img.shields.io/badge/licence-free_to_use-5753E0"></a>
+<a href="#contributing"><img alt="PRs welcome" src="https://img.shields.io/badge/PRs-welcome-brightgreen"></a>
 
-- **Agent Experience on both sides.** Rules your coding agent follows, and components for the people who supervise agents.
-- **A knowledge base, not a component list.** 122 jobs, 46 patterns, every rule sourced.
-- **Complex, never complicated.** 121 compact, keyboard-first components for dense B2B apps. WCAG 2.2 AA.
-- **Guardrails over guidelines.** Lint, guard hook and a contrast-checked theme.
+<img alt="121 components" src="https://img.shields.io/badge/components-121-5753E0">
+<img alt="46 patterns" src="https://img.shields.io/badge/patterns-46-5753E0">
+<img alt="WCAG 2.2 AA" src="https://img.shields.io/badge/WCAG-2.2_AA-00704A">
+<a href="#connect-over-mcp"><img alt="MCP server included" src="https://img.shields.io/badge/MCP-server_included-17171F"></a>
+
+**[Quick start](#quick-start-with-your-agent)** · **[Rules for agents](AGENTS.md)** · **[Every page](llms.txt)** · **[Why TwoUX](#why-twoux)** · **[Contributing](#contributing)** · **[Licence](LICENSE.md)**
+
+</div>
+
+## Overview
+
+Engineers now build UI through coding agents, often with no designer in the loop and no Figma file to check against. Design systems ship components, not decisions, so the agent picks the nearest piece and fills every gap with a guess. TwoUX writes those decisions down: which component fits which job, how a flow behaves, when to confirm and when to offer Undo, each grounded in published usability research, WCAG, WAI-ARIA and the design systems of major SaaS products.
+
+It ships 121 compact, keyboard-first components for dense B2B apps, 122 jobs, 46 patterns, light and dark themes, a theme generator that checks contrast, a lint, an MCP server and agent skills as one system. People and AI agents read the same rules and get the same answers.
+
+**What makes TwoUX different:**
+
+- **Agent Experience on both sides.** The coding agent that builds the UI gets rules it can read and follow: `AGENTS.md`, `llms.txt`, a Markdown page per component and skills to build, audit and propose. The people who supervise agents inside the product get components for plans, approvals, run timelines and permissions.
+- **A knowledge base, not a component list.** 122 jobs, each mapped to one component with what to use instead, and 46 patterns that walk through whole flows step by step. Every rule carries its reason and its numbered sources.
+- **Complex, never complicated.** Dense tables, spreadsheet grids, charts and AI agent interfaces, compact and keyboard-first, in light and dark, with the right interactions, states and motion built in. WCAG 2.2 AA.
+- **Guardrails over guidelines.** A lint for raw values and local copies, a Claude Code hook that blocks edits to the system, a browser audit for contrast, focus and spacing, and a theme file that refuses colours that fail WCAG.
 
 ## Quick start with your agent
 
@@ -149,11 +162,6 @@ The design systems out there weren't built for this. Most give you components, o
 Engineers and product teams don't need more components. They need what the best UX designers and the design systems of market-leading products already know, written down where every agent can read it and every check can enforce it.
 
 TwoUX is a research-backed knowledge base built on UX expertise. It decides the UX, not only the look: which component fits which job, how a flow behaves, when to confirm and when to offer Undo. None of it is an LLM's opinion. Every decision is grounded in published usability research, WCAG, WAI-ARIA and the design systems of major SaaS products, and every component page explains its decisions with numbered sources.
-
-- **Agent Experience (AX), on both sides.** AX means designing for AI agents as users, the way UX designs for people. TwoUX does it twice. The coding agent that builds the UI gets rules it can read and follow: `AGENTS.md`, `llms.txt`, a Markdown page per component and skills to build, audit and propose. The people who supervise agents inside the product get components for plans, approvals, run timelines and permissions, so they stay in control.
-- **A knowledge base, not a component list.** 122 jobs, each mapped to one component, with what to use instead, plus 46 patterns that walk through whole flows step by step. Every rule carries its reason and its numbered sources.
-- **Complex, never complicated.** Not another generic dashboard UI kit: 121 components for dense tables, spreadsheet grids, charts and AI agent interfaces, compact and keyboard-first, in light and dark, with the right interactions, states and motion built in, so the correct choice is also the good-looking one. WCAG 2.2 AA.
-- **Guardrails over guidelines.** A lint for raw values and local copies, a Claude Code hook that blocks edits to the system, and a browser audit for contrast, focus and spacing. A theme file that refuses colours that fail WCAG.
 
 ## Tested on real agents
 

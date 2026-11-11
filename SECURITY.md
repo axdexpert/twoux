@@ -4,4 +4,4 @@ To report a security problem in TwoUX, its npm packages (`@twoux/ui`, `twoux`) o
 
 You will get a reply within five working days. Fixes are released as a new version on npm, with the change noted in the release.
 
-Every published version is built and published by the "Publish to npm" workflow in this repository, with npm provenance. A version without provenance did not come from here: don't install it, and report it.
+From 0.1.1 on, every version is built and published by the "Publish to npm" workflow in this repository, with npm provenance. Version 0.1.0 was published by hand to create the packages. A later version without provenance did not come from here: don't install it, and report it.

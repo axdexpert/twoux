@@ -27,13 +27,21 @@ TwoUX makes UX decisions explicit for engineers and AI agents, and enforces qual
 Paste this into Claude Code, Cursor, Codex or Copilot:
 
 ```text
-Set up the TwoUX design system in this project. Install @twoux/ui with this repo's package manager, then run `npx twoux init` and read node_modules/@twoux/ui/agent/AGENTS.md. For every UI job, find the component with `npx twoux find "<job>"` (or the twoux MCP server's find_component tool) and read its page before writing code. Run `npx twoux check` before you finish and fix every error.
+Set up the TwoUX design system in this project.
+1. Install @twoux/ui with this repo's package manager.
+2. Run `npx twoux init`, then read node_modules/@twoux/ui/agent/AGENTS.md.
+3. For every UI job, find the component with `npx twoux find "<job>"` (or the twoux MCP server's find_component tool) and read its page before writing code.
+4. Before you finish, run `npx twoux check` and fix every error.
 ```
 
 Then give it your brand:
 
 ```text
-Give this app our brand with TwoUX. Set primary, radius and font in twoux.theme.json to match our brand, run `npx twoux theme`, and import ./twoux-theme.css after @twoux/ui/styles.css. If the generator refuses a colour for contrast, use the closest colour it accepts and tell me which.
+Give this app our brand with TwoUX.
+1. Set primary, radius and font in twoux.theme.json to match our brand.
+2. Run `npx twoux theme`.
+3. Import ./twoux-theme.css after @twoux/ui/styles.css.
+If the generator refuses a colour for contrast, use the closest colour it accepts and tell me which.
 ```
 
 ## Getting started

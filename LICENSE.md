@@ -58,4 +58,4 @@ This licence is governed by the laws of Portugal. The courts of Portugal have ju
 
 ## 10. Questions
 
-If you are unsure whether your use is allowed, email hello@twoux.com before you ship it.
+If you are unsure whether your use is allowed, email hi@axdexpert.ai before you ship it.

@@ -20,7 +20,7 @@
   "scripts": {
     "prepack": "cp ../../LICENSE.md LICENSE.md"
   },
-  "author": "Giulia Pizzignacco <hello@twoux.com>",
+  "author": "Giulia Pizzignacco <hi@axdexpert.ai>",
   "homepage": "https://twoux.com",
   "repository": {
     "type": "git",

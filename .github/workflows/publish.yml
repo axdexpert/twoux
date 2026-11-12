@@ -1,4 +1,6 @@
 # Publishes @twoux/ui and twoux to npm when a GitHub release is published.
+# It can also be run by hand (Actions → Publish to npm → Run workflow) on a release tag such as v0.1.1,
+# for a release whose automatic run didn't start.
 # Uses npm trusted publishing (OpenID Connect): no npm token is stored anywhere, and each version
 # carries a provenance statement linking it to this repository and workflow run.
 # Actions are pinned to exact commits so a moved tag can't change what runs here.
@@ -7,6 +9,7 @@ name: Publish to npm
 on:
   release:
     types: [published]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -30,6 +33,7 @@ jobs:
 
       - name: Check the release tag matches both package versions
         run: |
+          [ "$GITHUB_REF_TYPE" = "tag" ] || { echo "Run this on a release tag such as v0.1.1, not the branch $GITHUB_REF_NAME."; exit 1; }
           tag="${GITHUB_REF_NAME#v}"
           for p in packages/ui packages/twoux; do
             v=$(node -p "require('./$p/package.json').version")

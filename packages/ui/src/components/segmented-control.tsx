@@ -6,7 +6,25 @@ import { ToggleGroup, ToggleGroupItem } from "./toggle-group"
 
 export function SegmentedControl({ value, onValueChange, size = "md", className, children, "aria-label": label }: { value: string; onValueChange: (v: string) => void; size?: "sm" | "md"; className?: string; children: React.ReactNode; "aria-label": string }) {
 	return (
-		<ToggleGroup type="single" spacing={0.5} value={value} onValueChange={(v) => v && onValueChange(v)} aria-label={label} data-segsize={size} className={cn("group/seg relative rounded-sm bg-muted p-0.5", className)}>
+		<ToggleGroup
+			type="single"
+			role="radiogroup"
+			spacing={0.5}
+			value={value}
+			onValueChange={(v) => v && onValueChange(v)}
+			aria-label={label}
+			data-segsize={size}
+			className={cn("group/seg relative rounded-sm bg-muted p-0.5", className)}
+			// A radio group selects as focus moves (WAI-ARIA APG): arrows, Home and End choose, not only focus.
+			onKeyDown={(e) => {
+				if (!/^(Arrow(Left|Right|Up|Down)|Home|End)$/.test(e.key)) return
+				const group = e.currentTarget
+				setTimeout(() => {
+					const a = document.activeElement as HTMLElement | null
+					if (a && group.contains(a) && a.dataset.state === "off" && a.getAttribute("aria-disabled") !== "true") a.click()
+				})
+			}}
+		>
 			{/* One pill slides to the chosen segment instead of jumping */}
 			<ActiveIndicator selector="[data-state=on]" className="rounded-xs bg-background shadow-card" />
 			{children}

@@ -38,6 +38,7 @@ import {
 import { AlertTriangle, CornerDownRight, Lock, LockOpen, Maximize, MoreVertical, Plus, Trash2, Users, ZoomIn, ZoomOut } from "lucide-react"
 import * as React from "react"
 import { cn } from "../lib/cn"
+import { useShortcutsEnabled } from "../lib/shortcuts"
 import { Badge } from "./badge"
 import { Button } from "./button"
 import {
@@ -345,9 +346,11 @@ function StepNode({ data, selected }: NodeProps<Node<{ step: FlowStep }>>) {
         </span>
         <DropdownMenu open={ctx.menuFor === step.id} onOpenChange={(o) => ctx.setMenuFor(o ? step.id : null)}>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon-xs" tabIndex={-1} className="nodrag -mr-1 -mt-0.5" aria-label={`Actions for ${step.title}`}><MoreVertical /></Button>
+            {/* The menu is not the step: clicks on it (and on its items, which bubble through the portal in React's tree)
+                must not reach the node, where React Flow would select the step and the app would open its settings. */}
+            <Button variant="ghost" size="icon-xs" tabIndex={-1} className="nodrag -mr-1 -mt-0.5" aria-label={`Actions for ${step.title}`} onClick={(e) => e.stopPropagation()} onDoubleClick={(e) => e.stopPropagation()}><MoreVertical /></Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="w-56">
+          <DropdownMenuContent align="start" className="nodrag nopan w-56" onClick={(e) => e.stopPropagation()} onDoubleClick={(e) => e.stopPropagation()}>
             <StepMenuItems step={step} actions={ctx} />
           </DropdownMenuContent>
         </DropdownMenu>
@@ -460,6 +463,7 @@ function CanvasInner({ value, onValueChange, selectedId = null, onSelect, onAddA
   const [moving, setMoving] = React.useState<{ id: string; from: { x: number; y: number } } | null>(null)
   const announce = React.useCallback((text: string) => setMessage(text), [])
   const actions = useActions({ value, onValueChange, onSelect, onAddAfter, onInsert, locked, announce })
+  const singleKeys = useShortcutsEnabled()
   const valueRef = React.useRef(value)
   valueRef.current = value
   const dragStart = React.useRef<FlowValue | null>(null)
@@ -624,7 +628,7 @@ function CanvasInner({ value, onValueChange, selectedId = null, onSelect, onAddA
     }
     if ((e.metaKey || e.ctrlKey) && (e.key === "=" || e.key === "+")) { stop(); zoom(1) }
     else if ((e.metaKey || e.ctrlKey) && e.key === "-") { stop(); zoom(-1) }
-    else if (e.shiftKey && (e.key === "!" || e.code === "Digit1")) { stop(); fit() }
+    else if (singleKeys && e.shiftKey && !e.metaKey && !e.ctrlKey && (e.key === "!" || e.code === "Digit1")) { stop(); fit() }
     else if (id && e.shiftKey && e.key === "F10") { stop(); setMenuFor(id) }
     else if (id && e.key === "Enter") { stop(); setEdgeSel(null); onSelect(id) }
     else if (id && e.key === " " && !locked) {
@@ -646,14 +650,30 @@ function CanvasInner({ value, onValueChange, selectedId = null, onSelect, onAddA
     } else if (edgeEl && e.key === "Enter") { stop(); setEdgeSel(edgeEl.dataset.id ?? null) }
     else if (!locked && (e.key === "Delete" || e.key === "Backspace")) {
       const link = value.links.find((l) => l.id === (edgeEl?.dataset.id ?? edgeSel))
-      if (link) { stop(); setEdgeSel(null); actions.disconnect(link) }
-      else if (id || selectedId) { stop(); actions.remove(id ?? selectedId!) }
+      if (link) { stop(); setEdgeSel(null); actions.disconnect(link); requestAnimationFrame(() => box.current?.focus({ preventScroll: true })) }
+      // Only the focused step: Delete on a toolbar button must not delete whichever step is selected.
+      else if (id) {
+        stop()
+        const order = flowOrder(value)
+        const k = order.findIndex((s) => s.id === id)
+        const next = order[k + 1]?.id ?? order[k - 1]?.id
+        actions.remove(id)
+        requestAnimationFrame(() => (next ? focusStep(next) : box.current?.focus({ preventScroll: true })))
+      }
     } else if (e.key === "Escape" && edgeSel) { stop(); setEdgeSel(null) }
   }
 
   return (
     <ActionsCtx.Provider value={{ ...actions, menuFor, setMenuFor, movingId: moving?.id ?? null, direction, edgeSel, setEdgeSel }}>
-      <div ref={box} data-slot="flow-canvas" className={cn("relative h-full min-h-0 w-full bg-bg", className)} onKeyDownCapture={onKeyDownCapture}>
+      {/* A press on the empty canvas focuses it, so zoom and fit keys reach the canvas instead of zooming the page. */}
+      <div
+        ref={box}
+        tabIndex={-1}
+        data-slot="flow-canvas"
+        className={cn("relative h-full min-h-0 w-full bg-bg outline-none", className)}
+        onKeyDownCapture={onKeyDownCapture}
+        onPointerDown={(e) => { if ((e.target as HTMLElement).closest(".react-flow__pane")) box.current?.focus({ preventScroll: true }) }}
+      >
         <ReactFlow
           aria-label={label}
           nodes={nodes}

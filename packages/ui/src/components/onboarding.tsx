@@ -18,6 +18,7 @@ import { Badge } from "./badge"
 import { Button } from "./button"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "./dialog"
 import { Field, FieldDescription, FieldError, FieldLabel } from "./field"
+import { Form } from "./form"
 import { Input } from "./input"
 import { PROVIDERS, type ProviderId } from "./provider-logos.data"
 
@@ -108,17 +109,17 @@ export function SignInOptions({
         ))}
       </div>
       <div className="flex items-center gap-3 text-sm text-ink-3"><span className="h-px flex-1 bg-line" />or<span className="h-px flex-1 bg-line" /></div>
-      <form noValidate onSubmit={submit} className="grid gap-2">
+      <Form onSubmit={submit} className="grid gap-2">
         <Field data-invalid={!!(fieldError || error) || undefined}>
           <FieldLabel htmlFor="sign-in-email">Work email</FieldLabel>
-          <Input id="sign-in-email" type="email" autoComplete="email" value={email} aria-invalid={!!(fieldError || error) || undefined} onChange={(e) => { setEmail(e.target.value); setFieldError("") }} />
-          {sso && <FieldDescription>{domain} signs in with single sign-on.</FieldDescription>}
-          {(fieldError || error) && <FieldError>{fieldError || error}</FieldError>}
+          <Input id="sign-in-email" type="email" autoComplete="email" value={email} aria-invalid={!!(fieldError || error) || undefined} aria-describedby={[sso && "sign-in-email-sso", (fieldError || error) && "sign-in-email-error"].filter(Boolean).join(" ") || undefined} onChange={(e) => { setEmail(e.target.value); setFieldError("") }} />
+          {sso && <FieldDescription id="sign-in-email-sso">{domain} signs in with single sign-on.</FieldDescription>}
+          {(fieldError || error) && <FieldError id="sign-in-email-error">{fieldError || error}</FieldError>}
         </Field>
         <Button type="submit" className="w-full" loading={busy === "email" || busy === "sso"}>
           {sso ? <><KeyRound />Continue with SSO</> : "Continue with email"}
         </Button>
-      </form>
+      </Form>
     </div>
   )
 }
@@ -165,7 +166,8 @@ export function OnboardingStep({
   React.useEffect(() => { headingRef.current?.focus() }, [step])
   return (
     <section data-slot="onboarding-step" aria-labelledby="onboarding-title" className={cn("grid w-full max-w-xl overflow-hidden rounded-md border border-line bg-surface shadow-card", aside && "max-w-4xl md:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)]", className)}>
-      <div className="flex min-h-0 flex-col gap-5 p-6 max-md:p-4">
+      {/* A form, so Enter in a field continues. Every other button in a step must be type="button". */}
+      <Form onSubmit={() => { if (!busy) onContinue() }} className="flex min-h-0 flex-col gap-5 p-6 max-md:p-4">
         <header className="grid gap-1">
           <p className="text-sm text-ink-3">Step {step} of {total}{optional && " · Optional"}</p>
           <h1 ref={headingRef} id="onboarding-title" tabIndex={-1} className="text-xl font-semibold text-ink outline-none">{title}</h1>
@@ -173,14 +175,14 @@ export function OnboardingStep({
         </header>
         <div className="min-h-0 flex-1">{children}</div>
         <footer className="flex items-center gap-2 border-t border-line pt-4">
-          {onBack ? <Button variant="ghost" size="sm" onClick={onBack}>Back</Button> : <span />}
+          {onBack ? <Button type="button" variant="ghost" size="sm" onClick={onBack}>Back</Button> : <span />}
           <span aria-hidden="true" className="flex flex-1 justify-center gap-1">
             {Array.from({ length: total }, (_, i) => <span key={i} className={cn("h-1.5 rounded-full transition-all duration-(--duration-base) ease-(--ease-standard)", i + 1 === step ? "w-4 bg-primary" : i + 1 < step ? "w-1.5 bg-primary/50" : "w-1.5 bg-line-strong")} />)}
           </span>
-          {optional && onSkip && <Button variant="ghost" size="sm" onClick={onSkip}>Skip</Button>}
-          <Button size="sm" loading={busy} onClick={onContinue}>{continueLabel}</Button>
+          {optional && onSkip && <Button type="button" variant="ghost" size="sm" onClick={onSkip}>Skip</Button>}
+          <Button type="submit" size="sm" loading={busy}>{continueLabel}</Button>
         </footer>
-      </div>
+      </Form>
       {aside && <aside className="border-l border-line bg-surface-2 p-6 max-md:hidden">{aside}</aside>}
     </section>
   )
@@ -246,9 +248,10 @@ export function FileDrop({
           <span className="text-base text-ink">{over ? "Drop to upload" : "Drop a file here"}</span>
           <span className="text-sm text-ink-2">{hint}</span>
         </span>
-        {preview && onRemove && <Button variant="ghost" size="sm" onClick={onRemove}>Remove</Button>}
-        <Button variant="outline" size="sm" onClick={() => input.current?.click()}>{preview ? "Replace" : "Upload"}</Button>
-        <input ref={input} id={id} type="file" accept={accept} className="sr-only" aria-invalid={!!shown || undefined} onChange={(e) => { take(e.target.files?.[0]); e.target.value = "" }} />
+        {preview && onRemove && <Button type="button" variant="ghost" size="sm" onClick={onRemove}>Remove</Button>}
+        <Button type="button" variant="outline" size="sm" onClick={() => input.current?.click()}>{preview ? "Replace" : "Upload"}</Button>
+        {/* The button is the keyboard way in; the input stays out of the tab order so it is not a second, invisible stop. */}
+        <input ref={input} id={id} type="file" tabIndex={-1} accept={accept} className="sr-only" aria-invalid={!!shown || undefined} onChange={(e) => { take(e.target.files?.[0]); e.target.value = "" }} />
       </div>
       {shown && <FieldError>{shown}</FieldError>}
     </Field>
@@ -279,7 +282,7 @@ export function ConnectorPicker({ connectors, onConnect, onManage, onActive, cla
     <div data-slot="connector-picker" className={cn("grid gap-3", className)}>
       <div className="relative">
         <Search className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-ink-3" aria-hidden="true" />
-        <Input type="search" aria-label={`Search ${connectors.length} services`} placeholder={`Search ${connectors.length} services`} value={q} onChange={(e) => setQ(e.target.value)} className="pl-8" />
+        <Input type="search" aria-label={`Search ${connectors.length} services`} placeholder={`Search ${connectors.length} services`} value={q} onChange={(e) => setQ(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") e.preventDefault() }} className="pl-8" />
       </div>
       {shown.length === 0 && <p className="py-4 text-center text-base text-ink-2">No service called “{q}”. Check the spelling, or connect it through webhooks or the API.</p>}
       {groups.map(([title, list]) => list.length > 0 && (
@@ -298,10 +301,10 @@ export function ConnectorPicker({ connectors, onConnect, onManage, onActive, cla
                   <span className="truncate text-sm text-ink-2">{c.problem ?? c.note ?? c.can.join(" · ")}</span>
                 </span>
                 {c.connected ? (
-                  c.problem ? <Button variant="outline" size="sm" onClick={() => onConnect(c)}>Reconnect</Button>
-                    : onManage && <Button variant="outline" size="sm" onClick={() => onManage(c)}>Manage<span className="sr-only"> {PROVIDERS[c.provider].label}</span></Button>
+                  c.problem ? <Button type="button" variant="outline" size="sm" data-connector={c.id} onClick={() => onConnect(c)}>Reconnect</Button>
+                    : onManage && <Button type="button" variant="outline" size="sm" data-connector={c.id} onClick={() => onManage(c)}>Manage<span className="sr-only"> {PROVIDERS[c.provider].label}</span></Button>
                 ) : (
-                  <Button variant="outline" size="sm" onClick={() => onConnect(c)}>Connect<span className="sr-only"> {PROVIDERS[c.provider].label}</span></Button>
+                  <Button type="button" variant="outline" size="sm" data-connector={c.id} onClick={() => onConnect(c)}>Connect<span className="sr-only"> {PROVIDERS[c.provider].label}</span></Button>
                 )}
               </li>
             ))}
@@ -344,10 +347,14 @@ export function ConnectDialog({
   const [key, setKey] = React.useState("")
   const [state, setState] = React.useState<"idle" | "busy" | "ok">("idle")
   const [error, setError] = React.useState("")
+  const done = React.useRef<HTMLButtonElement>(null)
+  // Connected: the field and the buttons that had focus are replaced by Done, so focus moves to it.
+  React.useEffect(() => { if (state === "ok") done.current?.focus() }, [state])
   React.useEffect(() => { if (open) { setKey(""); setState("idle"); setError("") } }, [open])
   if (!connector) return null
   const name = PROVIDERS[connector.provider].label
   const go = async () => {
+    if (state !== "idle") return
     if (method === "apikey") {
       if (!key.trim()) { setError(`Paste the API key from your ${name} settings.`); return }
       setState("busy")
@@ -372,16 +379,19 @@ export function ConnectDialog({
         </ul>
         <p className="text-sm text-ink-2">Shared with: {scope}. You can disconnect at any time in Settings, Connections.</p>
         {method === "apikey" && state !== "ok" && (
-          <Field data-invalid={!!error || undefined}>
-            <FieldLabel htmlFor="connect-key">API key</FieldLabel>
-            <Input id="connect-key" type="password" autoComplete="off" value={key} aria-invalid={!!error || undefined} onChange={(e) => { setKey(e.target.value); setError("") }} />
-            {error ? <FieldError>{error}</FieldError> : <FieldDescription>The key is tested before it is saved. It is stored encrypted and never shown again.</FieldDescription>}
-          </Field>
+          // A form so Enter in the key field tests it, like the button.
+          <Form id="connect-key-form" onSubmit={() => { void go() }}>
+            <Field data-invalid={!!error || undefined}>
+              <FieldLabel htmlFor="connect-key">API key</FieldLabel>
+              <Input id="connect-key" type="password" autoComplete="off" value={key} aria-invalid={!!error || undefined} aria-describedby={error ? "connect-key-error" : "connect-key-hint"} onChange={(e) => { setKey(e.target.value); setError("") }} />
+              {error ? <FieldError id="connect-key-error">{error}</FieldError> : <FieldDescription id="connect-key-hint">The key is tested before it is saved. It is stored encrypted and never shown again.</FieldDescription>}
+            </Field>
+          </Form>
         )}
         {state === "ok" && <p role="status" className="flex items-center gap-2 text-base text-ok"><CheckCircle2 className="size-4" aria-hidden="true" />{name} is connected.</p>}
         <DialogFooter>
           {state === "ok" ? (
-            <Button onClick={() => { onDone(); onOpenChange(false) }}>Done</Button>
+            <Button ref={done} onClick={() => { onDone(); onOpenChange(false) }}>Done</Button>
           ) : (
             <>
               <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>

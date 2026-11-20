@@ -1,4 +1,5 @@
 import {
+	Form,
 	Badge,
 	Breadcrumb,
 	BreadcrumbItem,
@@ -191,8 +192,8 @@ export function TradingExample() {
 		else if (side === "buy" && subtotal + fee > available) next.amount = `This costs ${money(subtotal + fee)} ${market.quote}; ${money(available)} is available. Lower the amount or add funds.`;
 		else if (side === "sell" && qty > available) next.amount = `${coin(available)} ${market.base} is available. Lower the amount.`;
 		setErrors(next);
-		if (next.limit) return limitRef.current?.focus();
-		if (next.amount) return amountRef.current?.focus();
+		// Form moves focus to the first field with an error.
+		if (next.limit || next.amount) return;
 		const fills = type === "market" || crosses;
 		const o: Order = { id: `ORD-${20482 + orders.length}`, market: market.id, side, type: type === "market" ? "Market" : "Limit", price: fills ? touch : limitPrice, amount: qty, filled: 0, placed: new Date().toISOString(), status: "Open" };
 		if (fills) {
@@ -340,7 +341,7 @@ export function TradingExample() {
 						<dt className="text-ink-2">Best {side === "buy" ? "ask" : "bid"}</dt>
 						<dd className="text-right text-ink tabular">{money(touch, market.decimals)} {market.quote}</dd>
 					</dl>
-					<form noValidate className="grid gap-group" onSubmit={(e) => { e.preventDefault(); submit(); }}>
+					<Form className="grid gap-group" onSubmit={submit}>
 						{type === "limit" ? (
 							<TextField
 								ref={limitRef}
@@ -382,7 +383,7 @@ export function TradingExample() {
 						</dl>
 						<Button type="submit" shortcut="⌘↵">{side === "buy" ? "Buy" : "Sell"} {market.base}</Button>
 						{(type === "market" || crosses) && <p className="text-xs text-ink-2">This order fills at once and can't be cancelled.</p>}
-					</form>
+					</Form>
 				</div>
 			),
 		},

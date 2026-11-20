@@ -41,13 +41,35 @@ function DropdownMenuTrigger({
 function DropdownMenuContent({
   className,
   sideOffset = 4,
+  onCloseAutoFocus,
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Content>) {
+  // TwoUX: an item that moves focus on purpose (Rename shows a field with autoFocus, an item opens a dialog) keeps it.
+  // The menu's focus trap pulls such focus back while the menu closes, so remember where focus tried to go and
+  // hand it there on close; otherwise focus returns to the trigger as usual.
+  const wanted = React.useRef<HTMLElement | null>(null)
+  React.useEffect(() => {
+    wanted.current = null
+    const onFocusIn = (e: FocusEvent) => {
+      const t = e.target
+      if (t instanceof HTMLElement && t !== document.body && !t.closest("[role=menu], [data-radix-popper-content-wrapper]")) wanted.current = t
+    }
+    document.addEventListener("focusin", onFocusIn, true)
+    return () => document.removeEventListener("focusin", onFocusIn, true)
+  }, [])
   return (
     <DropdownMenuPrimitive.Portal>
       <DropdownMenuPrimitive.Content
         data-slot="dropdown-menu-content"
         sideOffset={sideOffset}
+        onCloseAutoFocus={(e) => {
+          onCloseAutoFocus?.(e)
+          if (e.defaultPrevented) return
+          const a = document.activeElement
+          if (a && a !== document.body && !a.closest("[data-slot=dropdown-menu-content]")) { e.preventDefault(); return }
+          const t = wanted.current
+          if (t?.isConnected && t.getClientRects().length && !t.matches(":disabled")) { e.preventDefault(); t.focus({ preventScroll: true }) }
+        }}
         className={cn(
           "z-50 max-h-(--radix-dropdown-menu-content-available-height) min-w-[8rem] origin-(--radix-dropdown-menu-content-transform-origin) overflow-x-hidden overflow-y-auto rounded-md border bg-popover p-1 text-popover-foreground shadow-md data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
           className

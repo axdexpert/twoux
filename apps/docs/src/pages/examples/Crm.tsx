@@ -1,4 +1,5 @@
 import {
+	Form,
 	AiOrigin,
 	AnswerActions,
 	AssistantMessage,
@@ -161,8 +162,10 @@ function useAsk(contact: Contact, acts: Act[], resetKey: string) {
 }
 
 /** Collapsible block of the left column: heading button on the left, an optional action on the right. */
-function Section({ title, action, defaultOpen = true, children }: { title: string; action?: React.ReactNode; defaultOpen?: boolean; children: React.ReactNode }) {
-	const [open, setOpen] = useState(defaultOpen);
+function Section({ title, action, defaultOpen = true, open: openProp, onOpenChange, children }: { title: string; action?: React.ReactNode; defaultOpen?: boolean; open?: boolean; onOpenChange?: (o: boolean) => void; children: React.ReactNode }) {
+	const [ownOpen, setOwnOpen] = useState(defaultOpen);
+	const open = openProp ?? ownOpen;
+	const setOpen = (o: boolean) => { setOwnOpen(o); onOpenChange?.(o); };
 	return (
 		<Collapsible open={open} onOpenChange={setOpen} className="border-t border-line">
 			<div className="flex h-9 items-center gap-1">
@@ -202,7 +205,11 @@ function EditableRow({ id, label, value, editing, onEdit, onClose, onSave, valid
 		);
 	}
 	const submit = () => { const e = validate(draft.trim()); setError(e); if (!e) onSave(draft.trim()); };
+	// Same dt and dd as the read-only row (the form has its own label), so closing the form keeps the dd and focus
+	// lands on the row's edit button in it.
 	return (
+		<>
+		<dt hidden>{label}</dt>
 		<dd className="col-span-2 grid gap-2 rounded-sm bg-surface-2 p-2.5">
 			<form onSubmit={(e) => { e.preventDefault(); submit(); }} onKeyDown={(e) => { if (e.key === "Escape") { e.stopPropagation(); onClose(); } }} className="grid gap-2" noValidate>
 				<TextField id={id} label={label} type={type} value={draft} autoFocus hint={hint} error={error} onChange={(e) => { setDraft(e.target.value); if (error) setError(validate(e.target.value.trim())); }} onBlur={() => setError(validate(draft.trim()))} />
@@ -212,6 +219,7 @@ function EditableRow({ id, label, value, editing, onEdit, onClose, onSave, valid
 				</div>
 			</form>
 		</dd>
+		</>
 	);
 }
 
@@ -232,6 +240,13 @@ function ProfileColumn({ c, onOverride, editing, setEditing, quick, onDelete, de
 	quick: { note: () => void; email: () => void; call: () => void; task: () => void; meeting: () => void }; onDelete: () => void; deals: Deal[];
 }) {
 	const [copied, setCopied] = useState(false);
+	const [aboutOpen, setAboutOpen] = useState(true);
+	/** The pencil and E: open the section first, so the form is never edited unseen, then edit the first field. */
+	const editDetails = () => {
+		if (editing && aboutOpen) { setEditing(null); return; }
+		setAboutOpen(true);
+		setEditing("email");
+	};
 	const [prefs, setPrefs] = useState({ marketing: true, product: true, calls: true, sms: false });
 	useEffect(() => { setCopied(false); }, [c.id]);
 	const copy = () => { void navigator.clipboard?.writeText(c.email); setCopied(true); window.setTimeout(() => setCopied(false), 1600); };
@@ -293,9 +308,11 @@ function ProfileColumn({ c, onOverride, editing, setEditing, quick, onDelete, de
 			<div>
 				<Section
 					title="About this contact"
+					open={aboutOpen}
+					onOpenChange={(o) => { setAboutOpen(o); if (!o) setEditing(null); }}
 					action={
 						<Tooltip>
-							<TooltipTrigger asChild><Button variant="ghost" size="icon-sm" aria-label="Edit contact details" shortcut="E" onClick={() => setEditing(editing ? null : "email")}><Pencil /></Button></TooltipTrigger>
+							<TooltipTrigger asChild><Button variant="ghost" size="icon-sm" aria-label="Edit contact details" shortcut="E" onClick={editDetails}><Pencil /></Button></TooltipTrigger>
 							<TooltipContent>Edit details <Kbd>E</Kbd></TooltipContent>
 						</Tooltip>
 					}
@@ -353,14 +370,18 @@ function StagePath({ stage, onForward, onBack }: { stage: number; onForward: (i:
 				{STAGES.map((s, i) => {
 					const state = i < stage ? "done" : i === stage ? "current" : "next";
 					const label = `${s}${state === "done" ? ", completed" : state === "current" ? ", current stage" : ""}`;
+					// Every stage is the same element (a popover trigger) in every state, so moving forward or back never remounts
+					// the button that has focus. Only completed stages open the popover, and only they announce one.
+					const done = state === "done";
 					const btn = (
 						<Button
 							variant={state === "current" ? "outline" : "ghost"}
 							size="sm"
 							aria-current={state === "current" ? "step" : undefined}
 							aria-label={label}
+							{...(done ? {} : { "aria-haspopup": undefined, "aria-expanded": undefined, "aria-controls": undefined, "data-state": undefined })}
 							className={state === "current" ? "border-primary bg-primary-soft text-primary-ink hover:bg-primary-soft" : state === "next" ? "text-ink-2" : "text-ink"}
-							onClick={() => (state === "next" ? onForward(i) : undefined)}
+							onClick={(e) => { if (done) return; e.preventDefault(); if (state === "next") onForward(i); }}
 						>
 							{state === "done" ? <Check className="text-ok" /> : <span aria-hidden="true" className={`tabular text-sm ${state === "current" ? "text-primary-ink" : "text-ink-3"}`}>{i + 1}</span>}
 							{s}
@@ -369,36 +390,34 @@ function StagePath({ stage, onForward, onBack }: { stage: number; onForward: (i:
 					return (
 						<li key={s} className="flex items-center gap-1">
 							{i > 0 && <ChevronRight className="size-3.5 text-ink-3" aria-hidden="true" />}
-							{state === "done" ? (
-								<Popover open={open === i} onOpenChange={(o) => { setOpen(o ? i : null); if (o) { setReason(""); setError(undefined); } }}>
-									<PopoverTrigger asChild>{btn}</PopoverTrigger>
-									<PopoverContent align="start" className="w-80">
-										<form
-											className="grid gap-3"
-											noValidate
-											onSubmit={(e) => {
-												e.preventDefault();
-												if (!reason) { setError("Choose a reason so the team can see why this moved back."); return; }
-												onBack(i, reason);
-												setOpen(null);
-											}}
-										>
-											<PopoverHeader>
-												<PopoverTitle>Move back to {s}?</PopoverTitle>
-												<PopoverDescription>This changes the stage for everyone who follows this contact.</PopoverDescription>
-											</PopoverHeader>
-											<RadioGroup value={reason} onValueChange={(v) => { setReason(v); setError(undefined); }} aria-label="Reason for moving back" className="gap-1.5">
-												{BACK_REASONS.map((r, k) => <RadioField key={r} id={`reason-${i}-${k}`} value={r} label={r} />)}
-											</RadioGroup>
-											{error && <p role="alert" className="text-sm text-bad">{error}</p>}
-											<div className="flex justify-end gap-2">
-												<Button type="button" variant="ghost" size="sm" onClick={() => setOpen(null)}>Cancel</Button>
-												<Button type="submit" size="sm">Move back</Button>
-											</div>
-										</form>
-									</PopoverContent>
-								</Popover>
-							) : btn}
+							<Popover open={done && open === i} onOpenChange={(o) => { if (o && !done) return; setOpen(o ? i : null); if (o) { setReason(""); setError(undefined); } }}>
+								<PopoverTrigger asChild>{btn}</PopoverTrigger>
+								<PopoverContent align="start" className="w-80">
+									<form
+										className="grid gap-3"
+										noValidate
+										onSubmit={(e) => {
+											e.preventDefault();
+											if (!reason) { setError("Choose a reason so the team can see why this moved back."); return; }
+											onBack(i, reason);
+											setOpen(null);
+										}}
+									>
+										<PopoverHeader>
+											<PopoverTitle>Move back to {s}?</PopoverTitle>
+											<PopoverDescription>This changes the stage for everyone who follows this contact.</PopoverDescription>
+										</PopoverHeader>
+										<RadioGroup value={reason} onValueChange={(v) => { setReason(v); setError(undefined); }} aria-label="Reason for moving back" className="gap-1.5">
+											{BACK_REASONS.map((r, k) => <RadioField key={r} id={`reason-${i}-${k}`} value={r} label={r} />)}
+										</RadioGroup>
+										{error && <p role="alert" className="text-sm text-bad">{error}</p>}
+										<div className="flex justify-end gap-2">
+											<Button type="button" variant="ghost" size="sm" onClick={() => setOpen(null)}>Cancel</Button>
+											<Button type="submit" size="sm">Move back</Button>
+										</div>
+									</form>
+								</PopoverContent>
+							</Popover>
 						</li>
 					);
 				})}
@@ -684,7 +703,7 @@ function SummaryCard({ c, deals, acts, onAsk, onCite }: { c: Contact; deals: Dea
 					{phase === "idle" ? (
 						<AnswerActions text={text} onRegenerate={run} onFeedback={() => new Promise((r) => window.setTimeout(r, 500))} />
 					) : (
-						<Button variant="outline" size="sm" onClick={stop}><Square className="fill-current" />Stop</Button>
+						<Button data-focus-fallback variant="outline" size="sm" onClick={stop}><Square className="fill-current" />Stop</Button>
 					)}
 					<Button variant="outline" size="sm" onClick={onAsk}>Ask a question</Button>
 				</div>
@@ -788,7 +807,7 @@ export function CrmExample() {
 		toast.success(`Moved to ${STAGES[i]}`, { description, action: { label: "Undo", onClick: () => setStages((s) => ({ ...s, [id]: prev })) } });
 	};
 	const logNote = () => {
-		if (!note.trim()) { setNoteError("Write a line about what happened before you log it."); noteRef.current?.focus(); return; }
+		if (!note.trim()) { setNoteError("Write a line about what happened before you log it."); return; }
 		addAct({ id: uid(), kind: "note", title: note.trim().split("\n")[0].slice(0, 80), body: note.trim(), at: new Date(), by: you }, "Note logged", `On ${c.name}`);
 		setNote(""); setNoteError(undefined);
 	};
@@ -820,7 +839,7 @@ export function CrmExample() {
 	const deleteContact = () => toast.success(`${c.name} deleted`, { description: "Deleted contacts stay in Recently deleted for 30 days.", action: { label: "Undo", onClick: () => {} } });
 
 	const composer = (
-		<form onSubmit={(e) => { e.preventDefault(); logNote(); }} noValidate className="grid gap-2 rounded-sm border border-line p-3">
+		<Form onSubmit={logNote} className="grid gap-2 rounded-sm border border-line p-3">
 			<Field className="gap-1.5" data-invalid={!!noteError || undefined}>
 				<FieldLabel htmlFor="note-body">Log a note</FieldLabel>
 				<Textarea ref={noteRef} id="note-body" value={note} placeholder={`What did you and ${firstName(c)} agree, and what happens next?`} aria-invalid={noteError ? true : undefined} aria-describedby={noteError ? "note-error" : undefined} onChange={(e) => { setNote(e.target.value); if (noteError && e.target.value.trim()) setNoteError(undefined); }} onKeyDown={(e) => { if (e.key === "Escape") e.currentTarget.blur(); }} />
@@ -830,7 +849,7 @@ export function CrmExample() {
 				<span className="text-sm text-ink-3">Visible to everyone who can see {firstName(c)}</span>
 				<Button type="submit" variant="outline" size="sm" shortcut="⌘↵">Log note</Button>
 			</div>
-		</form>
+		</Form>
 	);
 
 	const assistant = (

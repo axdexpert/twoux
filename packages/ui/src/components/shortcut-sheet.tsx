@@ -1,41 +1,52 @@
 /**
- * TwoUX composition: every shortcut by task, opened with ? from anywhere outside a text field,
+ * TwoUX composition: every shortcut by task, opened with ? (or ⌘/, which stays on) from anywhere outside a text field,
  * with the switch that turns single-key shortcuts off (WCAG 2.1.4). Built on Dialog, Kbd and Switch.
  */
 import * as React from "react"
 import { cn } from "../lib/cn"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "./dialog"
+import { blockedByLayer, useShortcutSettings } from "../lib/shortcuts"
 import { Kbd } from "./kbd"
 import { Switch } from "./switch"
 
 export type ShortcutGroup = { title: string; items: { keys: string[]; action: string }[] }
 
-export function ShortcutSheet({ groups, singleKeys, onSingleKeysChange }: { groups: ShortcutGroup[]; singleKeys: boolean; onSingleKeysChange: (on: boolean) => void }) {
+/** The switch changes ShortcutsProvider's setting, so every Button shortcut follows it. Pass `singleKeys` and
+    `onSingleKeysChange` only to keep the setting elsewhere (then also pass it to the provider as `enabled`). */
+export function ShortcutSheet({ groups, singleKeys: controlled, onSingleKeysChange }: { groups: ShortcutGroup[]; singleKeys?: boolean; onSingleKeysChange?: (on: boolean) => void }) {
+  const settings = useShortcutSettings()
+  const singleKeys = controlled ?? settings.enabled
+  const setSingleKeys = (on: boolean) => { settings.setEnabled(on); onSingleKeysChange?.(on) }
   const [open, setOpen] = React.useState(false)
   React.useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key !== "?" || e.metaKey || e.ctrlKey) return
-      // A shortcut can dispatch "?" on document (⌘/ in a sheet), whose target isn't an element.
-      if (e.target instanceof Element && e.target.closest("input, textarea, select, [contenteditable=true]")) return
+      if (e.defaultPrevented || e.repeat) return
+      // ⌘/ always opens the list; ? is a single key, so it obeys the switch (WCAG 2.1.4).
+      const mod = (e.metaKey || e.ctrlKey) && e.key === "/"
+      // A shortcut can dispatch "?" on document (⌘/ in a sheet), whose target isn't an element: treat that as ⌘/.
+      const synthetic = !(e.target instanceof Element)
+      if (!mod && (e.key !== "?" || e.metaKey || e.ctrlKey || (!singleKeys && !synthetic))) return
+      if (e.target instanceof Element && e.target.closest("input:not([type=checkbox]):not([type=radio]), textarea, select, [contenteditable=true], [role=combobox], [role=listbox], [role=menu], [role=gridcell]") && !mod) return
+      if (blockedByLayer(null)) return
       e.preventDefault()
       setOpen(true)
     }
     document.addEventListener("keydown", onKey)
     return () => document.removeEventListener("keydown", onKey)
-  }, [])
+  }, [singleKeys])
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="max-h-[calc(100dvh-4rem)] overflow-y-auto sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>Keyboard shortcuts</DialogTitle>
-          <DialogDescription>Press ? anywhere to open this list.</DialogDescription>
+          <DialogDescription>{singleKeys ? "Press ? or ⌘/ anywhere to open this list." : "Press ⌘/ anywhere to open this list."}</DialogDescription>
         </DialogHeader>
         <label className="flex items-start justify-between gap-4 rounded-sm bg-surface-2 p-3">
           <span className="grid gap-0.5">
             <span className="text-base font-medium text-ink">Single-key shortcuts</span>
             <span className="text-sm text-ink-2">Turn off if you use a screen reader or voice control. ⌘ shortcuts stay on.</span>
           </span>
-          <Switch checked={singleKeys} onCheckedChange={onSingleKeysChange} />
+          <Switch checked={singleKeys} onCheckedChange={setSingleKeys} />
         </label>
         <div className="grid gap-4">
           {groups.map((g) => (

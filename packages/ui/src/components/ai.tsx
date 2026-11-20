@@ -10,6 +10,7 @@ import { cn } from "../lib/cn"
 import { ShimmerText, Swap } from "./motion"
 import { Button } from "./button"
 import { Checkbox } from "./checkbox"
+import { Kbd } from "./kbd"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "./dropdown-menu"
 import { SidePanel, type PanelMode } from "./shell"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./tabs"
@@ -28,21 +29,34 @@ export function ClarifyingQuestion({ questions, onDone }: { questions: { questio
   const q = questions[i]
   const choose = (v: string) => setAnswers((a) => a.map((x, j) => (j === i ? v : x)))
   const next = () => (i < questions.length - 1 ? setI(i + 1) : onDone(answers.map((a) => (a === "__other" ? other : a))))
+  const all = [...q.options.map((o) => o.id), "__other"]
+  const group = React.useRef<HTMLDivElement>(null)
   const onKey = (e: React.KeyboardEvent) => {
-    if ((e.target as HTMLElement).tagName === "TEXTAREA" || (e.target as HTMLElement).tagName === "INPUT") return
+    const t = e.target as HTMLElement
+    if (e.defaultPrevented || t.tagName === "TEXTAREA" || t.tagName === "INPUT") return
     const n = Number(e.key)
     if (n >= 1 && n <= q.options.length) { e.preventDefault(); choose(q.options[n - 1].id) }
     else if (n === q.options.length + 1) { e.preventDefault(); choose("__other") }
-    else if (e.key === "Enter") { e.preventDefault(); next() }
+    // Enter answers from the options (or the card itself); on Previous or Skip, Enter presses that button.
+    else if (e.key === "Enter" && (t === e.currentTarget || t.getAttribute("role") === "radio")) { e.preventDefault(); next() }
+  }
+  // Radio group: one Tab stop on the chosen option; arrows move the choice.
+  const onArrow = (e: React.KeyboardEvent) => {
+    const d = e.key === "ArrowDown" || e.key === "ArrowRight" ? 1 : e.key === "ArrowUp" || e.key === "ArrowLeft" ? -1 : 0
+    if (!d) return
+    e.preventDefault()
+    const k = (all.indexOf(answers[i]) + d + all.length) % all.length
+    choose(all[k])
+    requestAnimationFrame(() => group.current?.querySelectorAll<HTMLElement>("[role=radio]")[k]?.focus())
   }
   return (
     <section aria-label="Question from the assistant" onKeyDown={onKey} className="grid gap-3 rounded-md border border-line bg-surface p-3 shadow-card">
       <div className="flex items-baseline gap-2"><span className="tabular text-sm text-ink-3">{i + 1} / {questions.length}</span><h3 className="text-base font-medium text-ink">{q.question}</h3></div>
-      <div role="radiogroup" aria-label={q.question} className="grid gap-1">
+      <div ref={group} role="radiogroup" aria-label={q.question} onKeyDown={onArrow} className="grid gap-1">
         {[...q.options, { id: "__other", title: "Other", detail: undefined }].map((o, k) => {
           const on = answers[i] === o.id
           return (
-            <button key={o.id} type="button" role="radio" aria-checked={on} onClick={() => choose(o.id)} className={cn("flex items-start gap-2 rounded-sm border px-2 py-2 text-left transition-colors", on ? "border-primary bg-primary-soft" : "border-line hover:bg-hover")}>
+            <button key={o.id} type="button" role="radio" aria-checked={on} tabIndex={on ? 0 : -1} onClick={() => choose(o.id)} className={cn("flex items-start gap-2 rounded-sm border px-2 py-2 text-left transition-colors", on ? "border-primary bg-primary-soft" : "border-line hover:bg-hover")}>
               <span className="tabular mt-px grid size-4.5 shrink-0 place-items-center rounded-xs border border-line-strong bg-surface text-xs text-ink-2">{k + 1}</span>
               <span className="grid gap-0.5">
                 <span className="text-base text-ink">{o.title}{k === 0 && <span className="text-ink-3"> (Recommended)</span>}</span>
@@ -57,7 +71,8 @@ export function ClarifyingQuestion({ questions, onDone }: { questions: { questio
         <Button variant="ghost" size="sm" disabled={i === 0} onClick={() => setI(i - 1)}>Previous</Button>
         <span className="flex-1" />
         <Button variant="ghost" size="sm" onClick={() => onDone(answers)}>Skip, use defaults</Button>
-        <Button size="sm" shortcut="↵" onClick={next}>{i < questions.length - 1 ? "Next" : "Continue"}</Button>
+        {/* Enter is handled by the card, not as a page-wide shortcut, so it never presses this from elsewhere. */}
+        <Button size="sm" onClick={next}>{i < questions.length - 1 ? "Next" : "Continue"}<Kbd className="-mr-1">↵</Kbd></Button>
       </div>
     </section>
   )
@@ -202,8 +217,16 @@ export function AssistantPanel({
   /** One specific limit and what to check, e.g. "Reads listings and applications only, not emails. Check closing dates before extending." Never a generic "can make mistakes". */
   caveat?: string
 }) {
+  // Opening the assistant puts the cursor in its composer: people open it to ask something.
+  const foot = React.useRef<HTMLDivElement>(null)
+  const was = React.useRef(open)
+  React.useEffect(() => {
+    if (open && !was.current) requestAnimationFrame(() => requestAnimationFrame(() => foot.current?.querySelector<HTMLElement>("textarea, input")?.focus()))
+    was.current = open
+  }, [open])
+  React.useEffect(() => { if (open) requestAnimationFrame(() => requestAnimationFrame(() => foot.current?.querySelector<HTMLElement>("textarea, input")?.focus())) }, [])
   return (
-    <SidePanel open={open} onOpenChange={onOpenChange} mode={mode} label="Assistant" title={<span className="flex items-center gap-control"><AiMark className="size-3.5" />{title}</span>} onOpenFull={onOpenPage} footer={<div className="grid w-full gap-2">{composer}{caveat && <p className="text-xs text-ink-3">{caveat}</p>}</div>}>
+    <SidePanel open={open} onOpenChange={onOpenChange} mode={mode} label="Assistant" title={<span className="flex items-center gap-control"><AiMark className="size-3.5" />{title}</span>} onOpenFull={onOpenPage} footer={<div ref={foot} className="grid w-full gap-2">{composer}{caveat && <p className="text-xs text-ink-3">{caveat}</p>}</div>}>
       <div role="log" aria-label="Conversation" className="grid gap-5">{children}</div>
     </SidePanel>
   )

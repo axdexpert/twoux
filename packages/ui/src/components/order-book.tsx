@@ -117,7 +117,8 @@ export function OrderBook({
   const stepIdx = steps && step !== undefined ? steps.indexOf(step) : -1
 
   const row = (r: Row, i: number) => (
-    <li key={`${r.side}-${r.price}`} className="relative">
+    // Keyed by position, not price: prices change every tick, and a remounted row would drop keyboard focus.
+    <li key={`${r.side}-${i}`} className="relative">
       <span aria-hidden="true" className={cn("absolute inset-y-px right-0 w-(--w) rounded-l-xs motion-safe:transition-[width] motion-safe:duration-(--duration-base) motion-safe:ease-(--ease-standard)", r.side === "sell" ? "bg-bad-bg" : "bg-ok-bg")} style={{ "--w": `${(r.total / deepest) * 100}%` } as React.CSSProperties} />
       <button
         ref={(el) => { refs.current[i] = el }}

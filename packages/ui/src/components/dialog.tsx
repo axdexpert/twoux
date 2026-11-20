@@ -5,6 +5,7 @@
 "use client"
 
 import * as React from "react"
+import { useReturnFocus } from "../lib/return-focus"
 import { cn } from "../lib/cn"
 import { XIcon } from "lucide-react"
 import { Dialog as DialogPrimitive } from "radix-ui"
@@ -59,6 +60,7 @@ function DialogContent({
 }: React.ComponentProps<typeof DialogPrimitive.Content> & {
   showCloseButton?: boolean
 }) {
+  const focus = useReturnFocus(props)
   return (
     <DialogPortal data-slot="dialog-portal">
       <DialogOverlay />
@@ -69,6 +71,7 @@ function DialogContent({
           className
         )}
         {...props}
+        {...focus}
       >
         {children}
         {showCloseButton && (

@@ -47,7 +47,7 @@ export function TextField({ label, hint, error, success, optional, required, pre
 				<Input {...control} />
 			)}
 			{error ? (
-				<p id={`${fid}-error`} className="flex items-start gap-control text-sm text-bad">
+				<p id={`${fid}-error`} role="alert" className="flex items-start gap-control text-sm text-bad">
 					<AlertCircle className="mt-0.5 size-3.5 shrink-0" aria-hidden="true" />
 					{error}
 				</p>

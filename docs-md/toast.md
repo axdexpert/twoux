@@ -61,8 +61,8 @@ Kind: component · Group: Feedback and overlays · Status: built, import from @t
 ### undo
 
 ```tsx
-import { Button, toast } from "@twoux/ui";
-import { useEffect, useState } from "react";
+import { Button, toast, useHotkey } from "@twoux/ui";
+import { useState } from "react";
 
 export const meta = { title: "Confirm with Undo", description: "Close a listing. The toast says what happened, offers Undo, and leaves in 6 seconds. ⌘Z undoes it too, even after the toast has gone.", order: 1 };
 
@@ -83,16 +83,7 @@ export default function Example() {
 	};
 
 	// Undo stays reachable without the toast
-	useEffect(() => {
-		const onKey = (e: KeyboardEvent) => {
-			if ((e.metaKey || e.ctrlKey) && e.key === "z" && !open) {
-				e.preventDefault();
-				reopen();
-			}
-		};
-		window.addEventListener("keydown", onKey);
-		return () => window.removeEventListener("keydown", onKey);
-	});
+	useHotkey("⌘Z", reopen, { when: !open });
 
 	return (
 		<div className="flex w-full max-w-md items-center justify-between rounded-sm border border-line bg-surface px-3 py-2.5">

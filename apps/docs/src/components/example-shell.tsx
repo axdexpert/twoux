@@ -1,5 +1,5 @@
 import { AppShell, SidebarItem, SidebarSection, useSidebarRail } from "@twoux/ui";
-import { type ComponentProps, createContext, type ReactNode, useContext, useEffect, useState } from "react";
+import { type ComponentProps, createContext, type ReactNode, useContext, useEffect, useRef, useState } from "react";
 
 const KEY = "twoux.examples.rail";
 const ExpandCtx = createContext<() => void>(() => {});
@@ -25,15 +25,24 @@ export function ExampleShell(props: ComponentProps<typeof AppShell>) {
 }
 
 /** Sidebar content that only fits the full width (a switcher, a checklist, a meter). In the rail it becomes one icon item
- *  whose name carries the status, and choosing it expands the sidebar; without an icon it is left out of the rail. */
+ *  whose name carries the status, and choosing it expands the sidebar; without an icon it is left out of the rail.
+ *  Choosing it removes the rail item, so focus moves to the first control of what it expanded into (the focus keeper
+ *  would only find a control at the same position in the sidebar, which may belong to another block). */
 export function RailSwap({ icon, label, children }: { icon?: ReactNode; label?: string; children: ReactNode }) {
 	const rail = useSidebarRail();
 	const expand = useContext(ExpandCtx);
-	if (!rail) return <>{children}</>;
+	const box = useRef<HTMLDivElement>(null);
+	const chosen = useRef(false);
+	useEffect(() => {
+		if (rail || !chosen.current) return;
+		chosen.current = false;
+		box.current?.querySelector<HTMLElement>("button:not([disabled]), a[href], input:not([disabled]), select, textarea, [tabindex]:not([tabindex='-1'])")?.focus();
+	}, [rail]);
+	if (!rail) return <div ref={box} className="contents">{children}</div>;
 	if (!icon || !label) return null;
 	return (
 		<SidebarSection>
-			<SidebarItem icon={icon} label={label} onClick={expand} />
+			<SidebarItem icon={icon} label={label} onClick={() => { chosen.current = true; expand(); }} />
 		</SidebarSection>
 	);
 }

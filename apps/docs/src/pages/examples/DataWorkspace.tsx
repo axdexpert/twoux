@@ -49,6 +49,7 @@ import {
 import { AtSign, Clock, Copy, FileUp, Gauge, Globe, Keyboard, Languages, MailCheck, PenLine, Plug, Plus, RefreshCw, Settings, Sigma, Table2, Tags, Trash2 } from "lucide-react";
 import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { ACTIONS, COLUMNS, COMPANY_COLUMNS, COMPANY_ROWS, FAILS, HISTORY_SEED, IMPORT_ALIASES, IMPORT_TARGETS, PEOPLE, type Person, SAMPLE_CSV, SENIORITY, emailFor, fitScore, gbp, isClosed, summaryFor, weighted } from "./data-workspace/data";
+import { type CellWrite, useTableAgent } from "./data-workspace/agent";
 import { ExampleShell, RailSwap } from "../../components/example-shell";
 import { ExampleBrand } from "../../components/example-brand";
 
@@ -89,7 +90,7 @@ function result(colId: string, actionId: string | undefined, r: SheetRow): Compu
 		return { state: "done", value: summaryFor(p) };
 	}
 	if (colId === "email" || actionId === "work-email") {
-		if (fail?.email === "failed" || !p.domain) return { state: "failed", reason: "No company domain on this row." };
+		if (!p.domain) return { state: "failed", reason: "No company domain on this row." };
 		if (fail?.email === "not-found") return { state: "not-found" };
 		return { state: "done", value: emailFor(p) };
 	}
@@ -138,11 +139,9 @@ export function DataWorkspaceExample() {
 	const [credits, setCredits] = useState(START_AT * 1.5 - 1);
 	const [history, setHistory] = useState(HISTORY_SEED);
 	const [settings, setSettings] = useState<TableSettingsValue>({ duplicates: "keep-oldest", matchOn: "email", deleteEmptyRows: false, template: { shared: false, audience: "workspace" } });
-	const [thread, setThread] = useState<string[]>([]);
 	const [onlyVisible, setOnlyVisible] = useState(true);
 	const [selected, setSelected] = useState<string[]>([]);
 	const [recordId, setRecordId] = useState<string | null>(null);
-	const [singleKeys, setSingleKeys] = useState(true);
 	const actionOf = useRef<Record<string, string>>({});
 	const runStart = useRef(0);
 	const stopping = useRef(false);
@@ -195,6 +194,14 @@ export function DataWorkspaceExample() {
 			return { ...r, computed: c };
 		}));
 
+	// The assistant writes through these two, so its changes land in the grid like any edit and can be undone.
+	const write = (cells: CellWrite[]) => setRows((rs) => rs.map((r) => {
+		const mine = cells.filter((c) => c.rowId === r.id);
+		return mine.length ? { ...r, values: { ...r.values, ...Object.fromEntries(mine.map((c) => [c.col, c.value])) } } : r;
+	}));
+	const rerun = (ids: string[], col: string) => setRows((rs) => rs.map((r) => (ids.includes(r.id) ? { ...r, computed: { ...r.computed, [col]: { state: "queued" } } } : r)));
+	const agent = useTableAgent({ rows, write, rerun });
+
 	const finishedRows = rows.filter((r) => computedCols.every((c) => FINISHED.has(r.computed?.[c.id]?.state ?? ""))).length;
 	const stop = () => {
 		stopping.current = true;
@@ -239,10 +246,11 @@ export function DataWorkspaceExample() {
 			});
 		});
 	const deleteRows = (ids: string[]) => {
-		const before = rows;
+		// Undo puts back only the deleted rows, where they were, so edits made since are kept.
+		const removed = rows.flatMap((r, i) => (ids.includes(r.id) ? [{ r, i }] : []));
 		setRows((rs) => rs.filter((r) => !ids.includes(r.id)));
 		setSelected((s) => s.filter((id) => !ids.includes(id)));
-		toast(`Deleted ${ids.length} ${ids.length === 1 ? "row" : "rows"}`, { action: { label: "Undo", onClick: () => setRows(before) } });
+		toast(`Deleted ${ids.length} ${ids.length === 1 ? "row" : "rows"}`, { action: { label: "Undo", onClick: () => setRows((rs) => { const n = rs.filter((r) => !ids.includes(r.id)); removed.forEach(({ r, i }) => n.splice(Math.min(i, n.length), 0, r)); return n; }) } });
 	};
 	const duplicateRow = (id: string) => {
 		const src = rows.find((r) => r.id === id);
@@ -268,7 +276,6 @@ export function DataWorkspaceExample() {
 	};
 
 	const onImport = (res: CsvImportResult) => {
-		const before = rows;
 		const created = res.created.map((label) => ({ id: `imp-${label.toLowerCase().replace(/\W+/g, "-")}`, label, type: "text" as const, width: 140 }));
 		const fresh: SheetRow[] = res.rows.map((r, i) => ({
 			id: `i${Date.now()}-${i}`,
@@ -278,7 +285,7 @@ export function DataWorkspaceExample() {
 		setColumns((cs) => [...cs, ...created.filter((c) => !cs.some((x) => x.id === c.id))]);
 		setRows((rs) => [...rs, ...fresh]);
 		if (autoRun) queue((r) => fresh.some((f) => f.id === r.id), computedCols.map((c) => c.id));
-		toast.success(`Imported ${res.rows.length} rows${res.skipped ? `, skipped ${res.skipped}` : ""}`, { description: autoRun ? `Auto-run is on: about ${Math.round(res.rows.length * costPerRow)} credits.` : "Computed columns haven't run for them yet.", action: { label: "Undo", onClick: () => setRows(before) } });
+		toast.success(`Imported ${res.rows.length} rows${res.skipped ? `, skipped ${res.skipped}` : ""}`, { description: autoRun ? `Auto-run is on: about ${Math.round(res.rows.length * costPerRow)} credits.` : "Computed columns haven't run for them yet.", action: { label: "Undo", onClick: () => setRows((rs) => rs.filter((r) => !fresh.some((f) => f.id === r.id))) } });
 	};
 
 	const addColumn = (cfg: ActionConfig) => {
@@ -344,7 +351,7 @@ export function DataWorkspaceExample() {
 			<div className="relative flex min-h-0 flex-1 flex-col overflow-hidden">
 				<BulkActionBar size="dense" count={selected.length} noun={selected.length === 1 ? "person" : "people"} onClear={() => setSelected([])} className="mb-2 rounded-sm border border-line max-md:mb-0 max-md:rounded-none max-md:border-x-0" actions={[
 						{ label: "Run computed columns", icon: <RefreshCw />, onSelect: () => { queue((r) => selected.includes(r.id), computedCols.map((c) => c.id)); toast(`Running ${selected.length} rows`, { description: `About ${Math.round(selected.length * costPerRow)} credits.` }); } },
-						{ label: "Subscribe", icon: <MailCheck />, onSelect: () => { const ids = selected; const before = rows; setRows((rs) => rs.map((r) => (ids.includes(r.id) ? { ...r, values: { ...r.values, subscribed: true } } : r))); toast.success(`Subscribed ${ids.length} people to the newsletter`, { action: { label: "Undo", onClick: () => setRows(before) } }); } },
+						{ label: "Subscribe", icon: <MailCheck />, onSelect: () => { const ids = selected; const was = new Map(rows.filter((r) => ids.includes(r.id)).map((r) => [r.id, r.values.subscribed])); setRows((rs) => rs.map((r) => (ids.includes(r.id) ? { ...r, values: { ...r.values, subscribed: true } } : r))); toast.success(`Subscribed ${ids.length} people to the newsletter`, { action: { label: "Undo", onClick: () => setRows((rs) => rs.map((r) => (was.has(r.id) ? { ...r, values: { ...r.values, subscribed: was.get(r.id) } } : r))) } }); } },
 						{ label: "Delete", icon: <Trash2 />, destructive: true, onSelect: () => deleteRows(selected) },
 					]} />
 				<SheetGrid
@@ -452,19 +459,9 @@ export function DataWorkspaceExample() {
 				onOpenChange={(o) => !o && setPanel(null)}
 				title="Ask about this table"
 				caveat="Reads this table only, not HubSpot or Salesforce. Check emails marked Not found in HubSpot before writing to those people."
-				composer={<MessageComposer noun={{ one: "row", many: "rows" }} placeholder="Ask about these people" chips={[{ id: "sheet", label: "People" }, ...FILTER_FIELDS.filter((f) => filters[f.id]?.length).map((f) => ({ id: `f-${f.id}`, label: `${f.label}: ${filters[f.id].join(", ")}` }))]} mentions={rows.slice(0, 8).map((r) => ({ id: r.id, label: String(r.values.name) }))} onSend={(t) => setThread((x) => [...x, t])} />}
+				composer={<MessageComposer noun={{ one: "row", many: "rows" }} placeholder="Ask about these people" chips={[{ id: "sheet", label: "People" }, ...FILTER_FIELDS.filter((f) => filters[f.id]?.length).map((f) => ({ id: `f-${f.id}`, label: `${f.label}: ${filters[f.id].join(", ")}` }))]} mentions={rows.slice(0, 8).map((r) => ({ id: r.id, label: String(r.values.name) }))} onSend={agent.send} />}
 			>
-				<UserMessage>Which rows failed and why?</UserMessage>
-				<AssistantMessage from="the People sheet">
-					<p>{failed ? `${failed} ${failed === 1 ? "cell has" : "cells have"} failed so far.` : "No cells have failed so far."} George Lowe has no company domain, so Work email can't look him up. Yusuf Hassan has no job title, so Summarise role has nothing to read.</p>
-					<p>Add the missing values, then press Enter on the cell to run it again. Each retry costs the column's usual price.</p>
-				</AssistantMessage>
-				{thread.map((t, i) => (
-					<div key={i} className="grid gap-5">
-						<UserMessage>{t}</UserMessage>
-						<AssistantMessage from="the People sheet"><p>This example only answers the first question. In a real table I'd read the {gridRows.length} rows in view.</p></AssistantMessage>
-					</div>
-				))}
+				{agent.thread}
 			</AssistantPanel>
 		</>
 	);
@@ -491,7 +488,7 @@ export function DataWorkspaceExample() {
 					</div>
 				</div>
 			</ExampleShell>
-			<ShortcutSheet singleKeys={singleKeys} onSingleKeysChange={setSingleKeys} groups={sheetGridShortcuts()} />
+			<ShortcutSheet groups={sheetGridShortcuts()} />
 			<CsvImport open={importing} onOpenChange={setImporting} targets={IMPORT_TARGETS} tableName="People" sample={SAMPLE_CSV} aliases={IMPORT_ALIASES} onImport={onImport} />
 		</div>
 	);

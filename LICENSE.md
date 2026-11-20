@@ -1,6 +1,6 @@
 # TwoUX Licence 1.0
 
-Copyright (c) 2026 Giulia Pizzignacco. All rights reserved, except as granted below.
+Copyright (c) 2026 Dinosaurjoy Unipessoal, Lda., a company registered in Portugal, which publishes TwoUX. All rights reserved, except as granted below.
 
 TwoUX is free to use. You may build and ship your own products with it, including commercial products and client work. You may not sell it, give it away or offer it as your own design system, UI kit or component library.
 
@@ -50,7 +50,7 @@ To the extent the applicable law allows, TwoUX is provided "as is", without warr
 
 ## 8. Contributions
 
-If you send a change, suggestion or other contribution to TwoUX, for example a pull request or an issue, you confirm that you have the right to send it, and you grant Giulia Pizzignacco a perpetual, worldwide, royalty-free and irrevocable licence to use, modify, sublicense and distribute it as part of TwoUX, under this licence or any other.
+If you send a change, suggestion or other contribution to TwoUX, for example a pull request or an issue, you confirm that you have the right to send it, and you grant Dinosaurjoy Unipessoal, Lda. a perpetual, worldwide, royalty-free and irrevocable licence to use, modify, sublicense and distribute it as part of TwoUX, under this licence or any other.
 
 ## 9. Governing law
 

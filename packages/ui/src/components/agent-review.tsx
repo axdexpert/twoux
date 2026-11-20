@@ -242,6 +242,12 @@ export function ChangeRequest({
     onReject(why.trim())
     setRejecting(false)
   }
+  // The buttons that had focus unmount when the form opens, closes or a decision lands: keep focus in the card.
+  const rejectBtn = React.useRef<HTMLButtonElement>(null)
+  const status = React.useRef<HTMLParagraphElement>(null)
+  const lost = () => { const a = document.activeElement; return !a || a === document.body }
+  const backToButtons = () => { setRejecting(false); setError(""); requestAnimationFrame(() => rejectBtn.current?.focus()) }
+  React.useEffect(() => { if (state !== "open") requestAnimationFrame(() => { if (lost()) status.current?.focus() }) }, [state])
   return (
     <article aria-label={`Change: ${title}`} data-slot="change-request" className={cn("grid min-w-0 gap-3 rounded-sm border border-line bg-surface p-3", className)}>
       <header className="grid gap-1">
@@ -267,11 +273,18 @@ export function ChangeRequest({
                 rows={2}
                 aria-invalid={!!error || undefined}
                 onChange={(e) => { setWhy(e.target.value); setError("") }}
+                autoFocus
+                aria-describedby={`${title}-why-hint`}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); submitReject() }
+                  else if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); backToButtons() }
+                }}
               />
+              <span id={`${title}-why-hint`} className="sr-only">Press Command Enter to reject, Escape to go back.</span>
               {error && <FieldError>{error}</FieldError>}
             </Field>
             <div className="flex justify-end gap-2">
-              <Button variant="ghost" size="sm" onClick={() => { setRejecting(false); setError("") }}>Back</Button>
+              <Button variant="ghost" size="sm" onClick={backToButtons}>Back</Button>
               <Button variant="outline" size="sm" onClick={submitReject}>Reject change</Button>
             </div>
           </div>
@@ -280,12 +293,12 @@ export function ChangeRequest({
             <span className="min-w-0 flex-1 text-sm text-ink-2">
               {newFails > 0 ? `${newFails} conversation${newFails === 1 ? "" : "s"} that passed before now fail. Check them before approving.` : "Nothing goes live until you approve."}
             </span>
-            <Button variant="outline" size="sm" onClick={() => setRejecting(true)}>Reject</Button>
+            <Button ref={rejectBtn} variant="outline" size="sm" onClick={() => setRejecting(true)}>Reject</Button>
             <Button size="sm" onClick={onApprove}>Approve change</Button>
           </footer>
         )
       ) : (
-        <p role="status" className="text-sm text-ink-2">{decidedBy ?? (state === "approved" ? "Approved" : "Rejected")}</p>
+        <p ref={status} tabIndex={-1} role="status" className="rounded-xs text-sm text-ink-2 outline-none focus-visible:ring-2 focus-visible:ring-primary">{decidedBy ?? (state === "approved" ? "Approved" : "Rejected")}</p>
       )}
     </article>
   )

@@ -268,6 +268,7 @@ export function toIsoDate(v: string): string | null {
   return `${y}-${pad(m)}-${pad(d)}`
 }
 
+const BAD_DATE = "Enter a complete date, such as 14/03/2026."
 const computedHow = (col: SheetColumn) => (col.type === "formula" ? "calculated by a formula" : col.type === "ai" ? "written by the assistant" : "looked up")
 
 /** Turns typed or pasted text into the column's value, or says why it doesn't fit. */
@@ -322,6 +323,8 @@ const aggregate = (col: SheetColumn, rows: SheetRow[]) => {
 }
 
 type Line = { kind: "row"; row: SheetRow; n: number } | { kind: "group"; key: string; label: string; rows: SheetRow[]; open: boolean }
+const lineKey = (l: Line | undefined) => (!l ? null : l.kind === "row" ? l.row.id : `g:${l.key}`)
+type EditTarget = { rowId: string; colId: string; value: string }
 
 /** The SheetGrid keys, for the ShortcutSheet. ⌘ on a Mac, Ctrl elsewhere. */
 export function sheetGridShortcuts(mac = detectMac()): ShortcutGroup[] {
@@ -384,7 +387,7 @@ type SheetRowApi = {
 }
 
 const SheetBodyRow = React.memo(function SheetBodyRow({
-  api, row, n, r, rowIndex, visible, lefts, cellCls, dense, activeC, editing, error, selC1, selC2, rejected, checked, selectable, selecting, slot, hasRowMenu, menuOpen, openColId,
+  api, row, n, r, rowIndex, visible, lefts, cellCls, dense, activeC, editC, editing, error, selC1, selC2, rejected, checked, selectable, selecting, slot, hasRowMenu, menuOpen, openColId,
 }: {
   api: SheetRowApi
   row: SheetRow
@@ -397,6 +400,8 @@ const SheetBodyRow = React.memo(function SheetBodyRow({
   dense: boolean
   /** The active cell's column in this row, or -1. */
   activeC: number
+  /** The column being edited in this row, or -1. The edit keeps its own cell, so it never follows a click elsewhere. */
+  editC: number
   editing: string | null
   error: string
   /** The selected range's columns in this row when more than one cell is selected, or -1. */
@@ -433,7 +438,7 @@ const SheetBodyRow = React.memo(function SheetBodyRow({
       </th>
       {visible.map((c, ci) => {
         const here = activeC === ci
-        const isEditing = here && editing !== null
+        const isEditing = ci === editC && editing !== null
         const failed = row.computed?.[c.id]?.state === "failed"
         const selected = selC1 >= 0 && ci >= selC1 && ci <= selC2
         const why = rejected[`${row.id}:${c.id}`]
@@ -444,6 +449,7 @@ const SheetBodyRow = React.memo(function SheetBodyRow({
             key={c.id}
             role="gridcell"
             data-cell={`${r}:${ci}`}
+            data-editing={isEditing || undefined}
             tabIndex={here && !isEditing ? 0 : -1}
             aria-selected={selected || here}
             aria-readonly={isComputed(c) || !!c.notApplicable?.(row) || undefined}
@@ -468,7 +474,8 @@ const SheetBodyRow = React.memo(function SheetBodyRow({
               !isEditing && !selected && !here && "hover:bg-selected hover:shadow-[inset_0_0_0_1px_var(--color-line-strong)]",
               why && !here && "outline-1 -outline-offset-1 outline-dashed outline-bad",
               here ? "outline-2 -outline-offset-2 outline-solid" : "outline-none",
-              here && (isEditing && error ? "outline-bad" : "outline-primary")
+              here && (isEditing && error ? "outline-bad" : "outline-primary"),
+              isEditing && !here && cn("outline-2 -outline-offset-2 outline-solid", error ? "outline-bad" : "outline-primary")
             )}
           >
             {isEditing ? api.editor(c, row) : openHere ? (
@@ -625,10 +632,28 @@ export function SheetGrid({
   }
 
   const top = filterRow ? -2 : -1
-  const [pos, setPos] = React.useState<Cell>({ r: 0, c: 0 })
+  const [pos, setPosState] = React.useState<Cell>({ r: 0, c: 0 })
+  // The active cell is positional, but a sort or a group can move its row after an edit. posKey remembers which row
+  // (or group) the active cell is on, from the lines it was set against, so the layout effect below can follow it.
+  const posKey = React.useRef<string | null>(null)
+  const setPos = (p: Cell) => { posKey.current = p.r >= 0 ? lineKey(lines[p.r]) : null; setPosState(p) }
   const [ext, setExt] = React.useState<Cell>({ r: 0, c: 0 })
   const [selAll, setSelAll] = React.useState(false)
-  const [editing, setEditing] = React.useState<string | null>(null)
+  // The edit remembers its own cell. A click elsewhere moves the active cell, and the editor's blur must still save
+  // into the cell that was being edited, never into the one just clicked. The ref is read by blur and key handlers,
+  // which can run before React re-renders.
+  const [edit, setEditState] = React.useState<EditTarget | null>(null)
+  const editRef = React.useRef<EditTarget | null>(null)
+  const setEdit = (e: EditTarget | null) => { editRef.current = e; setEditState(e) }
+  const editing = edit?.value ?? null
+  const inputRef = React.useRef<HTMLInputElement | null>(null)
+  const rootRef = React.useRef<HTMLDivElement>(null)
+  const statusId = React.useId()
+  const listId = React.useId()
+  /** Letters typed on a select cell before its list has focus: they pick the first option that starts with them. */
+  const typed = React.useRef<string | null>(null)
+  /** The row an edit just saved, so a sort or group that moves it can say where it went. */
+  const moved = React.useRef<{ id: string; r: number; said: string; at: number } | null>(null)
   const [error, setError] = React.useState("")
   const [status, setStatusText] = React.useState("")
   const [addSaid, setAddSaid] = React.useState("")
@@ -707,14 +732,49 @@ export function SheetGrid({
   const rangeCells = range ? (range.r2 - range.r1 + 1) * (range.c2 - range.c1 + 1) : 0
 
   const cellEl = (r: number, c: number) => grid.current?.querySelector<HTMLElement>(`[data-cell="${r}:${c}"]`)
-  const focusCell = React.useCallback(() => cellEl(pos.r, pos.c)?.focus(), [pos])
-  // Focus follows the active cell while the person is working in the grid, including after an edit or a menu closes.
+  const focusCell = React.useCallback(() => {
+    // Never pull focus back from somewhere else on the page, such as a panel opened from the row.
+    const a = document.activeElement
+    if (a && a !== document.body && !rootRef.current?.contains(a)) return
+    cellEl(pos.r, pos.c)?.focus()
+  }, [pos])
+  // Focus follows the active cell while the person is working in the grid, including after an edit or a menu closes,
+  // and after a sort or group moves rows: React moves the focused cell's node, which drops its focus.
   const engaged = React.useRef(false)
-  React.useEffect(() => { if (editing === null && renaming === null && menuFor === null && rowMenu === null && engaged.current) focusCell() }, [pos, editing, renaming, menuFor, rowMenu, focusCell])
+  React.useEffect(() => { if (edit === null && renaming === null && menuFor === null && rowMenu === null && engaged.current) focusCell() }, [pos, edit, renaming, menuFor, rowMenu, focusCell, lines])
+  // Keep the active cell on its row when the lines change under it (a sort, a group, an undo), and say where an edited
+  // row went, so the outline, the keyboard and the DOM focus all stay on the same record.
+  React.useLayoutEffect(() => {
+    const m = moved.current
+    moved.current = null
+    if (m && Date.now() - m.at < 2000) {
+      const at = lines.findIndex((l) => l.kind === "row" && l.row.id === m.id)
+      const row = rows.find((x) => x.id === m.id)
+      if (row && at !== m.r) {
+        if (at < 0) say(`${m.said} ${rowName(row)} moved out of view: a filter or a collapsed group hides it.`)
+        else {
+          let g = at
+          while (g >= 0 && lines[g].kind !== "group") g--
+          const grp = g >= 0 ? lines[g] : undefined
+          const l = lines[at]
+          const n = l.kind === "row" ? l.n : at + 1
+          say(`${m.said} ${rowName(row)} moved to ${grp?.kind === "group" ? `${grp.label}, ` : ""}row ${n}.`)
+        }
+      }
+    }
+    const key = posKey.current
+    if (key === null || lineKey(lines[pos.r]) === key) return
+    const at = lines.findIndex((l) => lineKey(l) === key)
+    if (at < 0) return
+    setPosState({ r: at, c: pos.c })
+    setExt({ r: at, c: pos.c })
+    setSelAll(false)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lines])
   React.useEffect(() => { if (ext.r !== pos.r || ext.c !== pos.c) cellEl(ext.r, ext.c)?.scrollIntoView({ block: "nearest", inline: "nearest" }) }, [ext, pos])
   React.useEffect(() => {
     const clamp = (p: Cell) => ({ r: Math.max(top, Math.min(p.r, lines.length - 1)), c: Math.max(0, Math.min(p.c, visible.length - 1)) })
-    setPos(clamp)
+    setPosState(clamp)
     setExt(clamp)
   }, [lines.length, visible.length, top])
   // After Add row: scroll to the bottom, where the rows went, and make the first new row's first cell active.
@@ -728,6 +788,16 @@ export function SheetGrid({
     const p = { r: before, c: 0 }
     setPos(p); setExt(p); setSelAll(false)
   }, [lines.length])
+  // A press outside the sheet (not in its own menus or lists) means the person has moved on: focus must stay where
+  // they put it. Blur alone can't tell, because a press on empty page space blurs with no related target.
+  React.useEffect(() => {
+    const down = (e: PointerEvent) => {
+      const t = e.target as Element | null
+      if (t && !rootRef.current?.contains(t) && !t.closest?.("[role=menu], [role=listbox]")) engaged.current = false
+    }
+    document.addEventListener("pointerdown", down, true)
+    return () => document.removeEventListener("pointerdown", down, true)
+  }, [])
   React.useEffect(() => {
     const up = () => { dragging.current = false }
     document.addEventListener("mouseup", up)
@@ -811,7 +881,7 @@ export function SheetGrid({
   }
   const report = (done: string, n: number, rejects: Reject[], extra = "") => {
     setRejected(Object.fromEntries(rejects.map((x) => [x.key, x.reason])))
-    let msg = `${done} ${plural(n, "cell")}.`
+    let msg = !n && !rejects.length ? "Nothing changed: the cells already hold those values." : `${done} ${plural(n, "cell")}.`
     if (rejects.length) msg += ` ${plural(rejects.length, "cell")} left as they were. ${rejects[0].where}: ${rejects[0].reason}${rejects.length > 1 ? " Each one is outlined in red; move to it to read why." : ""}`
     msg += extra
     say(msg, rejects.length || extra ? "bad" : "plain")
@@ -822,25 +892,40 @@ export function SheetGrid({
     return toTsv(dataLines(range).map(({ row }) => visible.slice(range.c1, range.c2 + 1).map((col) => copyText(col, row))))
   }
   const clearRange = (lbl = "clear") => {
-    if (!range) return 0
+    if (!range) return { n: 0, rejects: [] as Reject[] }
     const changes: CellChange[] = []
+    const rejects: Reject[] = []
     let kept = 0
-    for (const { row } of dataLines(range)) for (const col of visible.slice(range.c1, range.c2 + 1)) {
+    // Clearing is an edit to "": it goes through the column's rules, so a required column (a name) is never emptied.
+    for (const { row, n } of dataLines(range)) for (const col of visible.slice(range.c1, range.c2 + 1)) {
       if (isComputed(col) || col.notApplicable?.(row)) { kept++; continue }
-      changes.push({ rowId: row.id, columnId: col.id, before: valueOf(col, row), after: col.type === "boolean" ? false : "" })
+      const res = coerce(col, "", row)
+      if ("reason" in res) rejects.push({ key: keyOf(row, col), where: `${col.label}, row ${n}`, reason: res.reason })
+      else changes.push({ rowId: row.id, columnId: col.id, before: valueOf(col, row), after: res.value })
     }
-    const n = apply(lbl, changes)
+    const done = apply(lbl, changes)
     if (lbl === "clear") {
       const row = rowAt(pos.r), col = visible[pos.c]
-      if (rangeCells === 1 && row && col) say(n ? `Cleared ${col.label} for ${rowName(row)}.` : kept ? `${col.label} is ${computedHow(col)}, so it can't be cleared.` : "Nothing to clear.")
-      else say(`Cleared ${plural(n, "cell")}.${kept ? ` ${plural(kept, "calculated or not applicable cell")} kept.` : ""}`)
+      const keptText = kept ? ` ${plural(kept, "calculated or not applicable cell")} kept.` : ""
+      if (rangeCells === 1 && row && col) {
+        if (rejects.length) say(`${col.label} for ${rowName(row)} can't be cleared: ${rejects[0].reason}`, "bad")
+        else if (done) say(`Cleared ${col.label} for ${rowName(row)}.`)
+        else if (col.notApplicable?.(row)) say(`${col.label} doesn't apply to ${rowName(row)}.`)
+        else if (isComputed(col)) say(`${col.label} is ${computedHow(col)}, so it can't be cleared.`)
+        else say("Nothing to clear.")
+      } else if (rejects.length) report("Cleared", done, rejects, keptText)
+      else say(`Cleared ${plural(done, "cell")}.${keptText}`)
     }
-    return n
+    return { n: done, rejects }
   }
   const afterCopy = (kind: "copy" | "cut") => {
     if (!range) return
     const ls = dataLines(range), nC = range.c2 - range.c1 + 1
-    if (kind === "cut") { const n = clearRange("cut"); say(`Cut ${plural(n, "cell")}. Paste them where you want them.`) }
+    if (kind === "cut") {
+      const { n, rejects } = clearRange("cut")
+      if (rejects.length) report("Copied all and cleared", n, rejects)
+      else say(`Cut ${plural(n, "cell")}. Paste them where you want them.`)
+    }
     else say(`Copied ${plural(ls.length * nC, "cell")}. Paste here, or into Excel or Google Sheets.`)
   }
   const pasteText = (text: string) => {
@@ -867,12 +952,13 @@ export function SheetGrid({
         else changes.push({ rowId: t.row.id, columnId: col.id, before: valueOf(col, t.row), after: res.value })
       }
     }
-    apply("paste", changes)
+    const pasted = apply("paste", changes)
     if (targets.length) {
       const last = targets[Math.min(outH, targets.length) - 1]
       setPos({ r: targets[0].r, c: R.c1 }); setExt({ r: last.r, c: Math.min(visible.length - 1, R.c1 + outW - 1) }); setSelAll(false)
     }
-    report("Pasted", changes.length, rejects, lost ? ` ${plural(lost, "value")} didn't fit: the sheet ends at row ${targets[targets.length - 1]?.n ?? 0}, column ${visible[visible.length - 1]?.label}. Add rows, then paste again.` : "")
+    // Count the cells that changed, the same number Undo will name; values already there aren't counted.
+    report("Pasted", pasted, rejects, lost ? ` ${plural(lost, "value")} didn't fit: the sheet ends at row ${targets[targets.length - 1]?.n ?? 0}, column ${visible[visible.length - 1]?.label}. Add rows, then paste again.` : "")
   }
   const fill = (dir: "down" | "right") => {
     const R = range
@@ -899,8 +985,8 @@ export function SheetGrid({
       if (from < 0) return say("Nothing to the left to fill right from.")
       for (const t of ls) for (let c = R.c1 === R.c2 ? R.c1 : R.c1 + 1; c <= R.c2; c++) put(visible[c], t.row, t.n, copyText(visible[from], t.row))
     }
-    apply(dir === "down" ? "fill down" : "fill right", changes)
-    report(dir === "down" ? "Filled down" : "Filled right", changes.length, rejects, kept ? ` ${plural(kept, "calculated cell")} kept.` : "")
+    const filled = apply(dir === "down" ? "fill down" : "fill right", changes)
+    report(dir === "down" ? "Filled down" : "Filled right", filled, rejects, kept ? ` ${plural(kept, "calculated cell")} kept.` : "")
   }
 
   // Copy, cut and paste use the browser's own clipboard events, so they work with the keyboard and the Edit menu.
@@ -1035,27 +1121,77 @@ export function SheetGrid({
       return
     }
     setError("")
-    setEditing(initial ?? String(row.values[col.id] ?? ""))
+    // A letter typed on a select cell opens the list on the first option that starts with it, as a native select does.
+    if (col.type === "select") {
+      typed.current = initial ?? null
+      setEdit({ rowId: row.id, colId: col.id, value: String(row.values[col.id] ?? "") })
+      if (initial) highlightTyped()
+      return
+    }
+    setEdit({ rowId: row.id, colId: col.id, value: initial ?? String(row.values[col.id] ?? "") })
+  }
+  /** Waits for the select list to take focus, then moves to the first option that starts with what was typed. */
+  const highlightTyped = () => {
+    let tries = 0
+    const tick = () => {
+      const list = document.querySelector<HTMLElement>(`[data-sheet-list="${listId}"]`)
+      const q = typed.current
+      if (q === null) return
+      if (!list || !list.contains(document.activeElement)) { if (tries++ < 60) requestAnimationFrame(tick); else typed.current = null; return }
+      typed.current = null
+      const opts = [...list.querySelectorAll<HTMLElement>("[role=option]")]
+      opts.find((o) => (o.textContent ?? "").trim().toLowerCase().startsWith(q.toLowerCase()))?.focus()
+    }
+    requestAnimationFrame(tick)
+  }
+  const editTarget = () => {
+    const ed = editRef.current
+    if (!ed) return null
+    const col = columns.find((c) => c.id === ed.colId), row = rows.find((r) => r.id === ed.rowId)
+    return col && row ? { ed, col, row } : null
+  }
+  /** Why the open edit can't be saved, or null when it can. */
+  const editProblem = (raw?: string): string | null => {
+    const t = editTarget()
+    if (!t) return null
+    // A native date field reports "" for a half-typed or impossible date (31/02), which would silently clear the cell.
+    if (t.col.type === "date" && raw === undefined && inputRef.current?.validity?.badInput) return BAD_DATE
+    const res = coerce(t.col, raw ?? t.ed.value, t.row)
+    return "reason" in res ? res.reason : null
   }
   const commit = (then: "stay" | "next" | "prev" | "down" | "up", raw?: string) => {
-    const col = visible[pos.c], row = rowAt(pos.r)
-    if (!col || !row) { setEditing(null); return false }
-    const res = coerce(col, raw ?? editing ?? "", row)
-    if ("reason" in res) { setError(res.reason); say(`${col.label}: ${res.reason}`, "bad"); return false }
+    const t = editTarget()
+    // Nothing open, or its row is gone: there is nothing left to save.
+    if (!t) { setEdit(null); return true }
+    const { col, row } = t
+    const why = editProblem(raw)
+    if (why) { setError(why); say(`${col.label}: ${why}`, "bad"); return false }
+    const res = coerce(col, raw ?? t.ed.value, row) as { value: SheetValue }
     apply("edit", [{ rowId: row.id, columnId: col.id, before: valueOf(col, row), after: res.value }])
     setError("")
-    setStatus(`Saved ${col.label} for ${rowName(row)}.`)
-    setEditing(null)
-    if (then === "next") go({ r: pos.r, c: pos.c + 1 })
-    else if (then === "prev") go({ r: pos.r, c: pos.c - 1 })
-    else if (then === "down") go({ r: nextData(pos.r, 1), c: pos.c })
-    else if (then === "up") go({ r: nextData(pos.r, -1), c: pos.c })
+    const said = `Saved ${col.label} for ${rowName(row)}.`
+    setStatus(said)
+    setEdit(null)
+    // Moves are worked out from the edited cell in the lines as they were. If a sort or group then moves the edited
+    // row, Enter lands on the row that was below it (the next record in the list as the person saw it), Tab stays
+    // with the edited record, and the status line says where the record went.
+    const r0 = lines.findIndex((l) => l.kind === "row" && l.row.id === row.id)
+    const c0 = visible.findIndex((c) => c.id === col.id)
+    moved.current = { id: row.id, r: r0, said, at: Date.now() }
+    if (r0 < 0 || c0 < 0) return true
+    if (then === "next") go({ r: r0, c: c0 + 1 })
+    else if (then === "prev") go({ r: r0, c: c0 - 1 })
+    else if (then === "down") go({ r: nextData(r0, 1), c: c0 })
+    else if (then === "up") go({ r: nextData(r0, -1), c: c0 })
+    else setPos({ r: r0, c: c0 })
     return true
   }
-  /** ⌘Enter: the typed value goes into every selected cell. */
-  const fillSelection = () => {
-    if (!range || editing === null) return
-    const text = editing
+  /** ⌘Enter: the typed value, or the option highlighted in a select list, goes into every selected cell. */
+  const fillSelection = (value?: string) => {
+    if (!range || editRef.current === null) return
+    const text = value ?? editRef.current.value
+    const t = editTarget()
+    if (value === undefined && t?.col.type === "date" && inputRef.current?.validity?.badInput) { setError(BAD_DATE); return say(`${t.col.label}: ${BAD_DATE}`, "bad") }
     const changes: CellChange[] = []
     const rejects: Reject[] = []
     for (const t of dataLines(range)) for (const col of visible.slice(range.c1, range.c2 + 1)) {
@@ -1063,12 +1199,41 @@ export function SheetGrid({
       if ("reason" in res) rejects.push({ key: keyOf(t.row, col), where: `${col.label}, row ${t.n}`, reason: res.reason })
       else changes.push({ rowId: t.row.id, columnId: col.id, before: valueOf(col, t.row), after: res.value })
     }
-    apply("fill", changes)
-    setEditing(null)
+    const n = apply("fill", changes)
+    setEdit(null)
     setError("")
-    report("Filled", changes.length, rejects)
+    report("Filled", n, rejects)
   }
-  const cancel = () => { setEditing(null); setError(""); setStatus("Edit cancelled.") }
+  const cancel = (msg = "Edit cancelled.", t: "plain" | "bad" = "plain") => { setEdit(null); setError(""); say(msg, t) }
+
+  // In an open select list, Enter, Tab and ⌘Enter belong to the sheet: they save the highlighted option and move on
+  // like a text cell. This runs in the capture phase, before the list's own Enter selects and only closes.
+  const onKeyCapture = (e: React.KeyboardEvent) => {
+    const t = editTarget()
+    if (!t || t.col.type !== "select" || (e.key !== "Enter" && e.key !== "Tab")) return
+    const list = (e.target as HTMLElement).closest<HTMLElement>("[role=listbox]")
+    if (!list) return
+    const opt = (e.target as HTMLElement).closest("[role=option]") ?? list.querySelector("[role=option][data-highlighted]")
+    const text = opt?.textContent?.trim()
+    const value = (t.col.options ?? []).find((o) => o === text) ?? t.ed.value
+    e.preventDefault()
+    e.stopPropagation()
+    if (e.key === "Enter" && mod(e)) fillSelection(value)
+    else if (e.key === "Enter") commit(e.shiftKey ? "up" : "down", value)
+    else commit(e.shiftKey ? "prev" : "next", value)
+  }
+  // A press anywhere in the sheet while a text, number or date edit is open saves it first, into its own cell. When
+  // the value can't be saved, the press is cancelled so the editor keeps focus and the error stays beside it.
+  const onPressCapture = (e: React.MouseEvent) => {
+    const t = editTarget()
+    if (!t || t.col.type === "select" || e.button !== 0) return
+    const el = e.target as HTMLElement
+    if (!e.currentTarget.contains(el) || el.closest("[data-editing]")) return
+    if (commit("stay")) return
+    e.preventDefault()
+    e.stopPropagation()
+    inputRef.current?.focus()
+  }
 
   const onFilterKey = (e: React.KeyboardEvent, input: HTMLInputElement) => {
     const c = Number(input.dataset.filter)
@@ -1085,8 +1250,12 @@ export function SheetGrid({
     if (renaming !== null) return
     if (t.closest("[role=menu]")) return
     if (t.dataset.filter !== undefined) return onFilterKey(e, t as HTMLInputElement)
-    if (editing !== null) {
-      if (visible[pos.c]?.type === "select") return
+    if (editRef.current !== null) {
+      if (columns.find((c) => c.id === editRef.current?.colId)?.type === "select") {
+        // Letters typed before the list has focus add to the search instead of being lost.
+        if (typed.current !== null && e.key.length === 1 && !e.metaKey && !e.ctrlKey && !e.altKey) { e.preventDefault(); typed.current += e.key }
+        return
+      }
       if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); cancel() }
       else if (e.key === "Enter") { e.preventDefault(); if (mod(e)) fillSelection(); else commit(e.shiftKey ? "up" : "down") }
       else if (e.key === "Tab") { e.preventDefault(); commit(e.shiftKey ? "prev" : "next") }
@@ -1095,6 +1264,11 @@ export function SheetGrid({
     const k = e.key, m = mod(e), sh = e.shiftKey
     const header = pos.r < 0
     const arrow = ({ ArrowRight: [0, 1], ArrowLeft: [0, -1], ArrowDown: [1, 0], ArrowUp: [-1, 0] } as Record<string, [number, number]>)[k]
+    // Alt+↓ opens the cell's editor (a select's list, a date's field), as it opens a native select.
+    if (k === "ArrowDown" && e.altKey && !header && !m && !sh) {
+      const col = visible[pos.c], row = rowAt(pos.r)
+      if (col && row && col.type !== "boolean") { e.preventDefault(); return startEdit() }
+    }
     if (arrow && !e.altKey) {
       e.preventDefault()
       const [dr, dc] = arrow
@@ -1144,8 +1318,10 @@ export function SheetGrid({
     }
     if (k === "Escape" && rangeCells > 1) { e.preventDefault(); e.stopPropagation(); go(pos); return say("Selection cleared.") }
     if (k === " " && sh) { e.preventDefault(); return toggleRows(range ? dataLines(range).map((l) => l.row) : []) }
-    if (k === " " && e.ctrlKey) { e.preventDefault(); setPos({ r: 0, c: pos.c }); setExt({ r: lines.length - 1, c: pos.c }); setSelAll(false); return say(`Selected the ${visible[pos.c].label} column.`) }
+    if (k === " " && e.ctrlKey) { e.preventDefault(); setPos({ r: lines[0]?.kind === "row" ? 0 : nextData(0, 1), c: pos.c }); setExt({ r: lines.length - 1, c: pos.c }); setSelAll(false); return say(`Selected the ${visible[pos.c].label} column.`) }
     if ((k === "F10" && sh) || k === "ContextMenu") { const row = rowAt(pos.r); if (row && hasRowMenu) { e.preventDefault(); setRowMenu(row.id) } return }
+    // Shift+Enter moves up, as in Excel and Google Sheets; only Enter and F2 start an edit.
+    if (k === "Enter" && sh && !m) { e.preventDefault(); return go({ r: nextData(pos.r, -1), c: pos.c }) }
     const line = lines[pos.r]
     if (line?.kind === "group") {
       if (k === "Enter" || k === " " || k === "F2") { e.preventDefault(); toggleGroup(line.key) }
@@ -1156,8 +1332,16 @@ export function SheetGrid({
     if (col.type === "boolean" && (k === "Enter" || k === " ")) { e.preventDefault(); return toggleBool(row, col) }
     if (k === "Enter" || k === "F2") { e.preventDefault(); startEdit() }
     else if (k === "Delete" || k === "Backspace") { e.preventDefault(); clearRange() }
-    else if (k.length === 1 && !e.metaKey && !e.ctrlKey && !e.altKey && !isComputed(col) && !col.notApplicable?.(row) && col.type === "select") { e.preventDefault(); startEdit() }
-    else if (k.length === 1 && !e.metaKey && !e.ctrlKey && !e.altKey && !isComputed(col) && !col.notApplicable?.(row) && !["date", "boolean"].includes(col.type)) { e.preventDefault(); startEdit(k) }
+    else if (k.length === 1 && !e.metaKey && !e.ctrlKey && !e.altKey) {
+      // A letter on a cell that can't take it still belongs to the grid: it must not reach page shortcuts. The status
+      // line says why nothing was typed and what to do instead.
+      e.preventDefault()
+      if (col.notApplicable?.(row)) say(`${col.label} doesn't apply to ${rowName(row)}.`)
+      else if (isComputed(col)) say(`${col.label} is ${computedHow(col)}, so it can't be typed in.`)
+      else if (col.type === "date") say(`To change ${col.label}, press Enter to pick a date, or ${M}; for today.`)
+      else if (col.type === "boolean") say(`Press Space to turn ${col.label} on or off.`)
+      else startEdit(k === " " && col.type === "select" ? undefined : k)
+    }
   }
 
   const pinStyle = (i: number) => (bodyCols[i]?.pinned ? ({ "--l": `${lefts[i]}px` } as React.CSSProperties) : undefined)
@@ -1254,23 +1438,59 @@ export function SheetGrid({
   const editor = (col: SheetColumn, row: SheetRow) => {
     if (col.type === "select")
       return (
-        <Select defaultOpen value={editing ?? ""} onValueChange={(v) => commit("stay", v)} onOpenChange={(o) => { if (!o) setEditing((cur) => { if (cur !== null) setStatus("Edit cancelled."); return null }) }}>
+        <Select defaultOpen value={editing ?? ""} onValueChange={(v) => commit("stay", v)} onOpenChange={(o) => { if (!o && editRef.current) cancel() }}>
           {/* The cell is the trigger: its 2px outline already marks it, so the trigger draws no border, shadow or ring of its own. */}
           <SelectTrigger size="sm" aria-label={`${col.label} for ${rowName(row)}`} className="w-full gap-1 rounded-none border-0 bg-transparent p-0 shadow-none hover:border-0 focus-visible:ring-0 data-[size=sm]:h-full"><SelectValue placeholder="Choose" /></SelectTrigger>
           {/* Opens below the cell, never over it, so the row being changed stays in view. */}
-          <SelectContent position="popper" align="start" sideOffset={4}>{(col.options ?? []).map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent>
+          <SelectContent data-sheet-list={listId} position="popper" align="start" sideOffset={4}>{(col.options ?? []).map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent>
         </Select>
       )
     return (
       <input
+        ref={inputRef}
         autoFocus
         type={col.type === "date" ? "date" : "text"}
         value={editing ?? ""}
         aria-label={`${col.label} for ${rowName(row)}`}
         aria-invalid={!!error || undefined}
+        aria-describedby={error ? statusId : undefined}
+        aria-errormessage={error ? statusId : undefined}
         inputMode={col.type === "number" ? "decimal" : undefined}
-        onChange={(e) => { setEditing(e.target.value); setError("") }}
-        onBlur={() => { if (editing !== null && !commit("stay")) setEditing(null) }}
+        onChange={(e) => { const value = e.target.value; if (editRef.current) setEdit({ ...editRef.current, value }); setError("") }}
+        onPaste={(e) => {
+          // Cells copied from a sheet arrive with tabs and newlines. In an open editor only the first value goes in,
+          // at the caret; the status line says how to paste them all as a range instead.
+          const text = e.clipboardData.getData("text/plain")
+          if (col.type === "date" || !/[\t\n\r]/.test(text)) return
+          e.preventDefault()
+          const data = parseTsv(text)
+          const first = data[0]?.[0] ?? ""
+          const el = e.currentTarget
+          el.setRangeText(first, el.selectionStart ?? el.value.length, el.selectionEnd ?? el.value.length, "end")
+          if (editRef.current) setEdit({ ...editRef.current, value: el.value })
+          const n = data.reduce((a, r) => a + r.length, 0)
+          if (n > 1) say(`Pasted the first of ${plural(n, "value")} into this cell. To paste them all, press Esc, then ${M}V.`)
+        }}
+        onBlur={(e) => {
+          // Closed by Enter, Tab, Esc or a press in the sheet: already saved or cancelled.
+          if (!editRef.current) return
+          const to = e.relatedTarget as HTMLElement | null
+          const inside = !!to && !!rootRef.current?.contains(to)
+          if (!inside) {
+            // Focus went to the page, not the sheet: save (or say why not) and don't take focus back.
+            engaged.current = false
+            const why = editProblem()
+            if (!why) commit("stay")
+            else cancel(`Not saved: ${why} ${col.label} for ${rowName(row)} is unchanged.`, "bad")
+            return
+          }
+          const why = editProblem()
+          if (!why) { commit("stay"); return }
+          // Still in the sheet: keep the editor and its error, and bring focus back to it.
+          setError(why); say(`${col.label}: ${why}`, "bad")
+          const el = e.currentTarget
+          requestAnimationFrame(() => el.focus())
+        }}
         className={cn("h-full w-full bg-transparent outline-none", col.type === "number" && "text-right")}
       />
     )
@@ -1359,6 +1579,8 @@ export function SheetGrid({
     <div
       data-slot="sheet-grid"
       data-size={size}
+      ref={rootRef}
+      onMouseDownCapture={onPressCapture}
       onFocus={() => { engaged.current = true }}
       onBlur={(e) => { const to = e.relatedTarget as HTMLElement | null; if (to && !e.currentTarget.contains(to) && !to.closest("[role=menu], [role=listbox]")) engaged.current = false }}
       className={cn("flex min-h-0 flex-col overflow-hidden bg-surface", !inWorkspace && "rounded-sm border border-line", className)}>
@@ -1375,6 +1597,7 @@ export function SheetGrid({
           aria-rowcount={lines.length + headerRows + (hasTotals ? 1 : 0)}
           aria-colcount={visible.length + 1}
           onKeyDown={onKey}
+          onKeyDownCapture={onKeyCapture}
           style={{ "--tw": `${tableWidth}px` } as React.CSSProperties}
           className="w-(--tw) min-w-full table-fixed border-separate border-spacing-0 text-base"
         >
@@ -1432,7 +1655,7 @@ export function SheetGrid({
                             type="button"
                             data-cell={`${top}:${i}`}
                             data-col={c.id}
-                            tabIndex={here && editing === null ? 0 : -1}
+                            tabIndex={here && edit === null ? 0 : -1}
                             aria-haspopup="menu"
                             onMouseDown={() => { setPos({ r: top, c: i }); setExt({ r: top, c: i }) }}
                             onKeyDown={(e) => { if (e.key.startsWith("Arrow") && !e.altKey) e.preventDefault() }}
@@ -1572,8 +1795,9 @@ export function SheetGrid({
                   cellCls={cellCls}
                   dense={dense}
                   activeC={active ? pos.c : -1}
-                  editing={active ? editing : null}
-                  error={active ? error : ""}
+                  editC={edit && edit.rowId === row.id ? bodyCols.findIndex((c) => c.id === edit.colId) : -1}
+                  editing={edit && edit.rowId === row.id ? editing : null}
+                  error={edit && edit.rowId === row.id ? error : ""}
                   selC1={multi ? range.c1 : -1}
                   selC2={multi ? range.c2 : -1}
                   rejected={rejected}
@@ -1618,7 +1842,7 @@ export function SheetGrid({
             <span className="mx-1 h-4 w-px bg-line" aria-hidden="true" />
           </>
         )}
-        <p aria-live="polite" className={cn("min-w-0 flex-1 truncate text-sm", tone === "bad" || error ? "text-bad" : "text-ink-3")}>
+        <p id={statusId} aria-live="polite" className={cn("min-w-0 flex-1 truncate text-sm", tone === "bad" || error ? "text-bad" : "text-ink-3")}>
           {status || `Arrow keys move, Shift+arrows select. Enter edits; Enter again saves and moves down. ${M}C copies, ${M}V pastes, ${M}Z undoes.`}
         </p>
         {rangeStats && <span className="tabular shrink-0 text-sm text-ink-2">{rangeStats}</span>}

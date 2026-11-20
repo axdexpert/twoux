@@ -48,6 +48,7 @@ import { useMeta } from "./components/meta";
 import { StackMarkIcon } from "./components/stack-marks";
 import { HowBuilt } from "./pages/HowBuilt";
 import { Licence } from "./pages/Licence";
+import { Privacy } from "./pages/Privacy";
 import { SectionIndex } from "./pages/SectionIndex";
 import { AgentsExample } from "./pages/examples/Agents";
 import { CrmExample } from "./pages/examples/Crm";
@@ -702,6 +703,7 @@ function DocsApp() {
 						<Route path="/for-agents" element={<ForAgents />} />
 						<Route path="/how-its-built" element={<HowBuilt />} />
 						<Route path="/licence" element={<Licence />} />
+						<Route path="/privacy" element={<Privacy />} />
 						<Route path="/examples" element={<ExampleApps />} />
 					</Routes>
 					<PrevNext />

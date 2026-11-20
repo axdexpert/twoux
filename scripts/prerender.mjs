@@ -19,7 +19,7 @@ const path = (d) => `/${d.kind === "foundation" ? "foundation" : d.kind === "pat
 const exampleApps = [...readFileSync(join(root, "apps/docs/src/content.ts"), "utf8").matchAll(/\bto: "(\/example[^"#]*)"/g)].map((m) => m[1]);
 // "/" is not prerendered: .htaccess sends it to /docs/, and dist/index.html stays the bare shell for unknown addresses.
 // Addresses end in a slash: each page is a folder, and the host redirects /docs to /docs/, so canonical URLs match.
-const routes = [...new Set(["/docs", "/get-started", "/components", "/foundation", "/patterns", "/for-agents", "/how-its-built", "/licence", "/examples", ...exampleApps, ...docs.filter((d) => d.id !== "chart-colours").map(path)])];
+const routes = [...new Set(["/docs", "/get-started", "/components", "/foundation", "/patterns", "/for-agents", "/how-its-built", "/licence", "/privacy", "/examples", ...exampleApps, ...docs.filter((d) => d.id !== "chart-colours").map(path)])];
 
 const shell = readFileSync(join(dist, "index.html"));
 const TYPES = { ".js": "text/javascript", ".css": "text/css", ".svg": "image/svg+xml", ".png": "image/png", ".txt": "text/plain", ".md": "text/markdown", ".json": "application/json", ".woff2": "font/woff2" };

@@ -169,13 +169,15 @@ export function SidebarItem({ icon, label, count, tag, current = false, href, on
 
 /* ---------------------------------------------------------------- page header */
 
-export function PageHeader({ title, titleAddon, description, actions, tabs, className }: { title: string; /** After the title: an InfoLink or a FeatureLabel */ titleAddon?: React.ReactNode; description?: string; actions?: React.ReactNode; tabs?: React.ReactNode; className?: string }) {
+export function PageHeader({ title, titleAddon, description, actions, tabs, focusOnMount, className }: { title: string; /** After the title: an InfoLink or a FeatureLabel */ titleAddon?: React.ReactNode; description?: string; actions?: React.ReactNode; tabs?: React.ReactNode; /** Move focus to the title when the page appears after an in-app navigation (a finished flow, a view swap), so keyboard and screen reader users start at the top of the new page. */ focusOnMount?: boolean; className?: string }) {
+  const heading = React.useRef<HTMLHeadingElement>(null)
+  React.useEffect(() => { if (focusOnMount) heading.current?.focus({ preventScroll: true }) }, [])
   // Region spacing tokens: 24px sides and 20px top on an inset canvas, 12px and 8px in a workspace.
   return (
     <header data-slot="page-header" className={cn("grid gap-3 px-page pt-page-top", !tabs && "pb-group", className)}>
       <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
         <div className="grid min-w-0 gap-0.5">
-          <div className="flex flex-wrap items-center gap-x-2"><h1 className="text-xl font-semibold text-ink">{title}</h1>{titleAddon}</div>
+          <div className="flex flex-wrap items-center gap-x-2"><h1 ref={heading} tabIndex={focusOnMount ? -1 : undefined} className="rounded-xs text-xl font-semibold text-ink outline-none focus-visible:ring-2 focus-visible:ring-ring/50">{title}</h1>{titleAddon}</div>
           {description && <p className="text-base text-ink-2">{description}</p>}
         </div>
         {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
@@ -269,19 +271,41 @@ export function SidePanel({
   )
 
   // Esc closes and focus returns to whatever opened the panel (the row), for push mode too.
+  // The opener is recorded when the panel opens and refocused when it closes (or unmounts while focus was in it),
+  // never on a re-render: an app passing a new onOpenChange each render must not move focus.
   const opener = React.useRef<HTMLElement | null>(null)
+  const wasOpen = React.useRef(false)
+  const close = React.useRef(onOpenChange)
+  close.current = onOpenChange
+  const giveBack = () => {
+    const el = opener.current
+    const a = document.activeElement
+    if (el?.isConnected && el.getClientRects().length && (!a || a === document.body)) el.focus({ preventScroll: true })
+  }
   React.useEffect(() => {
-    if (!open) { opener.current?.focus?.(); return }
-    opener.current = document.activeElement as HTMLElement | null
-    if (mode !== "push") return
+    if (open && !wasOpen.current) {
+      const a = document.activeElement
+      opener.current = a instanceof HTMLElement && a !== document.body ? a : null
+    }
+    if (!open && wasOpen.current) requestAnimationFrame(giveBack)
+    wasOpen.current = open
+  }, [open])
+  React.useEffect(() => () => { if (wasOpen.current) requestAnimationFrame(giveBack) }, [])
+  React.useEffect(() => {
+    if (!open || mode !== "push") return
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape" || e.defaultPrevented) return
       if ((e.target as HTMLElement | null)?.closest("[role=dialog], [role=alertdialog], [role=menu], [role=listbox]")) return
-      onOpenChange(false)
+      // Focus inside the panel moves out first, so the opener can take it back.
+      const panel = (e.target as HTMLElement | null)?.closest("[data-slot=side-panel], [data-slot=push-panel]")
+      // Esc in a text field elsewhere on the page belongs to that field, not to the panel.
+      if (!panel && (e.target as HTMLElement | null)?.closest?.("input:not([type=checkbox]):not([type=radio]), textarea, select, [contenteditable=true], [role=combobox]")) return
+      if (panel) (document.activeElement as HTMLElement | null)?.blur()
+      close.current(false)
     }
     document.addEventListener("keydown", onKey)
     return () => document.removeEventListener("keydown", onKey)
-  }, [open, mode, onOpenChange])
+  }, [open, mode])
 
   if (mode === "overlay")
     return (

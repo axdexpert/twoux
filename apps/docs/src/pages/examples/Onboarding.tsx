@@ -155,7 +155,7 @@ function StepProfile({ profile, setProfile, onPhoto, onNext }: { profile: Profil
 		const e = { first: profile.first.trim() ? undefined : "Enter your first name.", last: profile.last.trim() ? undefined : "Enter your last name." };
 		setErrors(e);
 		const bad = e.first ? "profile-first" : e.last ? "profile-last" : undefined;
-		if (bad) { requestAnimationFrame(() => document.getElementById(bad)?.focus()); return; }
+		if (bad) return;
 		onNext();
 	};
 	return (
@@ -226,7 +226,11 @@ function StepConnect({ connectors, onConnected, onBack, onNext }: { connectors: 
 		<>
 			<OnboardingStep step={3} total={TOTAL} title="Connect your tools" description="Agents can only use the services you connect. You can add more later." onBack={onBack} onContinue={onNext} aside={<ConnectorAside c={current} />}>
 				<div className="max-h-80 overflow-y-auto pr-1" onMouseOver={pick} onFocus={pick}>
-					<ConnectorPicker connectors={connectors} onConnect={(c) => { setSel(c.id); setDlg(c); setOpen(true); }} />
+					<ConnectorPicker
+						connectors={connectors}
+						onConnect={(c) => { setSel(c.id); setDlg(c); setOpen(true); }}
+						onManage={(c) => { setSel(c.id); toast(`Manage ${PROVIDERS[c.provider].label} later in Settings, Connections.`, { description: "What it lets TwoUX do is shown beside the list." }); }}
+					/>
 				</div>
 			</OnboardingStep>
 			<ConnectDialog product="TwoUX"
@@ -250,14 +254,15 @@ function StepInvite({ invites, setInvites, onBack, onNext }: { invites: Invite[]
 	const [email, setEmail] = useState("");
 	const [role, setRole] = useState("Member");
 	const [error, setError] = useState("");
+	const fail = (msg: string) => setError(msg);
 	/** Returns the new list when the field is valid, otherwise shows the error and returns undefined. */
 	const add = (): Invite[] | undefined => {
 		const parts = email.split(/[,;\s]+/).filter(Boolean);
-		if (!parts.length) { setError("Enter an email address, for example priya@twoux.example."); return; }
+		if (!parts.length) { fail("Enter an email address, for example priya@twoux.example."); return; }
 		const bad = parts.filter((p) => !EMAIL.test(p));
-		if (bad.length) { setError(`${bad.join(", ")} ${bad.length === 1 ? "isn't" : "aren't"} a valid email address. Check for a missing @ or domain.`); return; }
+		if (bad.length) { fail(`${bad.join(", ")} ${bad.length === 1 ? "isn't" : "aren't"} a valid email address. Check for a missing @ or domain.`); return; }
 		const fresh = parts.filter((p, i) => parts.indexOf(p) === i && !invites.some((x) => x.email.toLowerCase() === p.toLowerCase()));
-		if (!fresh.length) { setError("That person is already on the list."); return; }
+		if (!fresh.length) { fail("That person is already on the list."); return; }
 		const next = [...invites, ...fresh.map((p) => ({ email: p, role }))];
 		setInvites(next);
 		setEmail("");
@@ -287,7 +292,7 @@ function StepInvite({ invites, setInvites, onBack, onNext }: { invites: Invite[]
 							<SelectContent><SelectItem value="Admin">Admin</SelectItem><SelectItem value="Member">Member</SelectItem></SelectContent>
 						</Select>
 					</Field>
-					<Button variant="outline" className="mt-6" onClick={add}><Plus />Add</Button>
+					<Button type="button" variant="outline" className="mt-6" onClick={add}><Plus />Add</Button>
 				</div>
 				{n > 0 && (
 					<ul aria-label="People to invite" className="divide-y divide-line rounded-sm border border-line">
@@ -299,7 +304,7 @@ function StepInvite({ invites, setInvites, onBack, onNext }: { invites: Invite[]
 									<SelectTrigger aria-label={`Role for ${p.email}`} className="w-28"><SelectValue /></SelectTrigger>
 									<SelectContent><SelectItem value="Admin">Admin</SelectItem><SelectItem value="Member">Member</SelectItem></SelectContent>
 								</Select>
-								<Button variant="ghost" size="icon-sm" aria-label={`Remove ${p.email}`} onClick={() => setInvites(invites.filter((_, j) => j !== i))}><X /></Button>
+								<Button type="button" variant="ghost" size="icon-sm" aria-label={`Remove ${p.email}`} onClick={() => setInvites(invites.filter((_, j) => j !== i))}><X /></Button>
 							</li>
 						))}
 					</ul>
@@ -605,7 +610,8 @@ function WorkspaceHome({ profile, useCase, connectors, invites, onStep, onRestar
 			<ExampleShell className="h-example-frame" sidebar={sidebar} topBar={topBar} panel={sidePanel}>
 				{view === "home" ? (
 					<>
-						<PageHeader title={`Good morning, ${profile.first}`} actions={<Button variant="outline" size="sm" onClick={() => setGallery(true)}>Browse templates</Button>} />
+						{/* Arriving from setup ("Go to TwoUX") starts at the page heading, as a new page would. */}
+						<PageHeader focusOnMount title={`Good morning, ${profile.first}`} actions={<Button variant="outline" size="sm" onClick={() => setGallery(true)}>Browse templates</Button>} />
 						<div className="grid max-w-3xl gap-6 px-6 pb-8 max-md:px-4">
 							<MessageComposer noun={{ one: "file", many: "files" }} placeholder="Ask or start an agent" onSend={(t) => toast.success("Draft agent created", { description: `“${t}” is ready to review. It does not run until you approve it.` })} />
 							{!hideTemplates && (

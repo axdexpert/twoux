@@ -1,13 +1,13 @@
 # Third-party notices
 
-TwoUX is copyright (c) 2026 Giulia Pizzignacco and licensed under the TwoUX Licence (LICENSE.md). It includes, adapts or is generated from the open-source work below. Each keeps its own licence, and nothing in the TwoUX Licence limits the rights those licences give you.
+TwoUX is copyright (c) 2026 Dinosaurjoy Unipessoal, Lda. and licensed under the TwoUX Licence (LICENSE.md). It includes, adapts or is generated from the open-source work below. Each keeps its own licence, and nothing in the TwoUX Licence limits the rights those licences give you.
 
 ## Included or adapted in TwoUX's own files
 
 | Work | Licence | Used for |
 |---|---|---|
 | shadcn/ui, copyright (c) 2023 shadcn | MIT | Component source that TwoUX components are generated from and modify (see packages/ui/SHADCN-DIFF.md) |
-| Impeccable, copyright 2025 Paul Bakaus | Apache 2.0 | Craft checks in the twoux-design skill, adapted and rewritten by Giulia Pizzignacco |
+| Impeccable, copyright 2025 Paul Bakaus | Apache 2.0 | Craft checks in the twoux-design skill, adapted and rewritten by Dinosaurjoy Unipessoal, Lda. |
 | board-components (Cloudscape), copyright Amazon.com, Inc. or its affiliates | Apache 2.0 | Board layout behaviour that the board component follows |
 | SVG Logos by Gil Barbara, via Iconify | CC0 1.0 | Most service marks in provider-logos.data.ts |
 | vscode-icons, copyright the vscode-icons contributors, via Iconify | MIT | Microsoft Excel, Word and Outlook marks |

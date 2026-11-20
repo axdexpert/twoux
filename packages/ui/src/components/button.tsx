@@ -14,13 +14,13 @@
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "../lib/cn"
-import { useShortcut } from "../lib/shortcuts"
+import { useShortcut, useShortcutsEnabled } from "../lib/shortcuts"
 import { Slot } from "radix-ui"
 import { Kbd } from "./kbd"
 import { Spinner } from "./spinner"
 
 const buttonVariants = cva(
-  "inline-flex shrink-0 items-center justify-center gap-2 rounded-(--radius-button) text-base font-medium whitespace-nowrap transition-all outline-none active:scale-98 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:not-focus-visible:border-destructive-edge [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3.5",
+  "inline-flex shrink-0 items-center justify-center gap-2 rounded-(--radius-button) text-base font-medium whitespace-nowrap transition-all outline-none active:scale-98 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 data-[disabled]:opacity-50 aria-invalid:not-focus-visible:border-destructive-edge [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3.5",
   {
     variants: {
       variant: {
@@ -64,6 +64,9 @@ function Button({
   children,
   onClick,
   ref,
+  disabled,
+  onFocus,
+  onBlur,
   ...props
 }: React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
@@ -76,7 +79,15 @@ function Button({
   const Comp = asChild ? Slot.Root : "button"
   const iconOnly = String(size).startsWith("icon")
   const own = React.useRef<HTMLButtonElement>(null)
-  useShortcut(shortcut, own, loading || !!props.disabled)
+  // A button that becomes disabled while it has focus (Next on the last record) keeps focus: it is marked
+  // aria-disabled and ignores presses until focus leaves, instead of dropping focus to the page.
+  const [focused, setFocused] = React.useState(false)
+  const soft = !!disabled && focused && !asChild
+  const off = loading || !!disabled
+  useShortcut(shortcut, own, off)
+  // A single-key hint is hidden while single keys are off: it would promise a key that does nothing.
+  const singleOn = useShortcutsEnabled()
+  const showKey = !!shortcut && (singleOn || /[⌘⌥]/.test(shortcut))
   const setRef = (el: HTMLButtonElement | null) => {
     own.current = el
     if (typeof ref === "function") ref(el)
@@ -91,15 +102,19 @@ function Button({
       data-size={size}
       className={cn(buttonVariants({ variant, size, className }))}
       aria-busy={loading || undefined}
-      aria-disabled={loading || undefined}
-      onClick={(e: React.MouseEvent<HTMLButtonElement>) => (loading ? e.preventDefault() : onClick?.(e))}
+      aria-disabled={loading || soft || undefined}
+      data-disabled={soft || undefined}
+      disabled={disabled && !soft}
+      onClick={(e: React.MouseEvent<HTMLButtonElement>) => (off ? e.preventDefault() : onClick?.(e))}
+      onFocus={(e: React.FocusEvent<HTMLButtonElement>) => { setFocused(true); onFocus?.(e) }}
+      onBlur={(e: React.FocusEvent<HTMLButtonElement>) => { setFocused(false); onBlur?.(e) }}
       {...props}
     >
       {asChild ? children : (
         <>
           {loading && <Spinner />}
           {children}
-          {shortcut && !iconOnly && size !== "xs" && <Kbd className="-mr-1">{shortcut}</Kbd>}
+          {showKey && !iconOnly && size !== "xs" && <Kbd className="-mr-1">{shortcut}</Kbd>}
         </>
       )}
     </Comp>

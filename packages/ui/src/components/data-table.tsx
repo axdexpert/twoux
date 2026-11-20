@@ -9,6 +9,7 @@
 import { ArrowUp, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react"
 import * as React from "react"
 import { cn } from "../lib/cn"
+import { useShortcutsEnabled } from "../lib/shortcuts"
 import { Button } from "./button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuShortcut, DropdownMenuTrigger } from "./dropdown-menu"
 import { TableHead } from "./table"
@@ -171,16 +172,33 @@ export function BulkActionBar({
     return () => ro.disconnect()
   }, [count, actions.length, actions.map((a) => a.label).join("|"), btn])
 
+  // Toolbar pattern: one Tab stop (the last button used), arrows, Home and End move between buttons.
+  const active = React.useRef(0)
+  const items = () => Array.from(ref.current?.querySelectorAll<HTMLButtonElement>("button:not(:disabled):not([data-overflow])") ?? [])
+  React.useLayoutEffect(() => {
+    const list = items()
+    if (!list.length) return
+    const k = Math.min(active.current, list.length - 1)
+    list.forEach((b, i) => b.setAttribute("tabindex", i === k ? "0" : "-1"))
+  })
+
   if (!count) return null
 
-  // Toolbar pattern: one Tab stop, arrows move between buttons
   const onKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return
-    const items = Array.from(ref.current?.querySelectorAll<HTMLButtonElement>("button:not(:disabled):not([data-overflow])") ?? [])
-    const i = items.indexOf(document.activeElement as HTMLButtonElement)
+    const list = items()
+    const i = list.indexOf(document.activeElement as HTMLButtonElement)
     if (i < 0) return
+    const to = e.key === "ArrowRight" ? (i + 1) % list.length : e.key === "ArrowLeft" ? (i - 1 + list.length) % list.length : e.key === "Home" ? 0 : e.key === "End" ? list.length - 1 : -1
+    if (to < 0) return
     e.preventDefault()
-    items[(i + (e.key === "ArrowRight" ? 1 : -1) + items.length) % items.length]?.focus()
+    list[to]?.focus()
+  }
+  const onFocus = (e: React.FocusEvent) => {
+    const list = items()
+    const i = list.indexOf(e.target as HTMLButtonElement)
+    if (i < 0) return
+    active.current = i
+    list.forEach((b, j) => b.setAttribute("tabindex", j === i ? "0" : "-1"))
   }
 
   const n = count.toLocaleString("en-GB")
@@ -198,6 +216,7 @@ export function BulkActionBar({
       data-slot="bulk-action-bar"
       data-size={size}
       onKeyDown={onKeyDown}
+      onFocus={onFocus}
       className={cn(
         "@container/bulk flex h-10 animate-fade-in items-center gap-3 border-b border-line bg-surface-2 px-3 data-[size=dense]:h-8 data-[size=dense]:px-2",
         className
@@ -276,7 +295,7 @@ export function useRowKeyboard({
   onOpen,
   onClear,
   selected = 0,
-  enabled = true,
+  enabled: enabledProp,
 }: {
   count: number
   /** value is true when extending a selection with ⇧J / ⇧K */
@@ -285,9 +304,11 @@ export function useRowKeyboard({
   onClear?: () => void
   /** How many rows are selected. Esc clears them only when there are some, so otherwise it reaches the side panel or dialog. */
   selected?: number
-  /** Single-key shortcuts can be turned off in settings. */
+  /** Single-key shortcuts can be turned off in settings. Defaults to ShortcutsProvider's setting. */
   enabled?: boolean
 }) {
+  const singleOn = useShortcutsEnabled()
+  const enabled = enabledProp ?? singleOn
   const [focused, setFocused] = React.useState(-1)
   const ref = React.useRef<HTMLTableSectionElement>(null)
 
@@ -300,8 +321,12 @@ export function useRowKeyboard({
   }, [focused])
 
   const onKeyDown = (e: React.KeyboardEvent) => {
-    if (!enabled || e.metaKey || e.ctrlKey || e.altKey) return
-    if ((e.target as HTMLElement).closest("input:not([type=checkbox]), textarea, [contenteditable=true]")) return
+    if (!enabled || e.defaultPrevented || e.metaKey || e.ctrlKey || e.altKey) return
+    // Keys from a portaled menu bubble here through React's tree; they belong to the menu.
+    if (!e.currentTarget.contains(e.target as Node)) return
+    if ((e.target as HTMLElement).closest("input:not([type=checkbox]), textarea, [contenteditable=true], [role=menu], [role=listbox]")) return
+    // Enter, Space and X on a control inside a row (a menu button, a link, a checkbox) are that control's.
+    if (e.target !== e.currentTarget && (e.target as HTMLElement).closest("button, a[href], [role=menuitem], [role=checkbox], input") && ["Enter", " ", "x", "X"].includes(e.key)) return
     const key = e.key.toLowerCase()
     const move = (d: number) => setFocused((f) => Math.max(0, Math.min(count - 1, (f < 0 ? (d > 0 ? -1 : count) : f) + d)))
     if ((key === "j" && !e.shiftKey) || e.key === "ArrowDown") move(1)
@@ -323,7 +348,8 @@ export function useRowKeyboard({
     focused,
     setFocused,
     /** Spread on TableBody */
-    bodyProps: { ref, tabIndex: 0, onKeyDown },
+    // The table body takes focus back when a row control or the bulk bar it was on goes away (focus-keeper).
+    bodyProps: { ref, tabIndex: 0, onKeyDown, "data-focus-fallback": "" },
     /** Spread on each TableRow */
     rowProps: (index: number) => ({
       "data-row-index": index,

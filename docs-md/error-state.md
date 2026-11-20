@@ -58,9 +58,9 @@ Kind: component · Group: Feedback and overlays · Status: built, import from @t
 ### table
 
 ```tsx
-import { Button, Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle, Skeleton } from "@twoux/ui";
+import { Button, Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle, Skeleton, useHotkey } from "@twoux/ui";
 import { CircleAlert } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 
 export const meta = { title: "Table failed to load", description: "Only the table is replaced; the header stays. Try again (or R) swaps back to the skeleton, then to the data or the error. Technical details stay folded away.", order: 1 };
 
@@ -73,14 +73,7 @@ export default function Example() {
 	}, []);
 
 	// R retries while focus is inside this region and not in a text field
-	useEffect(() => {
-		const el = ref.current;
-		const onKey = (e: KeyboardEvent) => {
-			if (e.key.toLowerCase() === "r" && !e.metaKey && !e.ctrlKey && !loading && !(e.target as HTMLElement).closest("input, textarea")) retry();
-		};
-		el?.addEventListener("keydown", onKey);
-		return () => el?.removeEventListener("keydown", onKey);
-	}, [loading, retry]);
+	useHotkey("R", retry, { when: !loading, within: ref });
 
 	return (
 		<div ref={ref} className="grid w-full max-w-xl gap-2">

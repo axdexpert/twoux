@@ -233,4 +233,7 @@
   --xy-attribution-background-color: transparent;
 }
 .react-flow__node:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; border-radius: var(--radius-sm); }
+/* A connection has no box to outline: a focused one draws in the focus colour, thicker. */
+.react-flow__edge:focus-visible { outline: none; }
+.react-flow__edge:focus-visible .react-flow__edge-path { stroke: var(--color-focus); stroke-width: 3px; }
 .react-flow__attribution a { color: var(--color-ink-3); }

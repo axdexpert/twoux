@@ -72,6 +72,7 @@ import {
 	ThinkingSteps,
 	UserMessage,
 	toast,
+	useHotkey,
 	type RunStep,
 } from "@twoux/ui";
 import {
@@ -199,25 +200,9 @@ export function AgentsExample() {
 		toast.success("Session restarted from the first step");
 	};
 
-	// Keyboard: Esc stops, ⌘⇧F toggles focus mode. Esc is caught first so the panel's own Esc does not also close it.
-	const latest = useRef({ phase, requestStop });
-	latest.current = { phase, requestStop };
-	useEffect(() => {
-		const onKey = (e: KeyboardEvent) => {
-			if (e.key === "Escape") {
-				if ((e.target as HTMLElement | null)?.closest("[role=dialog], [role=alertdialog], [role=menu], [role=listbox]")) return;
-				if (latest.current.phase !== "working") return;
-				e.preventDefault();
-				latest.current.requestStop();
-			}
-			if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key.toLowerCase() === "f") {
-				e.preventDefault();
-				setFocus((f) => !f);
-			}
-		};
-		document.addEventListener("keydown", onKey, true);
-		return () => document.removeEventListener("keydown", onKey, true);
-	}, []);
+	// Keyboard: Esc stops a running agent (before the panel's own Esc closes it), ⌘⇧F toggles focus mode.
+	useHotkey("Esc", requestStop, { when: phase === "working" && planApproved });
+	useHotkey("⌘⇧F", () => setFocus((f) => !f));
 
 	const sessions = useMemo(
 		() =>
@@ -717,7 +702,7 @@ export function AgentsExample() {
 				{expanded ? expandedView : centre}
 			</ExampleShell>
 
-			<ShortcutSheet groups={SHORTCUTS} singleKeys onSingleKeysChange={() => {}} />
+			<ShortcutSheet groups={SHORTCUTS} />
 
 			<CommandDialog open={palette} onOpenChange={setPalette} title="Search sessions" description="Find a session by its title">
 				<CommandInput placeholder="Search sessions" />

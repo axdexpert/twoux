@@ -348,6 +348,7 @@ export function SiteFooter() {
 				<p>© 2026 TwoUX</p>
 				<ul className="flex flex-wrap items-center gap-x-5 gap-y-2">
 					<li><Link to="/licence" className={link}>Licence</Link></li>
+					<li><Link to="/privacy" className={link}>Privacy</Link></li>
 					<li><a href="https://github.com/axdexpert/twoux" target="_blank" rel="noreferrer" className={link}>GitHub<span className="sr-only"> (opens in a new tab)</span></a></li>
 					<li><a href="mailto:hi@axdexpert.ai" className={link}>Get in touch</a></li>
 				</ul>

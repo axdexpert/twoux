@@ -146,8 +146,10 @@ export function MessageComposer({
   const [text, setText] = React.useState("")
   const [mode, setMode] = React.useState<"quick" | "thorough">("quick")
   const [hi, setHi] = React.useState(0)
+  // Esc closes the suggestions only (not the panel); typing again brings them back.
+  const [dismissed, setDismissed] = React.useState(false)
   const trigger = /(^|\s)([@/])(\w*)$/.exec(text)
-  const list = trigger ? (trigger[2] === "@" ? mentions.map((m) => m.label) : tasks).filter((x) => x.toLowerCase().includes(trigger[3].toLowerCase())).slice(0, 6) : []
+  const list = trigger && !dismissed ? (trigger[2] === "@" ? mentions.map((m) => m.label) : tasks).filter((x) => x.toLowerCase().includes(trigger[3].toLowerCase())).slice(0, 6) : []
   const accept = (v: string) => { setText((t) => t.replace(/(^|\s)[@/]\w*$/, `$1${trigger?.[2] === "@" ? "@" : "/"}${v} `)); setHi(0) }
   const send = () => { if (!text.trim() || busy) return; onSend(text.trim(), mode); setText("") }
   const listId = React.useId()
@@ -166,16 +168,19 @@ export function MessageComposer({
       <div className="relative">
         <Textarea
           value={text}
-          onChange={(e) => { setText(e.target.value); setHi(0) }}
+          onChange={(e) => { setText(e.target.value); setHi(0); setDismissed(false) }}
           placeholder={placeholder}
           aria-label="Message the assistant"
+          // Where focus goes when the control that had it in this thread or panel goes away (focus-keeper).
+          data-focus-fallback=""
           role="combobox"
           aria-expanded={list.length > 0}
           aria-controls={listId}
           aria-activedescendant={list.length ? `${listId}-${hi}` : undefined}
           onKeyDown={(e) => {
             if (list.length && (e.key === "ArrowDown" || e.key === "ArrowUp")) { e.preventDefault(); setHi((h) => (h + (e.key === "ArrowDown" ? 1 : -1) + list.length) % list.length); return }
-            if (list.length && (e.key === "Enter" || e.key === "Tab")) { e.preventDefault(); accept(list[hi]); return }
+            if (list.length && e.key === "Escape") { e.preventDefault(); e.stopPropagation(); setDismissed(true); return }
+            if (list.length && (e.key === "Tab" || (e.key === "Enter" && !e.shiftKey))) { e.preventDefault(); accept(list[hi]); return }
             if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send() }
           }}
           className="min-h-10 resize-none border-0 bg-transparent p-1 shadow-none focus-visible:ring-0"

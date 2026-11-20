@@ -111,8 +111,18 @@ export function FilterPill({
           </PopoverTrigger>
         )}
       </div>
-      <PopoverContent align="start" className="w-64 p-0">
-        <Command>
+      {/* Without a search box, focus goes to the list itself, so arrows and Enter reach it (not the popover frame). */}
+      <PopoverContent
+        align="start"
+        className="w-64 p-0"
+        onOpenAutoFocus={(e) => {
+          const root = (e.currentTarget as HTMLElement).querySelector<HTMLElement>("[cmdk-input], [cmdk-root]")
+          if (!root) return
+          e.preventDefault()
+          root.focus()
+        }}
+      >
+        <Command tabIndex={-1} className="outline-none">
           {(searchable ?? options.length > 7) && <CommandInput placeholder={`Search ${field.toLowerCase()}`} />}
           <CommandList>
             <CommandEmpty>No matches</CommandEmpty>

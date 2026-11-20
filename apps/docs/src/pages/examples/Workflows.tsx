@@ -64,7 +64,7 @@ import {
 	SelectValue,
 	ShimmerText,
 	ShortcutSheet,
-	ShortcutsProvider,
+	useHotkey,
 	SidePanel,
 	SidebarItem,
 	SidebarSection,
@@ -451,7 +451,8 @@ function useEditor({ wf, onBack, onSave }: { wf: Workflow; onBack: (flow: Flow) 
 		}
 		setDraft(next);
 		setSavedAt(new Date());
-		if (change && undoable && change.type !== "move") toast(change.text, { action: { label: "Undo", onClick: undo } });
+		// One toast id: a newer change replaces the older toast, so Undo always undoes what its toast says.
+		if (change && undoable && change.type !== "move") toast(change.text, { id: "wf-change", action: { label: "Undo", onClick: undo } });
 	};
 	const restore = (to: Flow) => {
 		committed.current = to;
@@ -481,24 +482,15 @@ function useEditor({ wf, onBack, onSave }: { wf: Workflow; onBack: (flow: Flow) 
 		setSavedAt(new Date());
 	};
 
-	// ⌘Z and ⌘⇧Z, outside text fields.
-	useEffect(() => {
-		const onKey = (e: KeyboardEvent) => {
-			if (!(e.metaKey || e.ctrlKey) || e.key.toLowerCase() !== "z") return;
-			if ((e.target as HTMLElement).closest("input, textarea, [contenteditable=true]")) return;
-			e.preventDefault();
-			if (e.shiftKey) redo();
-			else undo();
-		};
-		document.addEventListener("keydown", onKey);
-		return () => document.removeEventListener("keydown", onKey);
-	});
+	// ⌘Z and ⌘⇧Z, outside text fields (those keep their own undo) and never behind a dialog or menu.
+	useHotkey("⌘Z", undo);
+	useHotkey("⌘⇧Z", redo);
 
 	const shown = useMemo<FlowValue>(() => ({ links: draft.links, steps: draft.steps.map((s) => (run.states[s.id] ? { ...s, run: run.states[s.id] } : s)) }), [draft, run.states]);
 	const onFlowChange = (next: FlowValue, change?: FlowChange) => commit({ ...strip(next), direction: draft.direction }, change);
 	const arrange = (d: FlowDirection, text: string) => {
 		commit({ ...layoutFlow(draft, d), direction: d }, { type: "move", text });
-		toast(text, { action: { label: "Undo", onClick: undo } });
+		toast(text, { id: "wf-change", action: { label: "Undo", onClick: undo } });
 	};
 
 	const addStep = (typeId: StepTypeId) => {
@@ -784,7 +776,6 @@ export function WorkflowsExample() {
 	const [rows, setRows] = useState<Workflow[]>(WORKFLOWS);
 	const [openId, setOpenId] = useState<string | null>("WF-201");
 	const [creating, setCreating] = useState(false);
-	const [singleKeys, setSingleKeys] = useState(true);
 	const open = rows.find((r) => r.id === openId);
 
 	const set = (id: string, patch: Partial<Workflow>) => setRows((rs) => rs.map((r) => (r.id === id ? { ...r, ...patch } : r)));
@@ -828,7 +819,7 @@ export function WorkflowsExample() {
 	);
 
 	return (
-		<ShortcutsProvider enabled={singleKeys}>
+		<>
 			<div className="h-full min-h-0">
 				{open ? (
 					<EditorScreen
@@ -857,8 +848,6 @@ export function WorkflowsExample() {
 				)}
 				<CreateDialog open={creating} onOpenChange={setCreating} onCreate={create} />
 				<ShortcutSheet
-					singleKeys={singleKeys}
-					onSingleKeysChange={setSingleKeys}
 					groups={[
 						{ title: "Workflows", items: [{ keys: ["C"], action: "Create workflow" }, { keys: ["?"], action: "Show keyboard shortcuts" }] },
 						{ title: "Editor", items: [{ keys: ["A"], action: "Add step" }, { keys: ["L"], action: "Show or hide the step list" }, { keys: ["T"], action: "Test run with a sample application" }, { keys: ["⌘", "↵"], action: "Publish" }, { keys: ["⌘", "J"], action: "Ask the assistant" }, { keys: ["⌘", "Z"], action: "Undo" }, { keys: ["⌘", "⇧", "Z"], action: "Redo" }] },
@@ -879,6 +868,6 @@ export function WorkflowsExample() {
 					]}
 				/>
 			</div>
-		</ShortcutsProvider>
+		</>
 	);
 }

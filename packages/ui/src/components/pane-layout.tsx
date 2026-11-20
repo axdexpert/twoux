@@ -5,6 +5,8 @@
  * and editors (see proposals/resizable-panels.md). Panes resize with splitters and move by dragging their grip.
  * Every drag has a keyboard path (splitter arrows, Home, End; grip Space, arrows, Space, Esc) and a menu path
  * (Move up, down, left, right; Wider, Narrower, Taller, Shorter), as WCAG 2.5.7 asks, and every change is announced.
+ * Dropping a pane on the left or right quarter of another, Shift with ← or → while it is picked up, or the menu's
+ * column items put it in a column of its own on that side; a pane alone in its column just swaps columns.
  * Splitters follow the WAI-ARIA window splitter pattern.
  * Any pane collapses to its header from its menu; a column of collapsed panes becomes a 36px strip that expands on click.
  * Below `stackBelow` pixels the panes stack in one column and the page scrolls instead.
@@ -71,6 +73,24 @@ function moveTo(l: PaneLayoutValue, id: string, c: number, i: number): PaneLayou
   return next.filter((col) => col.panes.length > 0)
 }
 
+/** Takes a pane out into a column of its own, left or right of column `nextTo`. A pane that was alone in its column
+    keeps that column (and its width), so moving it just changes the order of the columns. */
+function toColumn(l: PaneLayoutValue, id: string, nextTo: string, side: "left" | "right"): PaneLayoutValue {
+  const at = locate(l, id)
+  if (!at) return l
+  const next = clone(l)
+  const source = next[at.c]
+  const [pane] = source.panes.splice(at.i, 1)
+  const alone = source.panes.length === 0
+  if (alone && source.id === nextTo) return l
+  const rest = alone ? next.filter((c) => c !== source) : next
+  const t = rest.findIndex((c) => c.id === nextTo)
+  if (t < 0) return l
+  const col = alone ? { ...source, panes: [{ ...pane, size: 1 }] } : { id: `${id}-col`, size: rest.reduce((n, c) => n + c.size, 0) / rest.length, panes: [{ ...pane, size: 1 }] }
+  rest.splice(side === "left" ? t : t + 1, 0, col)
+  return rest
+}
+
 export function PaneLayout({
   value,
   onValueChange,
@@ -101,18 +121,21 @@ export function PaneLayout({
   }
 
   /* ---------- reorder ---------- */
-  const [drag, setDrag] = React.useState<{ id: string; over: string | null; after: boolean } | null>(null)
+  type Drop = "before" | "after" | "left" | "right"
+  const [drag, setDrag] = React.useState<{ id: string; over: string | null; at: Drop } | null>(null)
   const startDrag = (id: string, e: React.PointerEvent) => {
     if (e.button !== 0) return
     e.preventDefault()
-    let state = { id, over: null as string | null, after: false }
+    let state = { id, over: null as string | null, at: "before" as Drop }
     setDrag(state)
     announce(`Dragging ${title(id)}.`)
     const onMove = (ev: PointerEvent) => {
       const hit = document.elementsFromPoint(ev.clientX, ev.clientY).map((el) => (el as HTMLElement).closest<HTMLElement>("[data-pane-id]")).find((el) => el && el.dataset.paneId !== id)
       if (!hit) return
       const r = hit.getBoundingClientRect()
-      state = { id, over: hit.dataset.paneId ?? null, after: ev.clientY > r.top + r.height / 2 }
+      // The outer quarter of a pane on either side drops the pane as its own column there; the rest stacks it above or below.
+      const edge = stacked ? null : ev.clientX < r.left + r.width * 0.25 ? "left" : ev.clientX > r.right - r.width * 0.25 ? "right" : null
+      state = { id, over: hit.dataset.paneId ?? null, at: edge ?? (ev.clientY > r.top + r.height / 2 ? "after" : "before") }
       setDrag(state)
     }
     const onUp = () => {
@@ -123,8 +146,10 @@ export function PaneLayout({
       const to = locate(value, state.over)
       const from = locate(value, id)
       if (!to || !from) return
-      const i = to.i + (state.after ? 1 : 0) - (from.c === to.c && from.i < to.i ? 1 : 0)
-      const next = moveTo(value, id, to.c, i)
+      const next = state.at === "left" || state.at === "right"
+        ? toColumn(value, id, value[to.c].id, state.at)
+        : moveTo(value, id, to.c, to.i + (state.at === "after" ? 1 : 0) - (from.c === to.c && from.i < to.i ? 1 : 0))
+      if (next === value) return announce(`${title(id)} not moved.`)
       onValueChange(next)
       announce(`${title(id)} moved to ${where(next, id)}.`)
     }
@@ -141,11 +166,32 @@ export function PaneLayout({
     return moveTo(l, id, c, at.i)
   }
   const can = (id: string, dir: "up" | "down" | "left" | "right") => step(id, dir) !== value
-  const menuMove = (id: string, dir: "up" | "down" | "left" | "right") => {
-    const next = step(id, dir)
+  /** Own column on one side: a pane alone in its column swaps places with the neighbouring column; one sharing a column moves out beside it. */
+  const columnStep = (id: string, side: "left" | "right", l = value) => {
+    const at = locate(l, id)
+    if (!at) return l
+    if (l[at.c].panes.length > 1) return toColumn(l, id, l[at.c].id, side)
+    const n = l[at.c + (side === "left" ? -1 : 1)]
+    return n ? toColumn(l, id, n.id, side) : l
+  }
+  const alone = (id: string) => { const at = locate(value, id); return !!at && value[at.c].panes.length === 1 }
+  // After a layout change remounts a pane, put focus back on it (its menu button, or Expand on a collapsed strip).
+  const restore = React.useRef<string | null>(null)
+  React.useEffect(() => {
+    const id = restore.current
+    if (!id) return
+    restore.current = null
+    requestAnimationFrame(() => {
+      const s = rootRef.current?.querySelector(`[data-pane-id="${CSS.escape(id)}"]`)
+      s?.querySelector<HTMLElement>("[data-pane-menu], button[aria-label^='Expand']")?.focus()
+    })
+  }, [value, rootRef])
+  const apply = (id: string, next: PaneLayoutValue) => {
+    restore.current = id
     onValueChange(next)
     announce(`${title(id)} moved to ${where(next, id)}.`)
   }
+  const menuMove = (id: string, dir: "up" | "down" | "left" | "right") => apply(id, step(id, dir))
 
   // Keyboard pick-up on the grip: Space or Enter picks up and drops, arrows move, Esc puts it back.
   const [picked, setPicked] = React.useState<{ id: string; before: PaneLayoutValue } | null>(null)
@@ -157,10 +203,11 @@ export function PaneLayout({
       return
     }
     if (picked?.id !== id) return
-    const dir = ({ ArrowUp: "up", ArrowDown: "down", ArrowLeft: "left", ArrowRight: "right" } as const)[e.key as "ArrowUp"]
+    const dir = ({ ArrowUp: "up", ArrowDown: "down", ArrowLeft: "left", ArrowRight: "right" } as Record<string, "up" | "down" | "left" | "right">)[e.key]
     if (dir) {
       e.preventDefault()
-      const next = step(id, dir)
+      // Shift with ← or → moves the pane into a column of its own on that side (or swaps columns when it is alone).
+      const next = e.shiftKey && (dir === "left" || dir === "right") && !stacked ? columnStep(id, dir) : step(id, dir)
       if (next !== value) { onValueChange(next); announce(`${where(next, id)}.`) }
     } else if (e.key === "Escape") {
       e.preventDefault()
@@ -171,7 +218,14 @@ export function PaneLayout({
   }
   // Moving a pane remounts its grip; keep keyboard focus on it.
   const grips = React.useRef(new Map<string, HTMLButtonElement>())
-  React.useEffect(() => { if (picked) grips.current.get(picked.id)?.focus() }, [value, picked])
+  React.useEffect(() => {
+    const a = document.activeElement
+    if (picked && (!a || a === document.body)) grips.current.get(picked.id)?.focus()
+  }, [value, picked])
+  const gripBlur = (id: string, e: React.FocusEvent) => {
+    // Tabbing away drops the pane where it is; a remount (relatedTarget null) keeps it picked up.
+    if (picked?.id === id && e.relatedTarget) { setPicked(null); announce(`${title(id)} dropped at ${where(value, id)}.`) }
+  }
 
   /* ---------- resize ---------- */
   const colRefs = React.useRef<(HTMLDivElement | null)[]>([])
@@ -270,6 +324,7 @@ export function PaneLayout({
     if (!at) return
     const p = next[at.c].panes[at.i]
     p.collapsed = !p.collapsed
+    restore.current = id
     onValueChange(next)
     announce(`${title(id)} ${p.collapsed ? "collapsed" : "expanded"}.`)
   }
@@ -277,11 +332,12 @@ export function PaneLayout({
   const pane = (id: string, c: number, i: number) => {
     const def = panes[id]
     if (!def) return null
-    const dropLine = drag?.over === id
+    const dropLine = drag?.over === id ? drag.at : null
     const collapsed = !!value[c].panes[i].collapsed
     if (colCollapsed(c)) {
       return (
-        <section key={id} data-pane-id={id} aria-label={def.title} className="flex min-h-0 flex-1 flex-col items-center gap-2 bg-surface py-1">
+        <section key={id} data-pane-id={id} aria-label={def.title} className="relative flex min-h-0 flex-1 flex-col items-center gap-2 bg-surface py-1">
+          {dropLine && <DropLine at={dropLine} />}
           <Button variant="ghost" size="icon-xs" aria-label={`Expand ${def.title}`} aria-expanded={false} onClick={() => toggle(id)}><ChevronRight /></Button>
           <button type="button" tabIndex={-1} aria-hidden="true" onClick={() => toggle(id)} className="min-h-0 truncate text-sm font-medium text-ink-2 [writing-mode:vertical-rl] hover:text-ink">{def.title}</button>
         </section>
@@ -297,12 +353,13 @@ export function PaneLayout({
         stacked={stacked}
         size={value[c].panes[i].size}
         dragging={drag?.id === id || picked?.id === id}
-        drop={dropLine ? (drag?.after ? "after" : "before") : null}
+        drop={dropLine}
         gripRef={(el) => { if (el) grips.current.set(id, el); else grips.current.delete(id) }}
         onGripPointerDown={(e) => startDrag(id, e)}
         onGripKeyDown={(e) => gripKey(id, e)}
+        onGripBlur={(e) => gripBlur(id, e)}
         menu={
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent align="end" onCloseAutoFocus={(e) => { if (restore.current) e.preventDefault() }}>
             {def.menu && !collapsed && <>{def.menu}<DropdownMenuSeparator /></>}
             <DropdownMenuItem onSelect={() => toggle(id)}>{collapsed ? "Expand" : "Collapse"}</DropdownMenuItem>
             <DropdownMenuSeparator />
@@ -310,6 +367,8 @@ export function PaneLayout({
             <DropdownMenuItem disabled={!can(id, "down")} onSelect={() => menuMove(id, "down")}>Move down</DropdownMenuItem>
             {!stacked && <DropdownMenuItem disabled={!can(id, "left")} onSelect={() => menuMove(id, "left")}>Move left</DropdownMenuItem>}
             {!stacked && <DropdownMenuItem disabled={!can(id, "right")} onSelect={() => menuMove(id, "right")}>Move right</DropdownMenuItem>}
+            {!stacked && <DropdownMenuItem disabled={columnStep(id, "left") === value} onSelect={() => apply(id, columnStep(id, "left"))}>{alone(id) ? "Swap column left" : "Move to new column left"}</DropdownMenuItem>}
+            {!stacked && <DropdownMenuItem disabled={columnStep(id, "right") === value} onSelect={() => apply(id, columnStep(id, "right"))}>{alone(id) ? "Swap column right" : "Move to new column right"}</DropdownMenuItem>}
             {!stacked && (
               <>
                 <DropdownMenuSeparator />
@@ -360,6 +419,7 @@ function PaneFrame({
   gripRef,
   onGripPointerDown,
   onGripKeyDown,
+  onGripBlur,
   menu,
 }: {
   id: string
@@ -367,10 +427,11 @@ function PaneFrame({
   stacked: boolean
   size: number
   dragging: boolean
-  drop: "before" | "after" | null
+  drop: "before" | "after" | "left" | "right" | null
   gripRef: (el: HTMLButtonElement | null) => void
   onGripPointerDown: (e: React.PointerEvent) => void
   onGripKeyDown: (e: React.KeyboardEvent) => void
+  onGripBlur: (e: React.FocusEvent) => void
   menu: React.ReactNode
   collapsed: boolean
   onToggle: () => void
@@ -384,7 +445,7 @@ function PaneFrame({
       className={cn("relative flex min-w-0 flex-col bg-surface", stacked || collapsed ? "shrink-0" : "min-h-0 basis-0 grow-(--g)", dragging && "opacity-60")}
       style={stacked ? undefined : ({ "--g": size } as React.CSSProperties)}
     >
-      {drop && <span aria-hidden="true" className={cn("absolute inset-x-0 z-20 h-0.5 bg-primary", drop === "before" ? "top-0" : "bottom-0")} />}
+      {drop && <DropLine at={drop} />}
       <header className="flex h-8 shrink-0 items-center gap-1 border-b border-line pr-1 pl-0.5">
         <button
           ref={gripRef}
@@ -394,6 +455,7 @@ function PaneFrame({
           aria-pressed={dragging || undefined}
           onPointerDown={onGripPointerDown}
           onKeyDown={onGripKeyDown}
+          onBlur={onGripBlur}
           className="grid h-6 w-4 shrink-0 cursor-grab touch-none place-items-center rounded-xs text-ink-3 outline-none hover:bg-hover hover:text-ink-2 focus-visible:ring-2 focus-visible:ring-primary active:cursor-grabbing [&_svg]:size-3.5"
         >
           <GripVertical />
@@ -404,7 +466,7 @@ function PaneFrame({
         {collapsed ? <Button variant="ghost" size="icon-xs" aria-label={`Expand ${def.title}`} aria-expanded={false} onClick={onToggle}><ChevronDown /></Button> : def.actions}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon-xs" aria-label={`${def.title} options`}><Ellipsis /></Button>
+            <Button variant="ghost" size="icon-xs" data-pane-menu aria-label={`${def.title} options`}><Ellipsis /></Button>
           </DropdownMenuTrigger>
           {menu}
         </DropdownMenu>
@@ -414,4 +476,9 @@ function PaneFrame({
       </div>
     </section>
   )
+}
+
+/** Where a dragged pane will land: a line on the edge it will go to (left or right means a column of its own). */
+function DropLine({ at }: { at: "before" | "after" | "left" | "right" }) {
+  return <span aria-hidden="true" className={cn("pointer-events-none absolute z-20 bg-primary", at === "before" && "inset-x-0 top-0 h-0.5", at === "after" && "inset-x-0 bottom-0 h-0.5", at === "left" && "inset-y-0 left-0 w-0.5", at === "right" && "inset-y-0 right-0 w-0.5")} />
 }

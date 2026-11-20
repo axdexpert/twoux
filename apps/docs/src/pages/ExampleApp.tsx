@@ -70,7 +70,6 @@ export function ExampleApp() {
 	const [page, setPage] = useState(0);
 	const [panel, setPanel] = useState<{ kind: "record"; id: string } | { kind: "assistant" } | null>(null);
 	const [onlyVisible, setOnlyVisible] = useState(true);
-	const [singleKeys, setSingleKeys] = useState(true);
 	const [asked, setAsked] = useState(false);
 
 	const matches = (l: Listing, skip?: Field) => (Object.entries(filters) as [Field, string[]][]).every(([f, v]) => f === skip || !v?.length || v.includes(String(l[f])));
@@ -87,7 +86,7 @@ export function ExampleApp() {
 	const pills: Field[] = [...new Set<Field>(["status", "location", ...(Object.keys(filters) as Field[])])];
 
 	const toggle = (id: string, on?: boolean) => setSelected((s) => (on ?? !s.includes(id) ? [...new Set([...s, id])] : s.filter((x) => x !== id)));
-	const keys = useRowKeyboard({ count: shown.length, enabled: singleKeys, onToggle: (i, v) => shown[i] && toggle(shown[i].id, v), onOpen: (i) => shown[i] && setPanel({ kind: "record", id: shown[i].id }), onClear: () => setSelected([]), selected: selected.length });
+	const keys = useRowKeyboard({ count: shown.length, onToggle: (i, v) => shown[i] && toggle(shown[i].id, v), onOpen: (i) => shown[i] && setPanel({ kind: "record", id: shown[i].id }), onClear: () => setSelected([]), selected: selected.length });
 	const current = panel?.kind === "record" ? rows.find((r) => r.id === panel.id) : null;
 	// Keep the last record on screen while the panel animates closed.
 	const lastRecord = useRef(current);
@@ -95,6 +94,12 @@ export function ExampleApp() {
 	const record = current ?? (panel === null ? lastRecord.current : null);
 	const recIndex = record ? shown.findIndex((r) => r.id === record.id) : -1;
 
+	const extend = (ids: string[]) => {
+		const plus30 = (d: string) => { const t = new Date(`${d}T12:00:00Z`); t.setUTCDate(t.getUTCDate() + 30); return t.toISOString().slice(0, 10); };
+		const was = Object.fromEntries(rows.filter((l) => ids.includes(l.id)).map((l) => [l.id, l.closes]));
+		setRows((r) => r.map((l) => (ids.includes(l.id) ? { ...l, closes: plus30(l.closes) } : l)));
+		toast.success(`Extended ${ids.length} ${ids.length === 1 ? "listing" : "listings"} by 30 days`, { action: { label: "Undo", onClick: () => setRows((r) => r.map((l) => (l.id in was ? { ...l, closes: was[l.id] } : l))) } });
+	};
 	const closeListings = (ids: string[]) => {
 		const before = rows;
 		setRows((r) => r.map((l) => (ids.includes(l.id) ? { ...l, status: "Closed" } : l)));
@@ -122,7 +127,7 @@ export function ExampleApp() {
 						<AssistantMessage from={`${filtered.length} listings in this view`}>
 							<p><strong>2 listings</strong> close within 10 days with fewer than 10 applicants: Recruitment Coordinator <Citation id="L-1043" /> and QA Engineer <Citation id="L-1047" />.</p>
 						</AssistantMessage>
-						<SuggestedChanges changes={[{ id: "a", label: "Extend Recruitment Coordinator by 30 days", detail: "L-1043" }, { id: "b", label: "Extend QA Engineer by 30 days", detail: "L-1047" }]} onApply={(ids) => { toast.success(`Extended ${ids.length} listings`, { action: { label: "Undo", onClick: () => {} } }); setAsked(false); }} onDismiss={() => setAsked(false)} />
+						<SuggestedChanges changes={[{ id: "a", label: "Extend Recruitment Coordinator by 30 days", detail: "L-1043" }, { id: "b", label: "Extend QA Engineer by 30 days", detail: "L-1047" }]} onApply={(ids) => { extend(ids.map((x) => ({ a: "L-1043", b: "L-1047" })[x] ?? x)); setAsked(false); }} onDismiss={() => setAsked(false)} />
 					</>
 				)}
 			</AssistantPanel>
@@ -136,7 +141,7 @@ export function ExampleApp() {
 				position={recIndex >= 0 ? { index: recIndex, total: shown.length } : undefined}
 				onPrevious={() => recIndex > 0 && setPanel({ kind: "record", id: shown[recIndex - 1].id })}
 				onNext={() => recIndex < shown.length - 1 && setPanel({ kind: "record", id: shown[recIndex + 1].id })}
-				footer={<><Button variant="outline" size="sm" onClick={() => closeListings([record.id])}>Close listing</Button><Button size="sm" shortcut="E">Edit listing</Button></>}
+				footer={<><Button variant="outline" size="sm" onClick={() => closeListings([record.id])}>Close listing</Button><Button size="sm" shortcut="E" onClick={() => toast.message("Editing isn't part of this example", { description: `${record.role} would open in the listing editor.` })}>Edit listing</Button></>}
 			>
 				<Tabs defaultValue="overview">
 					<TabsList aria-label="Listing sections"><TabsTrigger value="overview">Overview</TabsTrigger><TabsTrigger value="candidates" count={record.applicants}>Candidates</TabsTrigger><TabsTrigger value="activity">Activity</TabsTrigger></TabsList>
@@ -218,7 +223,7 @@ export function ExampleApp() {
 					</FilterBar>
 					<div className="relative overflow-hidden rounded-sm border border-line bg-surface">
 						<BulkActionBar count={selected.length} noun={selected.length === 1 ? "listing" : "listings"} onClear={() => setSelected([])} actions={[
-								{ label: "Extend 30 days", shortcut: "T", onSelect: () => { toast.success(`Extended ${selected.length} listings by 30 days`, { action: { label: "Undo", onClick: () => {} } }); setSelected([]); } },
+								{ label: "Extend 30 days", shortcut: "T", onSelect: () => { extend(selected); setSelected([]); } },
 								{ label: "Ask about these", onSelect: () => setPanel({ kind: "assistant" }) },
 								{ label: "Close listings", destructive: true, onSelect: () => closeListings(selected) },
 							]} />
@@ -263,8 +268,6 @@ export function ExampleApp() {
 				</div>
 			</ExampleShell>
 			<ShortcutSheet
-				singleKeys={singleKeys}
-				onSingleKeysChange={setSingleKeys}
 				groups={[
 					{ title: "Table", items: [{ keys: ["J"], action: "Next row" }, { keys: ["K"], action: "Previous row" }, { keys: ["X"], action: "Select row" }, { keys: ["↵"], action: "Open in side panel" }] },
 					{ title: "Act", items: [{ keys: ["C"], action: "New listing" }, { keys: ["F"], action: "Add a filter" }, { keys: ["⌘", "J"], action: "Ask the assistant" }, { keys: ["⇧", "E"], action: "Export" }] },
